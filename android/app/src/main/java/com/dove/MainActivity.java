@@ -1,6 +1,7 @@
 package com.dove;
 
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.facebook.react.ReactActivity;
 
@@ -12,5 +13,15 @@ public class MainActivity extends ReactActivity {
     @Override
     protected String getMainComponentName() {
         return "dove";
+    }
+
+    private String s;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // test crash handler
+//        System.out.println(s.equals("any string"));
     }
 }

@@ -28,6 +28,10 @@ class ReduxNavigation extends Component {
         dispatch(ReactNavigation.NavigationActions.back(null));
 
         return true;
+
+        // const { dispatch } = this.props
+        // dispatch({ type: 'Navigation/BACK' })
+        // return true
     }
 
     isRootScreen(navigator) {
@@ -62,8 +66,8 @@ class ReduxNavigation extends Component {
     }
 }
 const mapStateToProps = state => {
-    return { 
-        nav: state.nav 
+    return {
+        nav: state.nav
     }
 };
 export default connect(mapStateToProps)(ReduxNavigation)

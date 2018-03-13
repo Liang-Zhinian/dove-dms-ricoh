@@ -8,7 +8,6 @@ package com.dove.sample.app.scan.application;
 import com.dove.BuildConfig;
 import com.dove.RCTFileViewerReactPackage;
 import com.dove.RCTRicohScannerReactPackage;
-import com.dove.RCTSimpleIntentModuleReactPackage;
 import com.facebook.react.ReactApplication;
 import com.microsoft.codepush.react.CodePush;
 import com.horcrux.svg.SvgPackage;
@@ -82,8 +81,7 @@ public class ScanSampleApplication extends SmartSDKApplication implements ReactA
                     new RNReactNativeDocViewerPackage(),
                     new VectorIconsPackage(),
                     new RCTFileViewerReactPackage(),
-                    new RCTRicohScannerReactPackage(),
-                    new RCTSimpleIntentModuleReactPackage()
+                    new RCTRicohScannerReactPackage()
             );
         }
 

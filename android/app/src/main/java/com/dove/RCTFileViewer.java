@@ -55,7 +55,7 @@ public class RCTFileViewer extends ReactContextBaseJavaModule {
                 String extension = MimeTypeMap.getFileExtensionFromUrl(path);
                 String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
 
-                Uri uri = FileProvider.getUriForFile(getReactApplicationContext(), getReactApplicationContext().getPackageName() + ".fileprovider", file);
+                Uri uri = FileProvider.getUriForFile(getReactApplicationContext(), getReactApplicationContext().getPackageName() + ".FileProvider", file);
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(uri, mimeType);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

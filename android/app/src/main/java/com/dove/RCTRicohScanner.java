@@ -1,21 +1,11 @@
 package com.dove;
 
-import android.content.Intent;
-import android.database.Observable;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.content.FileProvider;
 import android.util.Base64;
 import android.util.Log;
-import android.util.TypedValue;
-import android.webkit.MimeTypeMap;
-
-import com.dove.SimpleScanStateMachine.ScanEvent;
 
 import com.dove.sample.app.scan.Const;
 import com.dove.sample.app.scan.application.DestinationSettingDataHolder;
@@ -31,9 +21,7 @@ import com.dove.sample.function.scan.attribute.HashScanRequestAttributeSet;
 import com.dove.sample.function.scan.attribute.ScanException;
 import com.dove.sample.function.scan.attribute.ScanJobAttributeSet;
 import com.dove.sample.function.scan.attribute.ScanRequestAttributeSet;
-import com.dove.sample.function.scan.attribute.ScanResponseException;
 import com.dove.sample.function.scan.attribute.standard.AutoCorrectJobSetting;
-import com.dove.sample.function.scan.attribute.standard.DestinationSetting;
 import com.dove.sample.function.scan.attribute.standard.FileSetting;
 import com.dove.sample.function.scan.attribute.standard.JobMode;
 import com.dove.sample.function.scan.attribute.standard.OccuredErrorLevel;
@@ -45,7 +33,6 @@ import com.dove.sample.function.scan.attribute.standard.ScanJobStateReasons;
 import com.dove.sample.function.scan.attribute.standard.ScannerState;
 import com.dove.sample.function.scan.attribute.standard.ScannerStateReason;
 import com.dove.sample.function.scan.attribute.standard.ScannerStateReasons;
-import com.dove.sample.function.scan.attribute.standard.SmbAddressManualDestinationSetting;
 import com.dove.sample.function.scan.event.ScanJobAttributeEvent;
 import com.dove.sample.function.scan.event.ScanJobAttributeListener;
 import com.dove.sample.function.scan.event.ScanJobEvent;
@@ -54,7 +41,6 @@ import com.dove.sample.function.scan.event.ScanServiceAttributeEvent;
 import com.dove.sample.function.scan.event.ScanServiceAttributeListener;
 import com.dove.sample.wrapper.common.BinaryResponseBody;
 import com.dove.sample.wrapper.common.Response;
-import com.dove.sample.wrapper.common.ResponseBody;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -63,17 +49,11 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.nimbusds.jose.util.IOUtils;
 
 import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -100,8 +80,8 @@ public class RCTRicohScanner extends ReactContextBaseJavaModule implements IScan
     private DestinationSettingDataHolder mDestinationSettingDataHolder;
     private ScanSettingDataHolder mScanSettingDataHolder;
     private StorageSettingDataHolder mStorageSettingDataHolder;
-    private SimpleScanStateMachine mStateMachine;
-    private SystemStateMonitor mSystemStateMonitor;
+//    private SimpleScanStateMachine mStateMachine;
+//    private SystemStateMonitor mSystemStateMonitor;
     protected int scannedPages;
     protected int timeOfWaitingNextOriginal = 0;
 

@@ -247,6 +247,7 @@ class Explorer extends Component {
       title: 'Select Avatar',
       customButtons: [
         { name: 'create-folder', title: 'Create Folder' },
+        { name: 'scan', title: 'Scan' },
       ],
       storageOptions: {
         skipBackup: true,
@@ -276,6 +277,10 @@ class Explorer extends Component {
         switch (customButton) {
           case 'create-folder':
             this.setState({ folderCreationModalVisible: true, isLoading: false })
+            break;
+          case 'scan':
+            //this.setState({ folderCreationModalVisible: true, isLoading: false })
+            this.props.navigation.navigate('Scan', { folderId: this.state.folderId })
             break;
 
           default:
@@ -780,7 +785,8 @@ class Explorer extends Component {
         <MainActionSheet
           modalVisible={this.state.modalVisible}
           toggleActionSheet={this.toggleActionSheet.bind(this)}
-          onCreateFolderButtonPressed={() => { this.setState({ folderCreationModalVisible: true, isLoading: false }) }} />
+          onCreateFolderButtonPressed={() => { this.setState({ folderCreationModalVisible: true, isLoading: false }) }}
+          onScanButtonPressed={() => { this.props.navigation.navigate('Scan', { folderId: this.state.folderId }) }} />
 
         <FolderCreationDialog
           onCancel={() => {

@@ -12,10 +12,16 @@ import RepositoryUsage from './RepositoryUsage';
 import CheckedoutReport from './CheckedoutReport';
 import LockedReport from './LockedReport';
 import Scan from './Scan';
+import Splash from './Splash';
+import Registration from './Registration';
+
+
 
 
 
 export default {
+    Splash,
+    Registration,
     Home,
     Explorer,
     DocumentDetails,

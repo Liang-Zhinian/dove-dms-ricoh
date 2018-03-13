@@ -72,6 +72,8 @@ const defaultHeader = {
 }
 
 const {
+    Splash,
+    Registration,
     Home,
     Search,
     Downloads,
@@ -85,6 +87,8 @@ const {
 
 const HomeStack = StackNavigator(
     {
+        Splash,
+        Registration,
         Home,
         Search,
         Downloads,
@@ -97,7 +101,7 @@ const HomeStack = StackNavigator(
     },
     {
         headerMode: 'screen',
-        initialRouteName: 'Home',
+        initialRouteName: 'Splash',
         navigationOptions: {
             ...defaultHeader
         }
@@ -181,3 +185,4 @@ const styles = StyleSheet.create({
 })
 
 export default BottomTabs
+

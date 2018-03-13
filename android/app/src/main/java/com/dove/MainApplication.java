@@ -46,7 +46,7 @@ public class MainApplication extends SmartSDKApplication implements ReactApplica
                     new VectorIconsPackage(),
                     new RCTFileViewerReactPackage(),
                     new RCTRicohScannerReactPackage(),
-                    new RCTSimpleIntentModuleReactPackage()
+                    new RCTRicohAuthReactPackage()
             );
         }
 
@@ -65,5 +65,9 @@ public class MainApplication extends SmartSDKApplication implements ReactApplica
     public void onCreate() {
         super.onCreate();
         SoLoader.init(this, /* native exopackage */ false);
+
+        //
+//        CrashHandler crashHandler = CrashHandler.getInstance();
+//        crashHandler.init(getApplicationContext());
     }
 }

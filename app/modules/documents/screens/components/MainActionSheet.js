@@ -96,11 +96,11 @@ class MainActionSheet extends Component {
                                 Upload
                                 </Text>
                         </TouchableOpacity>
-                        {/* <TouchableOpacity style={styles.button} onPress={() => { }}>
-                        <Text style={styles.buttonText}>
-                            Take Photo or Video
+                        <TouchableOpacity style={styles.button} onPress={this.props.onScanButtonPressed}>
+                            <Text style={styles.buttonText}>
+                                Scan
                                 </Text>
-                    </TouchableOpacity> */}
+                        </TouchableOpacity>
                         <TouchableOpacity style={[styles.button, styles.lastButton]} onPress={() => { }}>
                             <Text style={styles.buttonText}>
                                 Record Audio

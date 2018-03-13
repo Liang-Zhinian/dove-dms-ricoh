@@ -27,6 +27,12 @@ function alert(msg) {
 }
 
 class Scan extends Component<{}> {
+    static navigationOptions = {
+        // headerStyle: { backgroundColor: StyleConfig.color_primary },
+        // headerTintColor: StyleConfig.textOnPrimary,
+        headerTitle: 'Scan',
+    };
+
     constructor(props) {
         super(props);
         this.state = {
@@ -35,7 +41,10 @@ class Scan extends Component<{}> {
             scanServiceAttributeState: '',
             scanServiceAttributeListenerError: '',
             scanJobListenerError: '',
-            scannedImage: ''
+            scannedImage: '',
+            folderId: null,
+            fileName: '',
+            isEditMode: false,
         };
     }
 
@@ -66,11 +75,19 @@ class Scan extends Component<{}> {
             // alert("ScanJobStateUpdated event listener success" + e.stateLabel);
             that.setState({ scannedImage: e.stateLabel });
             console.log(e.stateLabel);
+            if (e.stateLabel != null && e.stateLabel !== '') {
+                that.setState({ isEditMode: true });
+            } else {
+                that.setState({ isEditMode: false });
+            }
         });
 
 
 
         that.init();
+
+        const { navigate, state } = this.props.navigation;
+        that.setState({ 'folderId': state.params.folderId })
     }
     render() {
         let { progress } = this.props;
@@ -83,13 +100,25 @@ class Scan extends Component<{}> {
                     <Text style={styles.scanButton}>Restore</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={this.start.bind(this)}>
-                    <Text style={styles.scanButton}>Start scanning</Text>
+                <TouchableOpacity onPress={this.scan.bind(this)}>
+                    <Text style={styles.scanButton}>Scan</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={this.doUpload.bind(this)}>
-                    <Text style={styles.scanButton}>Start uploading {Math.floor((progress / 100) * 10000)}%</Text>
-                </TouchableOpacity>
+                <View style={{ flex: 1, flexDirection: 'column' }}>
+                    <TextInput
+                        ref="txtFileName"
+                        blurOnSubmit={true}
+                        underlineColorAndroid={'transparent'}
+                        onChangeText={(fileName) => this.setState({ fileName })}
+                        value={this.state.fileName}
+                        autoCapitalize='none'
+                        editable={this.state.isEditMode}
+                    /* secureTextEntry={true} */
+                    />
+                    <TouchableOpacity onPress={this.doUpload.bind(this)}>
+                        <Text style={styles.scanButton}>Upload {Math.floor((progress / 100) * 10000)}%</Text>
+                    </TouchableOpacity>
+                </View>
 
                 {/* <TouchableOpacity onPress={this.doUpload2.bind(this)}>
                     <Text style={styles.scanButton}>Start uploading 2 {Math.floor((progress / 100) * 10000)}%</Text>
@@ -100,7 +129,7 @@ class Scan extends Component<{}> {
                 <Text style={styles.title}>Scan Service Attribute State: {this.state.scanServiceAttributeState}</Text>
                 <Text style={styles.title}>Scan Job Attribute Listener Error: {this.state.scanServiceAttributeListenerError}</Text>
                 <Text style={styles.title}>Scan Job Listener Error: {this.state.scanJobListenerError}</Text>
-                <Text style={styles.title}>Scanned Image: {this.state.scannedImage}</Text>
+                {/* <Text style={styles.title}>Scanned Image: {this.state.scannedImage}</Text> */}
 
                 {/* <Image
 					style={[{ width: this.state.layout.width - 50, }]}
@@ -112,7 +141,7 @@ class Scan extends Component<{}> {
         );
     }
 
-    start() {
+    scan() {
 
         RicohScannerAndroid.start()
             .then((msg) => {
@@ -142,34 +171,13 @@ class Scan extends Component<{}> {
             });
     }
 
-    doUpload2() {
-        const { sid, username, password, navigation } = this.props;
-        let name = "scan_x1";
-        let type = 'pdf';
-        let folderId = 4;
-        let document = {
-            "id": 0,
-            "fileSize": this.state.scannedImage.length,
-            "title": name,
-            "type": type,
-            "fileName": name + (type === '' ? '' : `.${type}`),
-            "folderId": folderId,
-        };
-
-        const { upload } = this.props;
-        try {
-            const data = Base64.atob(this.state.scannedImage);
-            upload(sid, document, data);
-        } catch (error) {
-            this.setState({ scanJobListenerError: error.message });
-        }
-    }
-
     doUpload() {
+        if (!this.state.isEditMode) return;
+
         const { sid, username, password, navigation } = this.props;
-        let name = "scan_x1";
+        let name = this.state.fileName;
         let type = 'pdf';
-        let folderId = 4;
+        let folderId = this.state.folderId;
         let document = {
             "id": 0,
             "fileSize": this.state.scannedImage.length,

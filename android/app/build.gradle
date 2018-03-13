@@ -188,6 +188,8 @@ dependencies {
     compile 'org.apache.httpcomponents:httpcore:4.4.2'
     compile 'com.android.support:support-v4:25.0.2'
     compile files('libs/jsonic-1.3.0.jar')
+    compile files('libs/CustomAuthFramework.jar')
+    compile files('libs/SDKService.jar')
 //    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
     // kotlin dependencies

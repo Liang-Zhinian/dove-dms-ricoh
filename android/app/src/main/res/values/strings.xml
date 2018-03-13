@@ -152,4 +152,8 @@
     <string name="txid_dest_b_manual_input_mail_cancel">Cancel</string>
     <string name="txid_dest_t_manual_input_mail_address">Address</string>
 
+    <!-- error messages -->
+    <string name="err_msg_get_entry_list">Failed to getting User list.</string>
+    <string name="err_msg_user_name_search_over">Hits %s users. Please change conditions and search again. </string>
+
 </resources>

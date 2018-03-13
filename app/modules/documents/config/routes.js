@@ -2,6 +2,12 @@
 import Screens from '../screens';
 
 export default Routes = {
+    Splash: {
+        screen: Screens.Splash,
+    },
+    Registration: {
+        screen: Screens.Registration,
+    },
     Home: {
         screen: Screens.Home,
     },

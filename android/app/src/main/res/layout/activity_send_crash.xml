@@ -1,0 +1,84 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="900px"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:background="@color/transparent">
+
+    <RelativeLayout
+        android:layout_width="900px"
+        android:layout_height="480px"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20px"
+        android:background="@drawable/destination_background_in" >
+
+        <RelativeLayout
+            android:layout_width="850px"
+            android:layout_height="390px"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="@drawable/content_background" >
+
+
+            <LinearLayout
+                android:id="@+id/layout_progress"
+                android:layout_width="780px"
+                android:layout_height="300px"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15px"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:visibility="gone" >
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="114px"
+                    android:layout_height="114px" />
+
+                <TextView
+                    android:id="@+id/textView_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="33px"
+                    android:textColor="@color/dimgray"
+                    android:textSize="26px" />
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/button_cancel"
+            android:layout_width="150px"
+            android:layout_height="45px"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="35px"
+            android:layout_marginTop="33px"
+            android:layout_marginBottom="33px"
+            android:textColor="@color/dimgray"
+            android:textSize="16px"
+            android:text="@string/txid_cmn_b_cancel" />
+
+        <Button
+            android:id="@+id/button_ok"
+            android:layout_width="150px"
+            android:layout_height="45px"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="35px"
+            android:layout_marginBottom="33px"
+            android:textColor="@color/dimgray"
+            android:textSize="16px"
+            android:text="@string/txid_cmn_b_ok" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

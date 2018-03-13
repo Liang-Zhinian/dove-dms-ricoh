@@ -51,7 +51,7 @@ public class DialogUtil {
      * アクティビティが前面表示した際に通知されるブロードキャストインテントのアクション名
      * The action name of the broadcast intent to be sent when the activity displayed.
      */
-    public static final String INTENT_ACTION_SUB_ACTIVITY_RESUMED = "jp.co.ricoh.ssdk.sample.app.scan.SUB_ACTIVITY_RESUMED";
+    public static final String INTENT_ACTION_SUB_ACTIVITY_RESUMED = "com.dove.sample.app.scan.SUB_ACTIVITY_RESUMED";
 
     /**
      * WebAPIでのFTPフォルダ直接入力設定：ポート番号のデフォルト値です。
