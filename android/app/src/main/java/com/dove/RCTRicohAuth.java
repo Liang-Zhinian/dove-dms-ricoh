@@ -370,7 +370,7 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
                 final Integer registrationNumber = simpleEntry.getRegistrationNumber();
                 final String name = simpleEntry.getName();
                 final String _loginUserId = simpleEntry.getUserCodeData().getLoginUserName();
-                if (_loginUserId == loginUserId) {
+                if (_loginUserId.equals(loginUserId)) {
                     try {
                         JSONObject entryJson = new JSONObject();
                         entryJson.put("entryId", simpleEntry.getEntryId());
@@ -379,15 +379,20 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
                         entryJson.put("mailAddress", simpleEntry.getMailData().getMailAddress());
                         entryJson.put("loginUserName", simpleEntry.getUserCodeData().getLoginUserName());
 
-                        String entryInfoStrs = "{\"entryId\":\""
-                                + simpleEntry.getEntryId()
-                                + "\",\"registrationNumber\":\""
-                                + simpleEntry.getRegistrationNumber()
-                                + "\",\"name\":\""
-                                + simpleEntry.getName()
-                                + "\",\"mailAddress\":\"\",\"loginUserName\":\""
-                                + simpleEntry.getUserCodeData().getLoginUserName()
-                                + "\"}";
+                        String entryInfoStrs = entryJson.toString();
+
+//                        String entryInfoStrs = "{\"entryId\":\""
+//                                + simpleEntry.getEntryId()
+//                                + "\",\"registrationNumber\":\""
+//                                + simpleEntry.getRegistrationNumber()
+//                                + "\",\"name\":\""
+//                                + simpleEntry.getName()
+//                                + "\",\"mailAddress\":\"\",\"loginUserName\":\""
+//                                + simpleEntry.getUserCodeData().getLoginUserName()
+//                                + "\"}";
+                        Log.d(Const.TAG, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                        Log.d(Const.TAG, "Entry JSON string: " + entryInfoStrs);
+
                         WritableMap params = Arguments.createMap();
                         params.putString("entryInfo", entryInfoStrs);
                         sendEvent(RCTRicohAuth.this.getReactApplicationContext(), "onEntryInfoReceived", params);

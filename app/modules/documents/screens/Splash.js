@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+    Alert,
     StyleSheet,
     View,
     Image,
@@ -8,7 +9,13 @@ import {
     DeviceEventEmitter,
 } from 'react-native';
 import { connect } from 'react-redux';
+import * as actions from '../actions';
+import { NAME } from '../constants';
 import RicohAuthAndroid from '../../../components/RCTRicohAuthAndroid';
+
+function alert(msg) {
+    Alert.alert('Splash Component', msg, [{ text: 'OK', onPress: () => console.log('OK Pressed') },], { cancelable: false });
+}
 
 class Splash extends Component {
     constructor(props) {
@@ -31,7 +38,32 @@ class Splash extends Component {
             let entryInfo = JSON.parse(e.entryInfo);
 
             that.setState({ user: entryInfo });
-            // AsyncStorage.getItem('firebaseUser').then(data => data ? JSON.parse(data) : null);
+
+            AsyncStorage
+                .getItem(entryInfo.loginUserName)
+                .then(data => {
+                    if (!!data){
+                        //alert('User data from AsyncStorage: ' + data);
+                        return JSON.parse(data);
+                    }
+
+                    return null;
+                })
+                .then(user => {
+                    if (user != null) {
+                        that.props.saveAccount(user.username, user.password);
+                        that.props.login(user.username, user.password);
+                        // navigate to Explorer screen
+                        that.props.navigation.navigate('Explorer');
+                        
+                    } else {
+                        //alert('Please register your account!');
+                        // navigate to Registration screen
+                        that.props.navigation.navigate('Registration', {key: entryInfo.loginUserName});
+                    }
+                });
+
+            // alert(entryInfo);
         });
 
         RicohAuthAndroid.getAuthState()
@@ -48,7 +80,7 @@ class Splash extends Component {
     }
 
     componentWillUpdate(nextProps, nextState) {
-        if (nextState.loginStatus == 'LOGOUT') this.props.navigation.navigate('Registration')
+        if (nextState.loginStatus == 'LOGOUT') this.props.navigation.navigate('Account')
     }
 
     render() {
@@ -58,7 +90,7 @@ class Splash extends Component {
                 <Text>Splash</Text>
 
                 <Text>{this.state.loginStatus}</Text>
-                <Text>{this.state.user.entryId}</Text>
+                <Text>{!!this.state.user && this.state.user.loginUserName}</Text>
             </View>
         )
     }
@@ -82,4 +114,33 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Splash
+// export default Splash
+
+// 获取 state 变化
+const mapStateToProps = (state) => {
+    return {
+        // 获取 state 变化
+        isLoggedIn: state[NAME].account.isLoggedIn,
+        username: state[NAME].account.username,
+        password: state[NAME].account.password,
+        sid: state[NAME].account.sid
+    }
+};
+
+// 发送行为
+const mapDispatchToProps = (dispatch) => {
+    return {
+        // 发送行为
+        login: (username, password) => dispatch(actions.login(username, password)),
+        saveAccount: (username, password) => dispatch(actions.saveAccount(username, password)),
+    }
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+    null,
+    {
+        withRef: true
+    }
+)(Splash);

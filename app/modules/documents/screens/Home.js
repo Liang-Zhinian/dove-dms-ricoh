@@ -7,14 +7,20 @@ import {
 	Platform,
 	Dimensions,
 	Image,
-	TouchableOpacity
+	TouchableOpacity,
+    AsyncStorage,
+    DeviceEventEmitter,
 } from 'react-native';
-import { DrawerNavigator } from 'react-navigation'
+// import { DrawerNavigator } from 'react-navigation'
 import { default as Icon } from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { default as Ionicons } from 'react-native-vector-icons/Ionicons';
+import { connect } from 'react-redux';
+import * as actions from '../actions';
+import { NAME } from '../constants';
+import RicohAuthAndroid from '../../../components/RCTRicohAuthAndroid';
 
 import {
 	ComponentStyles,
@@ -142,6 +148,8 @@ class Home extends Component {
 		console.log('constructor');
 		super(props);
 		this.state = {
+            loginStatus: null,
+            user: null,
 			hasFocus: false,
 			layout: {
 				width: Dimensions.get('window').width,
@@ -153,10 +161,81 @@ class Home extends Component {
 		// this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
 	}
 
+
+    componentWillMount() {
+        var that = this;
+
+        DeviceEventEmitter.addListener('onLoginStatusReceived', function (e) {
+            that.setState({ loginStatus: e.loginStatus });
+        });
+
+        DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
+            let entryInfo = JSON.parse(e.entryInfo);
+
+            that.setState({ user: entryInfo });
+
+            AsyncStorage
+                .getItem(entryInfo.loginUserName)
+                .then(data => {
+                    if (!!data){
+                        //alert('User data from AsyncStorage: ' + data);
+                        return JSON.parse(data);
+                    }
+
+                    return null;
+                })
+                .then(user => {
+                    if (user != null) {
+                        that.props.saveAccount(user.username, user.password);
+                        that.props.login(user.username, user.password);
+                        // navigate to Explorer screen
+                        that.props.navigation.navigate('Explorer');
+                        
+                    } else {
+                        //alert('Please register your account!');
+                        // navigate to Registration screen
+                        that.props.navigation.navigate('Registration', {key: entryInfo.loginUserName});
+                    }
+                });
+
+            // alert(entryInfo);
+        });
+
+        RicohAuthAndroid.getAuthState()
+            .then((msg) => {
+                console.log('success!!')
+            }, (error) => {
+                console.log('error!!')
+            });
+
+    }
+
+    componentWillReceiveProps(nextProps) {
+        // if (!nextProps.authenticated) this.props.navigation.navigate('Login')
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+        if (nextState.loginStatus == 'LOGOUT') this.props.navigation.navigate('Account')
+    }
+
 	componentDidFocus() {
 		this.setState({
 			hasFocus: true
 		});
+	}
+
+	render() {
+		const { router, user } = this.props;
+		return (
+			<View
+				onLayout={this.onLayout}
+				style={[styles.container, { flexDirection: 'column' }]}
+			>
+				{/*this.renderContent()*/}
+				{this.renderLogo()}
+				{this.renderNavContent()}
+			</View>
+		)
 	}
 
 	onNavItemPress(item) {
@@ -282,21 +361,36 @@ class Home extends Component {
 			</View>
 		)
 	}
-
-	render() {
-		const { router, user } = this.props;
-		return (
-			<View
-				onLayout={this.onLayout}
-				style={[styles.container, { flexDirection: 'column' }]}
-			>
-				{/*this.renderContent()*/}
-				{this.renderLogo()}
-				{this.renderNavContent()}
-			</View>
-		)
-	}
 }
+
+// 获取 state 变化
+const mapStateToProps = (state) => {
+    return {
+        // 获取 state 变化
+        isLoggedIn: state[NAME].account.isLoggedIn,
+        username: state[NAME].account.username,
+        password: state[NAME].account.password,
+        sid: state[NAME].account.sid
+    }
+};
+
+// 发送行为
+const mapDispatchToProps = (dispatch) => {
+    return {
+        // 发送行为
+        login: (username, password) => dispatch(actions.login(username, password)),
+        saveAccount: (username, password) => dispatch(actions.saveAccount(username, password)),
+    }
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+    null,
+    {
+        withRef: true
+    }
+)(Home);
 
 const styles = StyleSheet.create({
 	container: {
@@ -374,5 +468,3 @@ const styles = StyleSheet.create({
 		marginBottom: 5,
 	},
 });
-
-export default Home;

@@ -87,8 +87,6 @@ const {
 
 const HomeStack = StackNavigator(
     {
-        Splash,
-        Registration,
         Home,
         Search,
         Downloads,
@@ -97,11 +95,13 @@ const HomeStack = StackNavigator(
         CheckedoutReport,
         LockedReport,
         RepositoryUsage,
-        Scan
+        Scan,
+        Splash,
+        Registration,
     },
     {
         headerMode: 'screen',
-        initialRouteName: 'Splash',
+        initialRouteName: 'Home',
         navigationOptions: {
             ...defaultHeader
         }
