@@ -40,6 +40,7 @@ import SearchBox from './components/SearchBox';
 import DocumentList from './components/DocumentList';
 import FileViewerAndroid from '../../../components/RCTFileViewerAndroid';
 import Spinner from '../../../components/Spinner';
+import { alert } from '../lib/alert';
 
 function isExpired(expires_date) {
   let currentTime = new Date();
@@ -550,7 +551,8 @@ class Explorer extends Component {
       .then((path) => {
         if (!path) return;
         // the temp file path
-        console.log('The file saved to ', path)
+        console.log('The file saved to ', path);
+        alert('Explorer', 'The file saved to ', path);
         that.openLocalUrl(path, fileName, type);
         that.resetDownloadTask();
       })

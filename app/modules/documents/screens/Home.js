@@ -148,6 +148,7 @@ class Home extends Component {
 		console.log('constructor');
 		super(props);
 		this.state = {
+			screenDismissed: false,
             loginStatus: null,
             user: null,
 			hasFocus: false,
@@ -166,7 +167,8 @@ class Home extends Component {
         var that = this;
 
         DeviceEventEmitter.addListener('onLoginStatusReceived', function (e) {
-            that.setState({ loginStatus: e.loginStatus });
+			that.setState({ loginStatus: e.loginStatus, screenDismissed: true });
+			if (e.loginStatus == 'LOGOUT' && !that.state.screenDismissed) that.props.navigation.navigate('Account')
         });
 
         DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
@@ -215,7 +217,7 @@ class Home extends Component {
     }
 
     componentWillUpdate(nextProps, nextState) {
-        if (nextState.loginStatus == 'LOGOUT') this.props.navigation.navigate('Account')
+        // if (nextState.loginStatus == 'LOGOUT') this.props.navigation.navigate('Account')
     }
 
 	componentDidFocus() {
