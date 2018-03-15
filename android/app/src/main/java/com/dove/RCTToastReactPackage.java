@@ -13,12 +13,12 @@ import java.util.List;
  * Created by Administrator on 2017/12/8.
  */
 
-public class RCTRicohScannerReactPackage implements ReactPackage {
+public class RCTToastReactPackage implements ReactPackage {
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         //Registering the module.
-        return Arrays.<NativeModule>asList(new RCTRicohScanner(reactContext));
+        return Arrays.<NativeModule>asList(new RCTToastModule(reactContext));
     }
 
     @Override

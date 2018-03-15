@@ -1,6 +1,9 @@
 'use strict';
 
 import React, { Component } from 'react';
+import {
+    Alert,
+} from 'react-native';
 import RNFS from 'react-native-fs';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {
@@ -12,6 +15,7 @@ import {
 } from '../api';
 import XMLParser from '../lib/XMLParser';
 import Base64 from '../lib/Base64';
+import { default as Toast } from '../../../components/RCTToatModuleAndroid';
 
 
 const toJson = (xmlString) => {
@@ -118,8 +122,11 @@ const downloadToCacheDirectory = (sid, doc, onProgress, onCanceled) => {
 
     return createDownloadTicketWithProgressSOAP(sid, doc.id)
         .then(ticket => {
+            // Alert.alert('Download Ticket', ticket, [{ text: 'OK', onPress: () => console.log('OK Pressed') },], { cancelable: false });
+
             const SHA1 = require('crypto-js/sha1');
             const path = RNFetchBlob.fs.dirs.CacheDir + '_immutable_images/' + SHA1(ticket) + '.' + doc.type;
+            // Alert.alert('Temp file path', path, [{ text: 'OK', onPress: () => console.log('OK Pressed') },], { cancelable: false });
 
             return downloadManager.start(ticket, {
                 // add this option that makes response data to be stored as a file,
@@ -127,6 +134,10 @@ const downloadToCacheDirectory = (sid, doc, onProgress, onCanceled) => {
                 fileCache: true,
                 path,
             });
+        })
+        .catch(error=>{
+            Toast.show(error, Toast.SHORT);
+            throw new Error(error);
         })
     //.then(man => { return man.task })
     //.then(task => { return task.path() });
@@ -179,6 +190,7 @@ export class DownloadManager {
         // listen to download progress event
         that.task.progress((received, total) => {
             that.onProgress(received, total);
+            // Toast.show('progress: ' + received + '/' + total, Toast.SHORT);
         });
 
         return that;

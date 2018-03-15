@@ -106,7 +106,7 @@ android {
     defaultConfig {
         applicationId "com.dove"
         minSdkVersion 16
-        targetSdkVersion 17
+        targetSdkVersion 23
         versionCode 1
         versionName "1.08.00"
         ndk {

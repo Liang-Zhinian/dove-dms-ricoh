@@ -33,8 +33,8 @@ class Registration extends Component<{}> {
         super(props);
         this.state = {
             key: null,
-            username: '',
-            password: '',
+            username: 'admin',
+            password: 'admin',
 
         };
     }
@@ -59,10 +59,14 @@ class Registration extends Component<{}> {
                 </Text>
                 <TextInput placeholder='Username'
                     onChangeText={(username) => this.setState({ username })}
-                    returnKeyType='next' />
+                    returnKeyType='next'
+                    value={this.state.username}
+                />
                 <TextInput placeholder='Password'
                     onChangeText={(password) => this.setState({ password })}
-                    secureTextEntry={true} />
+                    secureTextEntry={true}
+                    value={this.state.password}
+                />
                 <View style={{ margin: 7 }} />
                 <Button
                     onPress={this.submit.bind(this)}

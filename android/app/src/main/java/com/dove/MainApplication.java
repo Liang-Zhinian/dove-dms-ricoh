@@ -46,7 +46,8 @@ public class MainApplication extends SmartSDKApplication implements ReactApplica
                     new VectorIconsPackage(),
                     new RCTFileViewerReactPackage(),
                     new RCTRicohScannerReactPackage(),
-                    new RCTRicohAuthReactPackage()
+                    new RCTRicohAuthReactPackage(),
+                    new RCTToastReactPackage()
             );
         }
 
