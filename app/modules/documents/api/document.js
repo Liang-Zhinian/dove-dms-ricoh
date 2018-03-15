@@ -203,7 +203,16 @@ export const createDocumentWithProgressSOAP = (sid: string, document: string, co
         xhr.onload = function () {
             // upload completed
             // If successful, resolve the promise by passing back the request response
-            resolve(xhr.response);
+            // resolve(xhr.response);
+            try {
+                const responseJson = convertToJson(xhr.response);
+                responseJson = filterFault(responseJson);
+
+
+                resolve(xhr.response)
+            } catch (reason) {
+                reject(reason)
+            }
         };
         xhr.onerror = function () {
             // Also deal with the case when the entire request fails to begin with

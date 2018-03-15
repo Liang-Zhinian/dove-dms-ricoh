@@ -18,6 +18,7 @@ import {
 import OpenFile from 'react-native-doc-viewer';
 import { createDocumentWithProgressSOAP } from '../api'
 import Base64 from '../lib/Base64'
+import { alert } from '../lib/alert';
 
 export type Action = {
   type: string,
@@ -70,7 +71,19 @@ export const upload = (sid: string, document: any, content: string): ActionAsync
 
         dispatch(doneUploading());
       })
-      .catch(error => console.error(error));
+      .catch(error => {
+        // console.error(error);
+        alert('Upload document', error.message);
+        dispatch({
+          type: DONE_UPLOADING_DOCUMENT,
+          payload: {
+            isLoading: false,
+            progress: 0,
+            uploaded: false,
+            needReload: false,
+          }
+        })
+      });
   }
 };
 

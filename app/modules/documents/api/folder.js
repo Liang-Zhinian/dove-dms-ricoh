@@ -72,7 +72,16 @@ export const createFolderSOAP = (sid: string, parentId: int, name: string, onPro
         xhr.withCredentials = true;
 
         xhr.onload = function () {
-            resolve(xhr.response);
+            
+
+            try {
+                const responseJson = convertToJson(xhr.response);
+                responseJson = filterFault(responseJson);
+
+                resolve(xhr.response)
+            } catch (reason) {
+                reject(reason)
+            }
         };
         xhr.onerror = function () {
             // Also deal with the case when the entire request fails to begin with

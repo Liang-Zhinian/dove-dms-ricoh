@@ -42,8 +42,8 @@ export function convertToJson(xmlString) {
 }
 
 export function filterFault(responseJson){
-    if (responseJson.Fault) {
-        throw new Error(responseJson.Fault.faultstring);
+    if (responseJson.Body.Fault) {
+        throw new Error(responseJson.Body.Fault.faultstring);
     } else {
         return responseJson;
     }
