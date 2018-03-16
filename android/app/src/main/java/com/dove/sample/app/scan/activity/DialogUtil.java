@@ -37,7 +37,7 @@ import com.dove.sample.function.scan.attribute.standard.MailAddressManualDestina
 import com.dove.sample.function.scan.attribute.standard.NcpAddressManualDestinationSetting;
 import com.dove.sample.function.scan.attribute.standard.NcpAddressManualDestinationSetting.ConnectionType;
 import com.dove.sample.function.scan.attribute.standard.SmbAddressManualDestinationSetting;
-//import com.dove.MainActivity;
+//import com.dove.PrintMainActivity;
 
 import java.util.List;
 
@@ -333,8 +333,8 @@ public class DialogUtil {
                                 edit_address.getText().toString());
                         destHolder.setDestinationSettingItem(dest);
                     }
-//                    ((MainActivity)context).updateDestinationLabel(null);
-                    ((TopActivity)context).updateDestinationLabel(null);
+//                    ((PrintMainActivity)context).updateDestinationLabel(null);
+                    ((ScanMainActivity)context).updateDestinationLabel(null);
                 }
         });
 
@@ -557,8 +557,8 @@ public class DialogUtil {
                     } else {
                         /* do nothing */
                     }
-                    //((MainActivity)context).updateDestinationLabel(null);
-                    ((TopActivity)context).updateDestinationLabel(null);
+                    //((PrintMainActivity)context).updateDestinationLabel(null);
+                    ((ScanMainActivity)context).updateDestinationLabel(null);
                 }
         });
 

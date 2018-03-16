@@ -65,7 +65,7 @@ import java.util.Set;
  * スキャンサンプルアプリのメインアクティビティです。
  * Scan sample application: Main activity
  */
-public class TopActivity extends Activity {
+public class ScanMainActivity extends Activity {
 
     public static final int REQUEST_CODE_TOP_ACTIVITY = 4000;
 
@@ -231,7 +231,7 @@ public class TopActivity extends Activity {
     /**
      * メインアクティビティ起動済みフラグ
      * trueであれば、すでにMainActivityが起動済みです。
-     * TopActivity running flag
+     * ScanMainActivity running flag
      * If true, another Mainactivity instance is running.
      */
     private boolean mMultipleRunning = false;
@@ -239,7 +239,7 @@ public class TopActivity extends Activity {
     /**
      * メインアクティビティの最前面表示状態を保持します。
      * onResume - onPause の間はtrueになります。
-     * TopActivity foreground flag
+     * ScanMainActivity foreground flag
      * During onResume and onPause, it should be true.
      */
     private boolean mIsForeground = false;
@@ -301,7 +301,7 @@ public class TopActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		if (getNumActivities(getPackageName()) > 1) {
-		    Log.i(Const.TAG, PREFIX + "Another TopActivity instance is already running.");
+		    Log.i(Const.TAG, PREFIX + "Another ScanMainActivity instance is already running.");
 		    mMultipleRunning = true;
 		    finish();
 		    return;
@@ -353,7 +353,7 @@ public class TopActivity extends Activity {
                 //If no dialog displays, set flag to true
                 mApplication.setmIsWinShowing(true);
                 
-                AlertDialog dialog = DialogUtil.createJobModeDialog(TopActivity.this, mScanSettingDataHolder);
+                AlertDialog dialog = DialogUtil.createJobModeDialog(ScanMainActivity.this, mScanSettingDataHolder);
                 dialog.setOnDismissListener(new DialogInterface.OnDismissListener(){
                     @Override
                     public void onDismiss(DialogInterface paramDialogInterface) {
@@ -379,7 +379,7 @@ public class TopActivity extends Activity {
                 mApplication.setmIsWinShowing(true);
                 
                 StorageSendData sendData = mStorageSettingDataHolder.getStorageSendData();
-                Intent intent = new Intent(TopActivity.this, StorageActivity.class);
+                Intent intent = new Intent(ScanMainActivity.this, StorageActivity.class);
                 if (sendData!=null && sendData.getFileId()!=null) {
                     intent.putExtra(StorageActivity.KEY_MODE, StorageActivity.VALUE_MODE_SEND_FILE);
                 } else {
@@ -401,7 +401,7 @@ public class TopActivity extends Activity {
                 //If no dialog displays, set flag to true
                 mApplication.setmIsWinShowing(true);
                 
-                AlertDialog dialog = new StoreFileSettingDialog(TopActivity.this, mStorageSettingDataHolder);
+                AlertDialog dialog = new StoreFileSettingDialog(ScanMainActivity.this, mStorageSettingDataHolder);
                 dialog.setOnDismissListener(new DialogInterface.OnDismissListener(){
                     @Override
                     public void onDismiss(DialogInterface paramDialogInterface) {
@@ -443,7 +443,7 @@ public class TopActivity extends Activity {
                 //If no dialog displays, set flag to true
                 mApplication.setmIsWinShowing(true);
                 
-                AlertDialog dialog = DialogUtil.createDestTypeDialog(TopActivity.this, mDestSettingDataHolder);
+                AlertDialog dialog = DialogUtil.createDestTypeDialog(ScanMainActivity.this, mDestSettingDataHolder);
                 DialogUtil.showDialog(dialog, DialogUtil.INPUT_DIALOG_WIDTH, DialogUtil.DEFAULT_DIALOG_HEIGHT);
 			}
 		});
@@ -460,7 +460,7 @@ public class TopActivity extends Activity {
                 //If no dialog displays, set flag to true
                 mApplication.setmIsWinShowing(true);
                 
-                AlertDialog dialog = DialogUtil.createColorSettingDialog(TopActivity.this, mScanSettingDataHolder);
+                AlertDialog dialog = DialogUtil.createColorSettingDialog(ScanMainActivity.this, mScanSettingDataHolder);
                 dialog.setOnDismissListener(new DialogInterface.OnDismissListener(){
                     @Override
                     public void onDismiss(DialogInterface paramDialogInterface) {
@@ -487,7 +487,7 @@ public class TopActivity extends Activity {
                 //If no dialog displays, set flag to true
                 mApplication.setmIsWinShowing(true);
                 
-                AlertDialog dialog = DialogUtil.createFileSettingDialog(TopActivity.this, mScanSettingDataHolder);
+                AlertDialog dialog = DialogUtil.createFileSettingDialog(ScanMainActivity.this, mScanSettingDataHolder);
                 dialog.setOnDismissListener(new DialogInterface.OnDismissListener(){
                     @Override
                     public void onDismiss(DialogInterface paramDialogInterface) {
@@ -514,7 +514,7 @@ public class TopActivity extends Activity {
                 //If no dialog displays, set flag to true
                 mApplication.setmIsWinShowing(true);
                 
-                AlertDialog dialog = DialogUtil.createSideSettingDialog(TopActivity.this, mScanSettingDataHolder);
+                AlertDialog dialog = DialogUtil.createSideSettingDialog(ScanMainActivity.this, mScanSettingDataHolder);
                 dialog.setOnDismissListener(new DialogInterface.OnDismissListener(){
                     @Override
                     public void onDismiss(DialogInterface paramDialogInterface) {
@@ -541,7 +541,7 @@ public class TopActivity extends Activity {
                 //If no dialog displays, set flag to true
                 mApplication.setmIsWinShowing(true);
                 
-                AlertDialog dialog = DialogUtil.createOtherSettingDialog(TopActivity.this, mScanSettingDataHolder);
+                AlertDialog dialog = DialogUtil.createOtherSettingDialog(ScanMainActivity.this, mScanSettingDataHolder);
                 dialog.setOnDismissListener(new DialogInterface.OnDismissListener(){
                     @Override
                     public void onDismiss(DialogInterface paramDialogInterface) {
@@ -587,7 +587,7 @@ public class TopActivity extends Activity {
         mStateMachine.procScanEvent(ScanEvent.ACTIVITY_CREATED);
         
         // set application state to Normal
-        mApplication.setAppState(TopActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
+        mApplication.setAppState(ScanMainActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
 	}
 
     /**
@@ -702,7 +702,7 @@ public class TopActivity extends Activity {
      *
      * Called when the activity is destroyed.
      * [Processes]
-     *   (1) Send TopActivity destoyed event to the state machine.
+     *   (1) Send ScanMainActivity destoyed event to the state machine.
      *       If scanning is in process, scanning is cancelled.
      *   (2) Removes the event listener and the broadcast receiver from the service.
      *   (3) If asynchronous task is in process, the task is cancelled.
@@ -714,7 +714,7 @@ public class TopActivity extends Activity {
         Log.d(Const.TAG, PREFIX + "onDestroy");
         super.onDestroy();
 
-        // if TopActivity another instance is already running, then exit without doing anything
+        // if ScanMainActivity another instance is already running, then exit without doing anything
         if (mMultipleRunning) {
             return;
         }
@@ -743,7 +743,7 @@ public class TopActivity extends Activity {
         }
 
         // set application state to Normal
-        mApplication.setAppState(TopActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
+        mApplication.setAppState(ScanMainActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
         
         //(4)
         mApplication.init();
@@ -1159,7 +1159,7 @@ public class TopActivity extends Activity {
                     if (mAlertDialogDisplayed) {
                         String activityName = getTopActivityClassName(getPackageName());
                         if (activityName == null) {
-                            activityName = TopActivity.class.getName();
+                            activityName = ScanMainActivity.class.getName();
                         }
                         mApplication.hideAlertDialog(ALERT_DIALOG_APP_TYPE_SCANNER, activityName);
                         mAlertDialogDisplayed = false;

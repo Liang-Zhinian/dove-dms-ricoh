@@ -258,12 +258,12 @@ public class RCTRicohScanner extends ReactContextBaseJavaModule implements IScan
         try {
 //            Activity currentActivity = getCurrentActivity();
 //            if(null!=currentActivity){
-//                Intent intent = new Intent(currentActivity, TopActivity.class); //new Intent(currentActivity, TopActivity.class);
+//                Intent intent = new Intent(currentActivity, ScanMainActivity.class); //new Intent(currentActivity, ScanMainActivity.class);
 //                currentActivity.startActivity(intent);
 //            }
 
 //            ReactApplicationContext context = getReactApplicationContext();
-//            Intent intent = new Intent(context, TopActivity.class);
+//            Intent intent = new Intent(context, ScanMainActivity.class);
 //            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //            context.startActivity(intent);
 
@@ -497,7 +497,7 @@ public class RCTRicohScanner extends ReactContextBaseJavaModule implements IScan
 //                    if (mAlertDialogDisplayed) {
 //                        String activityName = getTopActivityClassName(getPackageName());
 //                        if (activityName == null) {
-//                            activityName = TopActivity.class.getName();
+//                            activityName = ScanMainActivity.class.getName();
 //                        }
 //                        mApplication.hideAlertDialog(ALERT_DIALOG_APP_TYPE_SCANNER, activityName);
 //                        mAlertDialogDisplayed = false;

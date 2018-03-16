@@ -152,9 +152,9 @@ public class SimpleScanStateMachine {
 
     /**
      * メインアクティビティを登録します。
-     * Registers the MainActivity.
+     * Registers the PrintMainActivity.
      *
-     * @param act MainActivity
+     * @param act PrintMainActivity
      */
     public void registActivity(Activity act) {
         mActivity = act;
@@ -254,13 +254,13 @@ public class SimpleScanStateMachine {
 
         /**
          * アクティビティ生成イベント
-         * MainActivity created event
+         * PrintMainActivity created event
          */
         ACTIVITY_CREATED,
 
         /**
          * アクティビティ終了イベント
-         * MainActivity destroyed event
+         * PrintMainActivity destroyed event
          */
         ACTIVITY_DESTROYED,
 

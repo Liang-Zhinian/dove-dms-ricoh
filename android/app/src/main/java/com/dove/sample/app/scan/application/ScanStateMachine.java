@@ -23,8 +23,8 @@ import android.widget.Toast;
 
 import com.dove.sample.app.scan.Const;
 import com.dove.R;
-//import com.dove.MainActivity;
-import com.dove.sample.app.scan.activity.TopActivity;
+//import com.dove.PrintMainActivity;
+import com.dove.sample.app.scan.activity.ScanMainActivity;
 import com.dove.sample.app.scan.activity.PreviewActivity;
 import com.dove.sample.app.scan.application.StorageSettingDataHolder.StorageSendData;
 import com.dove.sample.app.scan.application.StorageSettingDataHolder.StorageStoreData;
@@ -151,9 +151,9 @@ public class ScanStateMachine {
 
     /**
      * メインアクティビティを登録します。
-     * Registers the MainActivity.
+     * Registers the PrintMainActivity.
      *
-     * @param act MainActivity
+     * @param act PrintMainActivity
      */
     public void registActivity(Activity act) {
         mActivity = act;
@@ -253,13 +253,13 @@ public class ScanStateMachine {
 
         /**
          * アクティビティ生成イベント
-         * MainActivity created event
+         * PrintMainActivity created event
          */
         ACTIVITY_CREATED,
 
         /**
          * アクティビティ終了イベント
-         * MainActivity destroyed event
+         * PrintMainActivity destroyed event
          */
         ACTIVITY_DESTROYED,
 
@@ -485,7 +485,7 @@ public class ScanStateMachine {
                 }
                 actShowToastMessage(sm, message);
                 // set application state to normal
-                mApplication.setAppState(TopActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
+                mApplication.setAppState(ScanMainActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
                 actInitJobSetting(sm, prm);
             }
         },

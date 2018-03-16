@@ -8,6 +8,7 @@ package com.dove.sample.app.scan.application;
 import com.dove.BuildConfig;
 import com.dove.RCTFileViewerReactPackage;
 import com.dove.RCTRicohScannerReactPackage;
+import com.dove.sample.app.scan.activity.ScanMainActivity;
 import com.facebook.react.ReactApplication;
 import com.microsoft.codepush.react.CodePush;
 import com.horcrux.svg.SvgPackage;
@@ -26,7 +27,6 @@ import android.os.Handler;
 import com.dove.sample.app.scan.Const;
 import com.dove.R;
 //import com.dove.MainActivity;
-import com.dove.sample.app.scan.activity.TopActivity;
 import com.dove.sample.app.scan.activity.PreviewActivity;
 import com.dove.sample.app.scan.application.ScanStateMachine.ScanEvent;
 import com.dove.sample.function.common.SmartSDKApplication;
@@ -310,7 +310,7 @@ public class ScanSampleApplication extends SmartSDKApplication implements ReactA
 		@Override
 		public void jobCanceled(ScanJobEvent event) {
 		    // set application state to normal
-		    setAppState(TopActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
+		    setAppState(ScanMainActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
 
 		    mStateMachine.procScanEvent(ScanEvent.CHANGE_JOB_STATE_CANCELED);
 		}
@@ -318,7 +318,7 @@ public class ScanSampleApplication extends SmartSDKApplication implements ReactA
 		@Override
 		public void jobCompleted(ScanJobEvent event) {
 		    // set application state to normal
-            setAppState(TopActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
+            setAppState(ScanMainActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
 
             mStateMachine.procScanEvent(ScanEvent.CHANGE_JOB_STATE_COMPLETED);
 		}
@@ -359,11 +359,11 @@ public class ScanSampleApplication extends SmartSDKApplication implements ReactA
             }
             if(isError){
                 // set application state to error
-                setAppState(TopActivity.class.getName(), SmartSDKApplication.APP_STATE_ERROR, jobStateReason.toString(), SmartSDKApplication.APP_TYPE_SCANNER);
+                setAppState(ScanMainActivity.class.getName(), SmartSDKApplication.APP_STATE_ERROR, jobStateReason.toString(), SmartSDKApplication.APP_TYPE_SCANNER);
             }
             else{
                 // set application state to normal
-                setAppState(TopActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
+                setAppState(ScanMainActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
             }
 
 			mStateMachine.procScanEvent(ScanEvent.CHANGE_JOB_STATE_ABORTED, attributes);
@@ -372,7 +372,7 @@ public class ScanSampleApplication extends SmartSDKApplication implements ReactA
 		@Override
 		public void jobProcessing(ScanJobEvent event) {
 		    // set application state to normal
-            setAppState(TopActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
+            setAppState(ScanMainActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
 
             ScanJobAttributeSet attributes = event.getAttributeSet();
 			mStateMachine.procScanEvent(ScanEvent.CHANGE_JOB_STATE_PROCESSING, attributes);
@@ -406,11 +406,11 @@ public class ScanSampleApplication extends SmartSDKApplication implements ReactA
             }
             if(isError){
                 // set application state to error
-                setAppState(TopActivity.class.getName(), SmartSDKApplication.APP_STATE_ERROR, jobStateReason.toString(), SmartSDKApplication.APP_TYPE_SCANNER);
+                setAppState(ScanMainActivity.class.getName(), SmartSDKApplication.APP_STATE_ERROR, jobStateReason.toString(), SmartSDKApplication.APP_TYPE_SCANNER);
             }
             else{
                 // set application state to normal
-                setAppState(TopActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
+                setAppState(ScanMainActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
             }
 
             mStateMachine.procScanEvent(ScanEvent.CHANGE_JOB_STATE_PENDING);
@@ -467,7 +467,7 @@ public class ScanSampleApplication extends SmartSDKApplication implements ReactA
                 }
                 if(isError){
                     // set application state to error
-                    setAppState(TopActivity.class.getName(), SmartSDKApplication.APP_STATE_ERROR, jobStateReason.toString(), SmartSDKApplication.APP_TYPE_SCANNER);
+                    setAppState(ScanMainActivity.class.getName(), SmartSDKApplication.APP_STATE_ERROR, jobStateReason.toString(), SmartSDKApplication.APP_TYPE_SCANNER);
                 }
                 else{
                     // set application state to normal
@@ -475,7 +475,7 @@ public class ScanSampleApplication extends SmartSDKApplication implements ReactA
                         setAppState(PreviewActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
                     }
                     else{
-                        setAppState(TopActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
+                        setAppState(ScanMainActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
                     }
                 }
 
@@ -502,7 +502,7 @@ public class ScanSampleApplication extends SmartSDKApplication implements ReactA
             }
 
             // set application state to normal
-            setAppState(TopActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
+            setAppState(ScanMainActivity.class.getName(), SmartSDKApplication.APP_STATE_NORMAL, SmartSDKApplication.APP_STATE_NORMAL_MSG, SmartSDKApplication.APP_TYPE_SCANNER);
 
             // Unknown job stop reason
             mStateMachine.procScanEvent(ScanEvent.CHANGE_JOB_STATE_STOPPED_OTHER, "(unknown reason)");
