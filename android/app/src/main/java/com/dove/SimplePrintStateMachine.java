@@ -725,6 +725,7 @@ public class SimplePrintStateMachine {
             /* 省エネロック */
             if (!mApplication.lockPowerMode()) {
                 Log.d(Const.TAG, PREFIX + "lockPowerMode failed. start after lock");
+                // todo: to be implemented
 //                mAfterPowerModeLock = new AfterPowerModeLock(mApplication);
 //                mAfterPowerModeLock.start();
             }
