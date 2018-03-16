@@ -209,7 +209,7 @@ export const createDocumentWithProgressSOAP = (sid: string, document: string, co
                 responseJson = filterFault(responseJson);
 
 
-                resolve(xhr.response)
+                resolve(responseJson.Body.createResponse.document)
             } catch (reason) {
                 reject(reason)
             }

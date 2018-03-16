@@ -62,7 +62,6 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 
-
 /**
  * Created by Administrator on 2017/12/8.
  */
@@ -80,7 +79,7 @@ public class RCTRicohScanner extends ReactContextBaseJavaModule implements IScan
     private DestinationSettingDataHolder mDestinationSettingDataHolder;
     private ScanSettingDataHolder mScanSettingDataHolder;
     private StorageSettingDataHolder mStorageSettingDataHolder;
-//    private SimpleScanStateMachine mStateMachine;
+    //    private SimpleScanStateMachine mStateMachine;
 //    private SystemStateMonitor mSystemStateMonitor;
     protected int scannedPages;
     protected int timeOfWaitingNextOriginal = 0;

@@ -11,19 +11,27 @@ import {
     Platform,
     StyleSheet,
     Text,
+    TextInput,
     View,
     TouchableOpacity,
     DeviceEventEmitter,
     ScrollView,
+    Button,
 } from 'react-native';
 import { connect } from 'react-redux'
 import { NAME } from '../constants'
 import RicohScannerAndroid from '../../../components/RCTRicohScannerAndroid';
 import * as actions from '../actions';
 import Base64 from '../lib/Base64';
+import {
+    ComponentStyles,
+    CommonStyles,
+    colors,
+    StyleConfig,
+} from '../styles';
 
-function alert(msg) {
-    Alert.alert('Scan Module', msg, [{ text: 'OK', onPress: () => console.log('OK Pressed') },], { cancelable: false });
+function alert(title, msg) {
+    Alert.alert(title, msg, [{ text: 'OK', onPress: () => console.log('OK Pressed') },], { cancelable: false });
 }
 
 class Scan extends Component<{}> {
@@ -45,6 +53,7 @@ class Scan extends Component<{}> {
             folderId: null,
             fileName: '',
             isEditMode: false,
+            uploadButtonText: 'Upload'
         };
     }
 
@@ -52,27 +61,21 @@ class Scan extends Component<{}> {
         var that = this;
 
         DeviceEventEmitter.addListener('ConnectStateUpdated', function (e) {
-            // alert("ConnectStateUpdated event listener success" + e.stateLabel);
             that.setState({ connectState: e.stateLabel });
         });
         DeviceEventEmitter.addListener('ScanServiceAttributeUpdated', function (e) {
-            // alert("ScanServiceAttributeUpdated event listener success" + e.stateLabel);
             that.setState({ scanServiceAttributeState: e.stateLabel });
         });
         DeviceEventEmitter.addListener('ScanJobStateUpdated', function (e) {
-            // alert("ScanJobStateUpdated event listener success" + e.stateLabel);
             that.setState({ scanJobState: e.stateLabel });
         });
         DeviceEventEmitter.addListener('ScanServiceAttributeListenerErrorUpdated', function (e) {
-            // alert("ScanJobStateUpdated event listener success" + e.stateLabel);
             that.setState({ scanServiceAttributeListenerError: e.stateLabel });
         });
         DeviceEventEmitter.addListener('ScanJobListenerErrorUpdated', function (e) {
-            // alert("ScanJobStateUpdated event listener success" + e.stateLabel);
             that.setState({ scanJobListenerError: e.stateLabel });
         });
         DeviceEventEmitter.addListener('ScannedImageUpdated', function (e) {
-            // alert("ScanJobStateUpdated event listener success" + e.stateLabel);
             that.setState({ scannedImage: e.stateLabel });
             console.log(e.stateLabel);
             if (e.stateLabel != null && e.stateLabel !== '') {
@@ -89,36 +92,48 @@ class Scan extends Component<{}> {
         const { navigate, state } = this.props.navigation;
         that.setState({ 'folderId': state.params.folderId })
     }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.progress < 1 && nextProps.progress == 1) {
+            this.setState({ uploadButtonText: 'Upload' });
+            alert('Upload document', 'Upload done.');
+        }
+    }
+
     render() {
         let { progress } = this.props;
         return (
-            <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }} style={styles.container}>
-                <Text style={styles.title}>
+            <ScrollView style={{ padding: 20 }}>
+                {/* <Text style={styles.title}>
                     Scan
-                </Text>
-                <TouchableOpacity onPress={this.restore.bind(this)}>
-                    <Text style={styles.scanButton}>Restore</Text>
+                </Text> */}
+                {this.renderSpacer()}
+                <TouchableOpacity onPress={this.restore.bind(this)} style={styles.button}>
+                    <Text style={styles.buttonFont}>Restore</Text>
                 </TouchableOpacity>
+                {this.renderSpacer()}
 
-                <TouchableOpacity onPress={this.scan.bind(this)}>
-                    <Text style={styles.scanButton}>Scan</Text>
+                <TouchableOpacity onPress={this.scan.bind(this)} style={styles.button}>
+                    <Text style={styles.buttonFont}>Scan</Text>
                 </TouchableOpacity>
+                {this.renderSpacer()}
 
-                <View style={{ flex: 1, flexDirection: 'column' }}>
+                <View style={{ flex: 1, flexDirection: 'row' }}>
                     <TextInput
                         ref="txtFileName"
                         blurOnSubmit={true}
-                        underlineColorAndroid={'transparent'}
                         onChangeText={(fileName) => this.setState({ fileName })}
                         value={this.state.fileName}
                         autoCapitalize='none'
                         editable={this.state.isEditMode}
-                    /* secureTextEntry={true} */
+                        underlineColorAndroid={'transparent'}
+                        style={styles.textInput}
                     />
-                    <TouchableOpacity onPress={this.doUpload.bind(this)}>
-                        <Text style={styles.scanButton}>Upload {Math.floor((progress / 100) * 10000)}%</Text>
+                    <TouchableOpacity onPress={this.doUpload.bind(this)} style={[styles.button, { width: 200, marginLeft: 10 }]}>
+                        <Text style={styles.buttonFont}>{this.state.uploadButtonText}</Text>
                     </TouchableOpacity>
                 </View>
+                {this.renderSpacer()}
 
                 {/* <TouchableOpacity onPress={this.doUpload2.bind(this)}>
                     <Text style={styles.scanButton}>Start uploading 2 {Math.floor((progress / 100) * 10000)}%</Text>
@@ -127,9 +142,11 @@ class Scan extends Component<{}> {
                 <Text style={styles.title}>Connection State: {this.state.connectState}</Text>
                 <Text style={styles.title}>Scan Job State: {this.state.scanJobState}</Text>
                 <Text style={styles.title}>Scan Service Attribute State: {this.state.scanServiceAttributeState}</Text>
-                <Text style={styles.title}>Scan Job Attribute Listener Error: {this.state.scanServiceAttributeListenerError}</Text>
-                <Text style={styles.title}>Scan Job Listener Error: {this.state.scanJobListenerError}</Text>
-                {/* <Text style={styles.title}>Scanned Image: {this.state.scannedImage}</Text> */}
+                {this.state.scanServiceAttributeListenerError 
+                    && <Text style={styles.title}>Scan Job Attribute Listener Error: {this.state.scanServiceAttributeListenerError}</Text>}
+                {this.state.scanJobListenerError 
+                    && <Text style={styles.title}>Scan Job Listener Error: {this.state.scanJobListenerError}</Text>}
+                {this.state.scannedImage && <Text style={styles.title}>Scanned Image: {this.state.scannedImage}</Text>}
 
                 {/* <Image
 					style={[{ width: this.state.layout.width - 50, }]}
@@ -142,6 +159,10 @@ class Scan extends Component<{}> {
     }
 
     scan() {
+        if (!this.isReady()) {
+            alert('Scan', 'Please wait for the scan service to be ready.');
+            return;
+        }
 
         RicohScannerAndroid.start()
             .then((msg) => {
@@ -172,7 +193,17 @@ class Scan extends Component<{}> {
     }
 
     doUpload() {
-        if (!this.state.isEditMode) return;
+        if (!this.state.isEditMode) {
+            alert('Upload document', 'Please wait for the scan operation to be done.');
+            return;
+        }
+
+        if (!this.state.fileName) {
+            alert('Upload document', 'Please input a file name.');
+            return;
+        }
+
+        // this.setState({ uploadButtonText: 'Uploading' });
 
         const { sid, username, password, navigation } = this.props;
         let name = this.state.fileName;
@@ -191,9 +222,36 @@ class Scan extends Component<{}> {
         try {
             const data = this.state.scannedImage;
             upload(sid, document, data);
+
+            this.setState({
+                scanJobState: '',
+                scanServiceAttributeListenerError: '',
+                scanJobListenerError: '',
+                scannedImage: '',
+                fileName: '',
+                isEditMode: false,
+            });
         } catch (error) {
-            this.setState({ scanJobListenerError: error.message });
+            alert('Upload document', error.message);
+            this.setState({
+                scanJobState: '',
+                scanServiceAttributeListenerError: '',
+                scanJobListenerError: '',
+                scannedImage: '',
+                fileName: '',
+                isEditMode: false,
+            });
         }
+    }
+
+    renderSpacer() {
+        return (
+            <View style={styles.spacer}></View>
+        )
+    }
+
+    isReady() {
+        return this.state.connectState == 'CONNECTED' && this.state.scanServiceAttributeState == 'Ready';
     }
 }
 
@@ -231,8 +289,28 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         margin: 10,
     },
-    scanButton: {
-        color: "green",
+    buttonFont: {
+        color: "white",
         fontSize: 17
+    },
+    spacer: {
+        height: 10,
+    },
+    button: {
+        height: 50,
+        // marginLeft: 30,
+        // marginRight: 30,
+        backgroundColor: '#18B4FF',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+    },
+    textInput: {
+        flex: 1,
+        borderWidth: 1,
+        marginLeft: 5,
+        paddingLeft: 5,
+        borderColor: '#ccc',
+        borderRadius: 4
     },
 });

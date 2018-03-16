@@ -65,9 +65,10 @@ export const upload = (sid: string, document: any, content: string): ActionAsync
         // if (percent === 1)
         //   dispatch(doneUploading());
       })
-      .then(([response, responseText]) => {
+      .then(newDoc => {
         // debugger;
-        console.log(response);
+        console.log(newDoc);
+        alert('Upload document', 'New document was uploaded at ' + newDoc.creation);
 
         dispatch(doneUploading());
       })

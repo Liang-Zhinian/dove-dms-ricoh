@@ -95,7 +95,7 @@ const HomeStack = StackNavigator(
         CheckedoutReport,
         LockedReport,
         RepositoryUsage,
-        Scan,
+        // Scan,
         Splash,
         Registration,
     },
