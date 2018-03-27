@@ -17,6 +17,7 @@ const {
     Upload,
     FileViewer,
     Scan,
+    Print,
 } = Routes; 
 
 export default ExplorerStack = StackNavigator({
@@ -25,6 +26,7 @@ export default ExplorerStack = StackNavigator({
     Upload,
     FileViewer,
     Scan,
+    Print,
 }, {
         headerMode: 'screen',
         // initialRouteName: 'Explorer',

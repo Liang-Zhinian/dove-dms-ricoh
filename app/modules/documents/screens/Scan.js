@@ -94,67 +94,53 @@ class Scan extends Component<{}> {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.progress < 1 && nextProps.progress == 1) {
-            this.setState({ uploadButtonText: 'Upload' });
-            alert('Upload document', 'Upload done.');
-        }
+        // if (this.props.progress < 1 && nextProps.progress == 1) {
+        //     this.setState({ uploadButtonText: 'Upload' });
+        //     alert('Upload document', 'Upload done.');
+        // }
     }
 
     render() {
         let { progress } = this.props;
         return (
-            <ScrollView style={{ padding: 20 }}>
-                {/* <Text style={styles.title}>
-                    Scan
-                </Text> */}
-                {this.renderSpacer()}
-                <TouchableOpacity onPress={this.restore.bind(this)} style={styles.button}>
-                    <Text style={styles.buttonFont}>Restore</Text>
-                </TouchableOpacity>
-                {this.renderSpacer()}
+            <View>
+                <ScrollView style={{ padding: 20 }}>
+                    <View>
+                        <TouchableOpacity onPress={this.restore.bind(this)} style={styles.button}>
+                            <Text style={styles.buttonFont}>Restore</Text>
+                        </TouchableOpacity>
+                        {this.renderSpacer()}
 
-                <TouchableOpacity onPress={this.scan.bind(this)} style={styles.button}>
-                    <Text style={styles.buttonFont}>Scan</Text>
-                </TouchableOpacity>
-                {this.renderSpacer()}
+                        <TouchableOpacity onPress={this.scan.bind(this)} style={styles.button}>
+                            <Text style={styles.buttonFont}>Scan</Text>
+                        </TouchableOpacity>
+                        {this.renderSpacer()}
 
-                <View style={{ flex: 1, flexDirection: 'row' }}>
-                    <TextInput
-                        ref="txtFileName"
-                        blurOnSubmit={true}
-                        onChangeText={(fileName) => this.setState({ fileName })}
-                        value={this.state.fileName}
-                        autoCapitalize='none'
-                        editable={this.state.isEditMode}
-                        underlineColorAndroid={'transparent'}
-                        style={styles.textInput}
-                    />
-                    <TouchableOpacity onPress={this.doUpload.bind(this)} style={[styles.button, { width: 200, marginLeft: 10 }]}>
-                        <Text style={styles.buttonFont}>{this.state.uploadButtonText}</Text>
-                    </TouchableOpacity>
-                </View>
-                {this.renderSpacer()}
+                        <View style={{ flex: 1, flexDirection: 'row' }}>
+                            <TextInput
+                                ref="txtFileName"
+                                blurOnSubmit={true}
+                                onChangeText={(fileName) => this.setState({ fileName })}
+                                value={this.state.fileName}
+                                autoCapitalize='none'
+                                editable={this.state.isEditMode}
+                                underlineColorAndroid={'transparent'}
+                                style={styles.textInput}
+                            />
+                            <TouchableOpacity onPress={this.doUpload.bind(this)} style={[styles.button, { width: 200 }]}>
+                                <Text style={styles.buttonFont}>Upload</Text>
+                            </TouchableOpacity>
+                        </View>
+                        {this.renderSpacer()}
 
-                {/* <TouchableOpacity onPress={this.doUpload2.bind(this)}>
-                    <Text style={styles.scanButton}>Start uploading 2 {Math.floor((progress / 100) * 10000)}%</Text>
-                </TouchableOpacity> */}
+                        <Text style={styles.title}>Connection State: {this.state.connectState}</Text>
+                        <Text style={styles.title}>Scan Job State: {this.state.scanJobState}</Text>
+                        <Text style={styles.title}>Scan Service Attribute State: {this.state.scanServiceAttributeState}</Text>
+                        <Text style={styles.title}>Scanned Image: {this.state.scannedImage}</Text>
 
-                <Text style={styles.title}>Connection State: {this.state.connectState}</Text>
-                <Text style={styles.title}>Scan Job State: {this.state.scanJobState}</Text>
-                <Text style={styles.title}>Scan Service Attribute State: {this.state.scanServiceAttributeState}</Text>
-                {this.state.scanServiceAttributeListenerError 
-                    && <Text style={styles.title}>Scan Job Attribute Listener Error: {this.state.scanServiceAttributeListenerError}</Text>}
-                {this.state.scanJobListenerError 
-                    && <Text style={styles.title}>Scan Job Listener Error: {this.state.scanJobListenerError}</Text>}
-                {this.state.scannedImage && <Text style={styles.title}>Scanned Image: {this.state.scannedImage}</Text>}
-
-                {/* <Image
-					style={[{ width: this.state.layout.width - 50, }]}
-					resizeMode={Image.resizeMode.contain}
-					source={{uri:'file://'+this.state.scannedImage}}
-				/> */}
-
-            </ScrollView>
+                    </View>
+                </ScrollView>
+            </View>
         );
     }
 

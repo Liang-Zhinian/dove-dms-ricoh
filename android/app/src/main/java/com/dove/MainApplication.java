@@ -47,7 +47,8 @@ public class MainApplication extends SmartSDKApplication implements ReactApplica
                     new RCTFileViewerReactPackage(),
                     new RCTRicohScannerReactPackage(),
                     new RCTRicohAuthReactPackage(),
-                    new RCTToastReactPackage()
+                    new RCTToastReactPackage(),
+                    new RCTRicohPrinterReactPackage()
             );
         }
 

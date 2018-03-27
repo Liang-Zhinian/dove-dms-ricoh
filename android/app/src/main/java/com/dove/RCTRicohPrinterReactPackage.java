@@ -18,7 +18,7 @@ public class RCTRicohPrinterReactPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         //Registering the module.
-        return Arrays.<NativeModule>asList(new RCTRicohPrinter(reactContext));
+        return Arrays.<NativeModule>asList(new RCTRicohPrinterModule(reactContext));
     }
 
     @Override

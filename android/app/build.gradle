@@ -99,14 +99,14 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "com.dove"
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 25
         versionCode 1
         versionName "1.08.00"
         ndk {
@@ -165,11 +165,11 @@ dependencies {
     compile project(':react-native-doc-viewer')
     compile project(':react-native-vector-icons')
     compile fileTree(dir: "libs", include: ["*.jar"])
-    compile "com.android.support:appcompat-v7:25.0.2"
+    compile "com.android.support:appcompat-v7:25.4.0"
     compile "com.facebook.react:react-native:+"  // From node_modules
     compile "com.android.support:multidex:1.0.0"
     compile 'org.apache.httpcomponents:httpcore:4.4.2'
-    compile 'com.android.support:support-v4:25.0.2'
+    compile 'com.android.support:support-v4:25.4.0'
     compile files('libs/jsonic-1.3.0.jar')
     compile files('libs/CustomAuthFramework.jar')
     compile files('libs/SDKService.jar')

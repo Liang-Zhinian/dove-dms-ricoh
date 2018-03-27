@@ -7,9 +7,11 @@ package com.dove.sample.app.print.activity;
 
 import android.content.Context;
 
+import com.dove.PrintApplicationWrapper;
 import com.dove.R;
-import com.dove.sample.app.print.application.PrintSampleApplication;
+//import com.dove.sample.app.print.application.PrintSampleApplication;
 import com.dove.sample.app.print.application.PrintSettingSupportedHolder;
+import com.dove.sample.function.common.SmartSDKApplication;
 import com.dove.sample.function.print.PrintFile;
 import com.dove.sample.function.print.PrintFile.PDL;
 import com.dove.sample.function.print.attribute.standard.Staple;
@@ -94,9 +96,10 @@ public class StapleUtil{
      */
     public static List<Staple> getSelectableStapleList(Context context){
 
-        PrintSampleApplication app = (PrintSampleApplication)((PrintMainActivity)context).getApplication();
+//        PrintSampleApplication app = (PrintSampleApplication)((PrintMainActivity)context).getApplication();
+        PrintApplicationWrapper app = ((SimplePrintMainActivity)context).getmApplication();
         Map<PDL, PrintSettingSupportedHolder> supportedMap = app.getSettingSupportedDataHolders();
-        PrintFile.PDL currentPDL = ((PrintMainActivity)context).getSettingHolder().getSelectedPDL();
+        PrintFile.PDL currentPDL = ((SimplePrintMainActivity)context).getSettingHolder().getSelectedPDL();
 
         if(null == currentPDL){
             return null;

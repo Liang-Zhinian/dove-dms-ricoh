@@ -88,6 +88,13 @@ public class PrintSettingDataHolder {
         return printfile;
     }
 
+    public PrintFile getPrintFile() throws PrintException {
+        PrintFile printfile = null;
+
+        printfile = (new PrintFile.Builder()).printerFilePath(mSelectedPrintAssetFileName).pdl(mSelectedPDL).build();
+        return printfile;
+    }
+
     /**
      * 現在の設定値からプリント要求用の属性セットを生成します。
      * Create Print request attribute set from current print settings.

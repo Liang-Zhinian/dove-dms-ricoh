@@ -7,8 +7,9 @@ package com.dove.sample.app.print.activity;
 import android.content.Context;
 import android.content.res.Resources;
 
+import com.dove.PrintApplicationWrapper;
 import com.dove.R;
-import com.dove.sample.app.print.application.PrintSampleApplication;
+//import com.dove.sample.app.print.application.PrintSampleApplication;
 import com.dove.sample.app.print.application.PrintSettingSupportedHolder;
 import com.dove.sample.function.print.PrintFile;
 import com.dove.sample.function.print.attribute.standard.PrintColor;
@@ -20,7 +21,7 @@ import java.util.Map;
  * 印刷カラー指定に関連する処理をまとめたクラスです。
  * Print color utility class
  */
-class PrintColorUtil{
+public class PrintColorUtil{
 
     /**
      * 印刷カラーの設定値から表示文字を取得します。
@@ -101,10 +102,11 @@ class PrintColorUtil{
      * @return 設定可能な色を示すPrintColorオブジェクトのリスト
      *         List of supported ScanColor objects.
      */
-    static List<PrintColor> getSelectablePrintColorList(Context context){
-        PrintSampleApplication app = (PrintSampleApplication)context.getApplicationContext();
+    public static List<PrintColor> getSelectablePrintColorList(Context context){
+//        PrintSampleApplication app = (PrintSampleApplication)((PrintMainActivity)context).getApplication();
+        PrintApplicationWrapper app = ((SimplePrintMainActivity)context).getmApplication();
         Map<PrintFile.PDL, PrintSettingSupportedHolder> supportedMap = app.getSettingSupportedDataHolders();
-        PrintFile.PDL currentPDL = ((PrintMainActivity)context).getSettingHolder().getSelectedPDL();
+        PrintFile.PDL currentPDL = ((SimplePrintMainActivity)context).getSettingHolder().getSelectedPDL();
 
         if(null == currentPDL){
             return null;

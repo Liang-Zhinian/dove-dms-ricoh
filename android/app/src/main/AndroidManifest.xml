@@ -50,7 +50,7 @@
         </activity>
 
         <activity
-            android:name=".SimpleActivity"
+            android:name="com.dove.sample.app.print.activity.SimplePrintMainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:label="@string/app_name"
@@ -67,46 +67,46 @@
 
         </activity>
 
-        <activity
+
+        <!--
+        <acitivity
             android:name=".sample.app.addressbook.AddressBookSampleMainActivity"
-            android:configChanges=
-                "mcc|mnc|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|layoutDirection|fontScale"
+            android:configChanges="mcc|mnc|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|layoutDirection|fontScale"
             android:exported="true"
             android:label="@string/app_name"
-            android:launchMode="singleTop">
-        </activity>
-<!--
-        <activity
-            android:nacom.dove.sample.app.scan.activity.ScanMainActivityivityvity"
-            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|layoutDirection|fontScale"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:launchMode="singleTop">
-        </activity>
+            androd:launchMode="singleTop"></activity>
 
-        <activity
-            android:name="com.dove.sample.app.scan.activity.AddressActivity"
-            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|layoutDirection|fontScale"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:launchMode="singleTop"
-            android:theme="@style/no_line_dialog" />
+                <activity
+                    android:name="om.dove.sample.app.scan.activity.ScanMainActivityivityvity"
+                    android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|layoutDirection|fontScale"
+                    android:exported="true"
+                    android:label="@string/app_name"
+                    android:launchMode="singleTop">
+                </activity>
 
-        <activity
-            android:name="com.dove.sample.app.scan.activity.StorageActivity"
-            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|layoutDirection|fontScale"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:launchMode="singleTop"
-            android:theme="@style/no_line_dialog" />
+                <activity
+                    android:name="com.dove.sample.app.scan.activity.AddressActivity"
+                    android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|layoutDirection|fontScale"
+                    android:exported="true"
+                    android:label="@string/app_name"
+                    android:launchMode="singleTop"
+                    android:theme="@style/no_line_dialog" />
 
-        <activity
-            android:name="com.dove.sample.app.scan.activity.PreviewActivity"
-            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|layoutDirection|fontScale"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:launchMode="singleTop" />
--->
+                <activity
+                    android:name="com.dove.sample.app.scan.activity.StorageActivity"
+                    android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|layoutDirection|fontScale"
+                    android:exported="true"
+                    android:label="@string/app_name"
+                    android:launchMode="singleTop"
+                    android:theme="@style/no_line_dialog" />
+
+                <activity
+                    android:name="com.dove.sample.app.scan.activity.PreviewActivity"
+                    android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|layoutDirection|fontScale"
+                    android:exported="true"
+                    android:label="@string/app_name"
+                    android:launchMode="singleTop" />
+        -->
     </application>
 
 </manifest>

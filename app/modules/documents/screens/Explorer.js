@@ -41,7 +41,7 @@ import DocumentList from './components/DocumentList';
 import FileViewerAndroid from '../../../components/RCTFileViewerAndroid';
 import Spinner from '../../../components/Spinner';
 import { alert } from '../lib/alert';
-import { default as Toast } from '../../../components/RCTToatModuleAndroid';
+import { default as Toast } from '../../../components/RCTToastModuleAndroid';
 
 function isExpired(expires_date) {
   let currentTime = new Date();
@@ -664,6 +664,49 @@ class Explorer extends Component {
 
   }
 
+  _onPrintButtonPressed = () => {
+    const that = this;
+    const doc = that.state.selectedList[0];
+    that.props.updateDownloadStatus(true);
+    that.setState({
+      //progressBarVisible: true,
+      progress: 0,
+      docId: doc.id,
+    });
+    const { fileName, type, fileSize } = doc;
+    const { sid, navigation: { navigate } } = that.props;
+
+    DocumentService.downloadToCacheDirectory(sid, doc, that.updateProgress, that.resetDownloadTask)
+    .then(man => {
+      that.downloadManger = man;
+      that.downloadManger.onCanceled = that.resetDownloadTask;
+      that.downloadManger.onProgress = (received, total) => { that.updateProgress(received, fileSize) };
+
+      return man.task;
+    })
+    .then(task => { return task.path() })
+    .then((path) => {
+      if (!path) return;
+      // the temp file path
+      console.log('The file saved to ', path);
+      
+      that.resetDownloadTask();
+
+      navigate('Print', { filePath: path });
+    })
+    .catch((err) => {
+      that.resetDownloadTask();
+      if (err.message === 'cancelled') return;
+      console.log(err);
+      // Toast.show(err.message, Toast.SHORT);
+
+      alert('Print', err.message);
+    });
+    
+      
+
+  }
+
   onFolderCreationOK = () => {
     const that = this,
       { folderName, folderId } = that.state,
@@ -677,7 +720,7 @@ class Explorer extends Component {
         that.setState({ folderCreationModalVisible: false });
         that.fetchData();
       })
-      .catch(reason=>{
+      .catch(reason => {
         alert('Create folder', reason.message);
       })
   }
@@ -791,6 +834,14 @@ class Explorer extends Component {
             onPress={() => { this._onDeleteButtonPressed(); }}
           >
             <Text style={{ color: 'red', fontSize: 20 }}>{`Delete${this.state.selectedList.length > 0 ? '(' + this.state.selectedList.length + ')' : ''}`}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{ marginRight: 20, justifyContent: 'center' }}
+            accessibilityLabel='print'
+            onPress={this.selectionContainsFolders() ? null : this._onPrintButtonPressed}
+          >
+            <Text style={{ color: this.selectionContainsFolders() ? 'grey' : colors.primary, fontSize: 20 }}>{`Print${this.state.selectedList.length > 0 ? '(' + this.state.selectedList.length + ')' : ''}`}</Text>
           </TouchableOpacity>
 
         </View>

@@ -5,12 +5,9 @@ export const NAME = 'Documents'
 //action types
 export const SAVE_ACCOUNT = `${NAME}/SAVE_ACCOUNT`;
 export const LOGIN = `${NAME}/LOGIN`;
+export const LOGOUT = `${NAME}/LOGOUT`;
 export const RENEW = `${NAME}/RENEW`;
 export const VALID = `${NAME}/VALID`;
-// export const GET_CONTENT = `${NAME}/GET_CONTENT`;
-// export const CHOOSE_DOCUMENT = `${NAME}/CHOOSE_DOCUMENT`;
-// export const CHOOSE_FILE = `${NAME}/CHOOSE_FILE`;
-// export const RELOADED = `${NAME}/RELOADED`;
 
 export const CHANGING_FOLDER = `${NAME}/CHANGING_FOLDER`;
 export const DONE_CHANGING_FOLDER = `${NAME}/DONE_CHANGING_FOLDER`;

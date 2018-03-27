@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions';
 import moment from 'moment';
-import { SAVE_ACCOUNT, LOGIN, RENEW, VALID } from '../constants'
+import { SAVE_ACCOUNT, LOGIN, LOGOUT, RENEW, VALID } from '../constants'
 import { loginSOAP, validSOAP, renewSOAP } from '../api'
 
 
@@ -46,6 +46,29 @@ export const login = (username: string, password: string): ActionAsync => {
               sid,
               expires_date,
             },
+          }
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: 'ERROR',
+          error
+        })
+      })
+  }
+}
+
+export const logout = (sid: string): ActionAsync => {
+  return (dispatch, getState) => {
+
+    logoutSOAP(sid)
+      .then(result => {
+        dispatch({
+          type: LOGOUT,
+          payload: {
+            token: { sid: null, expires_date: null },
+            username: null,
+            password: null,
           }
         });
       })

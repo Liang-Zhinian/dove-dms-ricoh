@@ -6,10 +6,12 @@ import android.content.res.Resources;
 import com.dove.sample.app.scan.application.DestinationSettingDataHolder;
 import com.dove.sample.app.scan.application.ScanSettingDataHolder;
 import com.dove.sample.app.scan.application.StorageSettingDataHolder;
+import com.dove.sample.function.common.SmartSDKApplication;
 import com.dove.sample.function.print.PrintJob;
 import com.dove.sample.function.scan.ScanJob;
 
 public interface IPrintApplication {
+    public abstract SmartSDKApplication getSSDKApplication();
     public abstract int getTimeOfWaitingNextOriginal();
     public abstract void setAppState(String activityName, int state, String errMessage, int appType);
     public abstract void initJobSetting();

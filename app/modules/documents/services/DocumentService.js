@@ -15,7 +15,7 @@ import {
 } from '../api';
 import XMLParser from '../lib/XMLParser';
 import Base64 from '../lib/Base64';
-import { default as Toast } from '../../../components/RCTToatModuleAndroid';
+import { default as Toast } from '../../../components/RCTToastModuleAndroid';
 
 
 const toJson = (xmlString) => {

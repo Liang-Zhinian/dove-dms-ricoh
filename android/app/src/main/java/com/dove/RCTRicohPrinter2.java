@@ -6,30 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.Looper;
-import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.dove.sample.app.print.Const;
 import com.dove.sample.app.print.activity.DialogUtil;
 import com.dove.sample.app.print.activity.PrintColorUtil;
-//import com.dove.sample.app.print.activity.PrintMainActivity;
-//import com.dove.sample.app.print.activity.SimplePrintMainActivity;
-//import com.dove.sample.app.print.activity.SimplePrintServiceAttributeListenerImpl;
-//import com.dove.sample.app.print.activity.PrintMainActivity;
-//import com.dove.sample.app.print.activity.PrintServiceAttributeListenerImpl;
 import com.dove.sample.app.print.activity.StapleUtil;
-//import com.dove.sample.app.print.application.PrintSampleApplication;
-//import com.dove.sample.app.print.application.PrintSampleApplication;
-import com.dove.sample.app.print.application.PrintSampleApplication;
 import com.dove.sample.app.print.application.PrintSettingDataHolder;
 import com.dove.sample.app.print.application.PrintSettingSupportedHolder;
-//import com.dove.sample.app.print.application.PrintStateMachine;
-//import com.dove.sample.app.print.application.PrintStateMachine;
 import com.dove.sample.app.print.application.SystemStateMonitor;
 import com.dove.sample.function.common.SmartSDKApplication;
 import com.dove.sample.function.common.impl.AsyncConnectState;
@@ -51,8 +38,6 @@ import com.dove.sample.function.print.event.PrintJobAttributeEvent;
 import com.dove.sample.function.print.event.PrintJobAttributeListener;
 import com.dove.sample.function.print.event.PrintServiceAttributeEvent;
 import com.dove.sample.function.print.event.PrintServiceAttributeListener;
-import com.dove.sample.wrapper.common.BinaryResponseBody;
-import com.dove.sample.wrapper.common.Response;
 import com.dove.sample.wrapper.common.Utils;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -63,24 +48,29 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
-import org.json.JSONException;
-
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
 
+//import com.dove.sample.app.print.activity.PrintMainActivity;
+//import com.dove.sample.app.print.activity.SimplePrintMainActivity;
+//import com.dove.sample.app.print.activity.SimplePrintServiceAttributeListenerImpl;
+//import com.dove.sample.app.print.activity.PrintMainActivity;
+//import com.dove.sample.app.print.activity.PrintServiceAttributeListenerImpl;
+//import com.dove.sample.app.print.application.PrintSampleApplication;
+//import com.dove.sample.app.print.application.PrintSampleApplication;
+//import com.dove.sample.app.print.application.PrintStateMachine;
+//import com.dove.sample.app.print.application.PrintStateMachine;
+
 
 /**
  * Created by Administrator on 2017/12/8.
  */
 
-public class RCTRicohPrinter extends ReactContextBaseJavaModule implements IPrintApplication {
+public class RCTRicohPrinter2 extends ReactContextBaseJavaModule implements IPrintApplication {
     private final static String PREFIX = "rectmodule:RicohPrinter:";
 
     private SmartSDKApplication mApplication;
@@ -123,7 +113,7 @@ public class RCTRicohPrinter extends ReactContextBaseJavaModule implements IPrin
         this.mIsWinShowing = mIsWinShowing;
     }
 
-    public RCTRicohPrinter(ReactApplicationContext reactContext) {
+    public RCTRicohPrinter2(ReactApplicationContext reactContext) {
         super(reactContext);
     }
 
@@ -478,7 +468,7 @@ public class RCTRicohPrinter extends ReactContextBaseJavaModule implements IPrin
         protected Boolean doInBackground(Void... params) {
             boolean needsRequest = false;
 
-            int powerMode = RCTRicohPrinter.this.getSystemStateMonitor().getPowerMode();
+            int powerMode = RCTRicohPrinter2.this.getSystemStateMonitor().getPowerMode();
             Log.d(Const.TAG, PREFIX + "getPowerMode=" + powerMode);
 
             if (powerMode != SystemStateMonitor.POWER_MODE_NORMAL_STANDBY) {
@@ -487,7 +477,7 @@ public class RCTRicohPrinter extends ReactContextBaseJavaModule implements IPrin
 
             Boolean result = Boolean.FALSE;
             if (needsRequest) {
-                result = ((SmartSDKApplication) RCTRicohPrinter.this.getCurrentActivity().getApplication()).controllerStateRequest(
+                result = ((SmartSDKApplication) RCTRicohPrinter2.this.getCurrentActivity().getApplication()).controllerStateRequest(
                         SmartSDKApplication.REQUEST_CONTROLLER_STATE_NORMAL_STANDBY);
             }
             return result;
@@ -702,7 +692,7 @@ public class RCTRicohPrinter extends ReactContextBaseJavaModule implements IPrin
         String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
 
         //(2)
-        Set<PrintFile.PDL> pdlList = RCTRicohPrinter.this.getSettingSupportedDataHolders().keySet();
+        Set<PrintFile.PDL> pdlList = RCTRicohPrinter2.this.getSettingSupportedDataHolders().keySet();
 
         //(3)
         if (ext.equals(this.getCurrentActivity().getString(R.string.file_extension_PDF))
@@ -751,7 +741,7 @@ public class RCTRicohPrinter extends ReactContextBaseJavaModule implements IPrin
         //(2)
         Set<Class<? extends PrintRequestAttribute>> categories;
         Map<PrintFile.PDL, PrintSettingSupportedHolder> supportedHolderMap =
-                RCTRicohPrinter.this.getSettingSupportedDataHolders();
+                RCTRicohPrinter2.this.getSettingSupportedDataHolders();
         categories = supportedHolderMap.get(mHolder.getSelectedPDL()).getSelectableCategories();
 
         if (null == categories) {
@@ -903,7 +893,7 @@ public class RCTRicohPrinter extends ReactContextBaseJavaModule implements IPrin
                 if (supportedPDL == null) return null;
 
                 for (PrintFile.PDL pdl : supportedPDL) {
-                    RCTRicohPrinter.this
+                    RCTRicohPrinter2.this
                             .putPrintSettingSupportedHolder(pdl,
                                     new PrintSettingSupportedHolder(printService, pdl));
                 }
@@ -1081,7 +1071,7 @@ public class RCTRicohPrinter extends ReactContextBaseJavaModule implements IPrin
 
                 if (mLastErrorLevel == null) {
                     // Normal -> Error
-                    if (isForegroundApp(RCTRicohPrinter.this.getPackageName())) {
+                    if (isForegroundApp(RCTRicohPrinter2.this.getPackageName())) {
                         mApplication.displayAlertDialog(ALERT_DIALOG_APP_TYPE_PRINTER, stateString, reasonString);
                         mAlertDialogDisplayed = true;
                     }
@@ -1097,7 +1087,7 @@ public class RCTRicohPrinter extends ReactContextBaseJavaModule implements IPrin
                 if (mLastErrorLevel != null) {
                     // Error -> Normal
                     if (mAlertDialogDisplayed) {
-                        String activityName = getTopActivityClassName(RCTRicohPrinter.this.getPackageName());
+                        String activityName = getTopActivityClassName(RCTRicohPrinter2.this.getPackageName());
                         if (activityName == null) {
                             activityName = MainActivity.class.getName();
                         }
@@ -1162,7 +1152,7 @@ public class RCTRicohPrinter extends ReactContextBaseJavaModule implements IPrin
      */
     public boolean isForegroundApp(String packageName) {
         boolean result = false;
-        ActivityManager am = (ActivityManager) RCTRicohPrinter.this.getCurrentActivity().getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager am = (ActivityManager) RCTRicohPrinter2.this.getCurrentActivity().getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> list = am.getRunningAppProcesses();
         for (ActivityManager.RunningAppProcessInfo info : list) {
             if (packageName.equals(info.processName)) {
@@ -1183,7 +1173,7 @@ public class RCTRicohPrinter extends ReactContextBaseJavaModule implements IPrin
      * The name of the FQCN class name of the top class. If the name cannot be obtained, null is returned.
      */
     public String getTopActivityClassName(String packageName) {
-        ActivityManager am = (ActivityManager) RCTRicohPrinter.this.getCurrentActivity().getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager am = (ActivityManager) RCTRicohPrinter2.this.getCurrentActivity().getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(30);
         for (ActivityManager.RunningTaskInfo info : list) {
             if (packageName.equals(info.topActivity.getPackageName())) {

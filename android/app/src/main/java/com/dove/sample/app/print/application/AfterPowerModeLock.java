@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
+import com.dove.IPrintApplication;
+import com.dove.PrintApplicationWrapper;
 import com.dove.sample.app.print.Const;
 
 public class AfterPowerModeLock {
@@ -23,7 +25,7 @@ public class AfterPowerModeLock {
     private static final String ACTION_POWER_MODE_RESULT = "jp.co.ricoh.isdk.sdkservice.system.PowerMode.POWER_MODE_RESULT";
     private static final String EXTRA_KEY_POWER_MODE = "POWER_MODE";
 
-    private PrintSampleApplication mApplication;
+    private IPrintApplication mApplication;
 
     private volatile boolean isStarted = false;
     private volatile boolean isFinished = false;
@@ -52,7 +54,7 @@ public class AfterPowerModeLock {
 
     private PowerModeLockThread mLockThread = null;
 
-    public AfterPowerModeLock(PrintSampleApplication application) {
+    public AfterPowerModeLock(IPrintApplication application) {
         mApplication = application;
     }
 
@@ -89,11 +91,11 @@ public class AfterPowerModeLock {
     private void registerReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_POWER_MODE_RESULT);
-        mApplication.registerReceiver(mPowerModeReceiver, filter, APP_EVENT_PERMISSION, null);
+        mApplication.getSSDKApplication().registerReceiver(mPowerModeReceiver, filter, APP_EVENT_PERMISSION, null);
     }
 
     private void unregisterReceiver() {
-        mApplication.unregisterReceiver(mPowerModeReceiver);
+        mApplication.getSSDKApplication().unregisterReceiver(mPowerModeReceiver);
     }
 
     private void startLockThread() {

@@ -8,8 +8,8 @@ import {
 	Dimensions,
 	Image,
 	TouchableOpacity,
-    AsyncStorage,
-    DeviceEventEmitter,
+	AsyncStorage,
+	DeviceEventEmitter,
 } from 'react-native';
 // import { DrawerNavigator } from 'react-navigation'
 import { default as Icon } from 'react-native-vector-icons/MaterialIcons';
@@ -21,6 +21,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import { NAME } from '../constants';
 import RicohAuthAndroid from '../../../components/RCTRicohAuthAndroid';
+import { default as Toast } from '../../../components/RCTToastModuleAndroid';
 
 import {
 	ComponentStyles,
@@ -85,10 +86,10 @@ const thirdLineItems = [
 
 const fourthLineItems = [
 	{
-		title: 'Scan',
+		title: 'Account',
 		color: StyleConfig.color_white,
 		icon: 'account-circle',
-		route: 'Scan',
+		route: 'Account',
 	}, {
 		title: 'Settings',
 		color: StyleConfig.color_white,
@@ -149,8 +150,8 @@ class Home extends Component {
 		super(props);
 		this.state = {
 			screenDismissed: false,
-            loginStatus: null,
-            user: null,
+			loginStatus: null,
+			user: null,
 			hasFocus: false,
 			layout: {
 				width: Dimensions.get('window').width,
@@ -163,62 +164,68 @@ class Home extends Component {
 	}
 
 
-    componentWillMount() {
-        var that = this;
+	componentWillMount() {
+		var that = this;
 
-        DeviceEventEmitter.addListener('onLoginStatusReceived', function (e) {
+		DeviceEventEmitter.addListener('onLoginStatusReceived', function (e) {
 			that.setState({ loginStatus: e.loginStatus, screenDismissed: true });
-			if (e.loginStatus == 'LOGOUT' && !that.state.screenDismissed) that.props.navigation.navigate('Account')
-        });
+			if (e.loginStatus == 'LOGOUT') {
+				that.logout();
+				if (!that.state.screenDismissed) {
+					that.props.navigation.navigate('Account');
+				}
+			});
 
-        DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
-            let entryInfo = JSON.parse(e.entryInfo);
+		DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
+			let entryInfo = JSON.parse(e.entryInfo);
 
-            that.setState({ user: entryInfo });
+			that.setState({ user: entryInfo });
 
-            AsyncStorage
-                .getItem(entryInfo.loginUserName)
-                .then(data => {
-                    if (!!data){
-                        //alert('User data from AsyncStorage: ' + data);
-                        return JSON.parse(data);
-                    }
+			AsyncStorage
+				.getItem(entryInfo.loginUserName)
+				.then(data => {
+					if (!!data) {
+						//alert('User data from AsyncStorage: ' + data);
+						return JSON.parse(data);
+					}
 
-                    return null;
-                })
-                .then(user => {
-                    if (user != null) {
-                        that.props.saveAccount(user.username, user.password);
-                        that.props.login(user.username, user.password);
-                        // navigate to Explorer screen
-                        that.props.navigation.navigate('Explorer');
-                        
-                    } else {
-                        //alert('Please register your account!');
-                        // navigate to Registration screen
-                        that.props.navigation.navigate('Registration', {key: entryInfo.loginUserName});
-                    }
-                });
+					return null;
+				})
+				.then(user => {
+					if (user != null) {
+						that.props.saveAccount(user.username, user.password);
+						that.props.login(user.username, user.password);
+						// navigate to Explorer screen
+						//that.props.navigation.navigate('Explorer');
 
-            // alert(entryInfo);
-        });
+						Toast.show(`Welcome, ${user.username}`, Toast.LENGTH_SHORT)
 
-        RicohAuthAndroid.getAuthState()
-            .then((msg) => {
-                console.log('success!!')
-            }, (error) => {
-                console.log('error!!')
-            });
+					} else {
+						//alert('Please register your account!');
+						// navigate to Registration screen
+						that.props.navigation.navigate('Registration', { key: entryInfo.loginUserName });
+					}
+				});
 
-    }
+			// alert(entryInfo);
+		});
 
-    componentWillReceiveProps(nextProps) {
-        // if (!nextProps.authenticated) this.props.navigation.navigate('Login')
-    }
+		RicohAuthAndroid.getAuthState()
+			.then((msg) => {
+				console.log('success!!')
+			}, (error) => {
+				console.log('error!!')
+			});
 
-    componentWillUpdate(nextProps, nextState) {
-        // if (nextState.loginStatus == 'LOGOUT') this.props.navigation.navigate('Account')
-    }
+	}
+
+	componentWillReceiveProps(nextProps) {
+		// if (!nextProps.authenticated) this.props.navigation.navigate('Login')
+	}
+
+	componentWillUpdate(nextProps, nextState) {
+		// if (nextState.loginStatus == 'LOGOUT') this.props.navigation.navigate('Account')
+	}
 
 	componentDidFocus() {
 		this.setState({
@@ -363,35 +370,41 @@ class Home extends Component {
 			</View>
 		)
 	}
+
+	logout() {
+		Toast.show(`Goodbye, ${this.props.username}`, Toast.LENGTH_SHORT)
+		that.props.logout(this.props.sid);
+	}
 }
 
 // 获取 state 变化
 const mapStateToProps = (state) => {
-    return {
-        // 获取 state 变化
-        isLoggedIn: state[NAME].account.isLoggedIn,
-        username: state[NAME].account.username,
-        password: state[NAME].account.password,
-        sid: state[NAME].account.sid
-    }
+	return {
+		// 获取 state 变化
+		isLoggedIn: state[NAME].account.isLoggedIn,
+		username: state[NAME].account.username,
+		password: state[NAME].account.password,
+		sid: state[NAME].account.sid
+	}
 };
 
 // 发送行为
 const mapDispatchToProps = (dispatch) => {
-    return {
-        // 发送行为
-        login: (username, password) => dispatch(actions.login(username, password)),
-        saveAccount: (username, password) => dispatch(actions.saveAccount(username, password)),
-    }
+	return {
+		// 发送行为
+		login: (username, password) => dispatch(actions.login(username, password)),
+		logout: (sid) => dispatch(actions.logout(sid)),
+		saveAccount: (username, password) => dispatch(actions.saveAccount(username, password)),
+	}
 };
 
 export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    null,
-    {
-        withRef: true
-    }
+	mapStateToProps,
+	mapDispatchToProps,
+	null,
+	{
+		withRef: true
+	}
 )(Home);
 
 const styles = StyleSheet.create({

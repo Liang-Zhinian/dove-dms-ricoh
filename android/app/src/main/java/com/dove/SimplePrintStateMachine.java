@@ -16,9 +16,7 @@ import android.widget.Toast;
 import com.dove.sample.app.print.Const;
 import com.dove.sample.app.print.activity.DialogUtil;
 import com.dove.sample.app.print.application.AfterPowerModeLock;
-//import com.dove.sample.app.print.application.PrintSampleApplication;
 import com.dove.sample.app.print.application.PrintSettingDataHolder;
-import com.dove.sample.app.print.application.PrintStateMachine;
 import com.dove.sample.function.print.PrintFile;
 import com.dove.sample.function.print.PrintJob;
 import com.dove.sample.function.print.attribute.PrintException;
@@ -726,8 +724,8 @@ public class SimplePrintStateMachine {
             if (!mApplication.lockPowerMode()) {
                 Log.d(Const.TAG, PREFIX + "lockPowerMode failed. start after lock");
                 // todo: to be implemented
-//                mAfterPowerModeLock = new AfterPowerModeLock(mApplication);
-//                mAfterPowerModeLock.start();
+                mAfterPowerModeLock = new AfterPowerModeLock(mApplication);
+                mAfterPowerModeLock.start();
             }
             /* オフラインロック */
             if (!mApplication.lockOffline()) {
@@ -747,7 +745,7 @@ public class SimplePrintStateMachine {
 
             PrintFile printFile;
             try {
-                printFile = holders[0].getPrintFile(mApplication.getResources());
+                printFile = holders[0].getPrintFile();
             } catch (PrintException e) {
                 Log.w(Const.TAG, PREFIX + e.toString());
                 message = "Print Job Failed. " + e.getMessage();

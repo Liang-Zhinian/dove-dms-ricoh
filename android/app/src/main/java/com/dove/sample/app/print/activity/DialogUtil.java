@@ -24,10 +24,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.dove.PrintApplicationWrapper;
 import com.dove.sample.app.print.Const;
 import com.dove.R;
 import com.dove.R.id;
-import com.dove.sample.app.print.application.PrintSampleApplication;
+//import com.dove.sample.app.print.application.PrintSampleApplication;
 import com.dove.sample.app.print.application.PrintSettingSupportedHolder;
 import com.dove.sample.function.print.PrintFile;
 import com.dove.sample.function.print.PrintFile.PDL;
@@ -119,7 +120,7 @@ public class DialogUtil {
                 
                 String selectedFile = items[which];
                 if(isValidFile(selectedFile)){
-                    ((PrintMainActivity)context).getSettingHolder().setSelectedPrintAssetFileName(selectedFile);
+                    ((SimplePrintMainActivity)context).getSettingHolder().setSelectedPrintAssetFileName(selectedFile);
                 }else{
                     Toast.makeText(context, R.string.error_pdl_not_found, Toast.LENGTH_LONG).show();
                 }
@@ -129,7 +130,7 @@ public class DialogUtil {
                 boolean result = false;
 
                 if(null != fileName){
-                    PDL selectedPDL = ((PrintMainActivity)context).currentPDL(fileName);
+                    PDL selectedPDL = ((SimplePrintMainActivity)context).currentPDL(fileName);
 
                     if(null != selectedPDL){
                         result = true;
@@ -160,7 +161,7 @@ public class DialogUtil {
         final AlertDialog d = dialog.create();
 
         TextView countText = (TextView)view.findViewById(R.id.text_count);
-        String defaultCount = ((PrintMainActivity)context).getSettingHolder().getSelectedCopiesValue().getValue().toString();
+        String defaultCount = ((SimplePrintMainActivity)context).getSettingHolder().getSelectedCopiesValue().getValue().toString();
         countText.setText(defaultCount);
 
         Button okBtn = (Button)view.findViewById(R.id.print_count_bt_ok);
@@ -180,7 +181,7 @@ public class DialogUtil {
                         Log.d(Const.TAG, PREFIX + e.toString());
                     }
                     Copies printCount = new Copies(inputCount);
-                    ((PrintMainActivity)context).getSettingHolder().setSelectedCopiesValue(printCount);
+                    ((SimplePrintMainActivity)context).getSettingHolder().setSelectedCopiesValue(printCount);
                 }
                 d.dismiss();
             }
@@ -223,7 +224,7 @@ public class DialogUtil {
             public void onClick(DialogInterface dialog, int which) {
 
                 String selectedPrintColor = items[which];
-                ((PrintMainActivity) context).getSettingHolder()
+                ((SimplePrintMainActivity) context).getSettingHolder()
                         .setSelectedPrintColorValue(PrintColorUtil.getPrintColorFromResourceString(context,selectedPrintColor));
 
             }
@@ -249,9 +250,10 @@ public class DialogUtil {
         final ListView listView_detail = (ListView)parent.findViewById(R.id.listview_detail);
         final TextView text_detail_title = (TextView)parent.findViewById(R.id.text_title_detail);
 
-        PrintSampleApplication app = (PrintSampleApplication)((PrintMainActivity)context).getApplication();
+//        PrintSampleApplication app = (PrintSampleApplication)((PrintMainActivity)context).getApplication();
+        PrintApplicationWrapper app = ((SimplePrintMainActivity)context).getmApplication();
         Map<PDL, PrintSettingSupportedHolder> supportedMap = app.getSettingSupportedDataHolders();
-        PrintFile.PDL currentPDL = ((PrintMainActivity)context).getSettingHolder().getSelectedPDL();
+        PrintFile.PDL currentPDL = ((SimplePrintMainActivity)context).getSettingHolder().getSelectedPDL();
 
         if(null == currentPDL){
             return null;
@@ -263,7 +265,7 @@ public class DialogUtil {
         final TextView text_category_staple = (TextView)layout_staple.findViewById(R.id.text_category);
         TextView text_value_staple = (TextView)layout_staple.findViewById(R.id.text_value);
         text_category_staple.setText(context.getString(R.string.staple_dlg_title));
-        text_value_staple.setText(StapleUtil.getStapleString(context, (Staple)((PrintMainActivity)context).getSettingHolder().getSelectedStaple()));
+        text_value_staple.setText(StapleUtil.getStapleString(context, (Staple)((SimplePrintMainActivity)context).getSettingHolder().getSelectedStaple()));
 
         final List<Staple> stapleList = supportedMap.get(currentPDL).getSelectableStapleList();
 
@@ -293,7 +295,7 @@ public class DialogUtil {
                     String value = adapter_staple.getItem(position);
                     TextView text_value = (TextView)layout_staple.findViewById(R.id.text_value);
                     text_value.setText(value);
-                    ((PrintMainActivity)context).getSettingHolder().setSelectedStaple(
+                    ((SimplePrintMainActivity)context).getSettingHolder().setSelectedStaple(
                             stapleList.get(position));
                 } else {
                     /* should never reach this point */

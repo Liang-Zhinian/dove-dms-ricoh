@@ -8,7 +8,8 @@ import android.os.Handler;
 import android.widget.TextView;
 
 import com.dove.R;
-import com.dove.sample.app.print.application.PrintSampleApplication;
+//import com.dove.sample.app.print.application.PrintSampleApplication;
+import com.dove.sample.function.common.SmartSDKApplication;
 import com.dove.sample.function.print.attribute.PrintServiceAttributeSet;
 import com.dove.sample.function.print.attribute.standard.PrinterOccuredErrorLevel;
 import com.dove.sample.function.print.attribute.standard.PrinterState;
@@ -20,13 +21,13 @@ import com.dove.sample.function.print.event.PrintServiceAttributeListener;
  * プリントサービスがポストするイベントを受け取るリスナークラスです。
  * The listener class to monitor scan service attribute changes.
  */
-class PrintServiceAttributeListenerImpl implements PrintServiceAttributeListener {
+public class SimplePrintServiceAttributeListenerImpl implements PrintServiceAttributeListener {
 
     /**
      * メインアクテビティへの参照
      * Reference to PrintMainActivity
      */
-    PrintMainActivity mActivity;
+    SimplePrintMainActivity mActivity;
 
     /**
      * UIスレッドのハンドラ
@@ -39,14 +40,14 @@ class PrintServiceAttributeListenerImpl implements PrintServiceAttributeListener
      * Level of the currently occurring error
      */
     private PrinterOccuredErrorLevel mLastErrorLevel = null;
-    
+
 
     /**
      * システム警告画面が表示されているかのフラグ
      * Flag to indicate if system warning screen is displayed
      */
     private volatile  boolean mAlertDialogDisplayed = false;
-    
+
     /**
      * アプリケーションの種別
      * システム警告ダイアログの設定に使用します。
@@ -54,7 +55,7 @@ class PrintServiceAttributeListenerImpl implements PrintServiceAttributeListener
      * Used for setting system warning dialog.
      */
     public final static String ALERT_DIALOG_APP_TYPE_PRINTER = "PRINTER";
-    
+
     public PrinterOccuredErrorLevel getLastErrorLevel() {
         return mLastErrorLevel;
     }
@@ -70,14 +71,14 @@ class PrintServiceAttributeListenerImpl implements PrintServiceAttributeListener
     public void setAlertDialogDisplayed(boolean mAlertDialogDisplayed) {
         this.mAlertDialogDisplayed = mAlertDialogDisplayed;
     }
-    
+
     /**
      * プリントサービスから受け取ったイベント
      * Event received from print service
      */
     PrintServiceAttributeEvent mEvent;
 
-    public PrintServiceAttributeListenerImpl(PrintMainActivity activity, Handler handler){
+    public SimplePrintServiceAttributeListenerImpl(SimplePrintMainActivity activity, Handler handler){
         mActivity = activity;
         mHandler = handler;
     }
@@ -91,7 +92,7 @@ class PrintServiceAttributeListenerImpl implements PrintServiceAttributeListener
     @Override
     public void attributeUpdate(PrintServiceAttributeEvent event) {
         mEvent = event;
-        PrintSampleApplication mApplication = (PrintSampleApplication)mActivity.getApplication();
+        SmartSDKApplication mApplication = (SmartSDKApplication)mActivity.getApplication();
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -167,7 +168,7 @@ class PrintServiceAttributeListenerImpl implements PrintServiceAttributeListener
                 if (mAlertDialogDisplayed) {
                     String activityName = mActivity.getTopActivityClassName(mActivity.getPackageName());
                     if (activityName == null) {
-                        activityName = PrintMainActivity.class.getName();
+                        activityName = SimplePrintMainActivity.class.getName();
                     }
                     mApplication.hideAlertDialog(ALERT_DIALOG_APP_TYPE_PRINTER, activityName);
                     mAlertDialogDisplayed = false;

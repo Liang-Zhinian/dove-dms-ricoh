@@ -14,6 +14,7 @@ import {
 } from './folder';
 import {
     loginSOAP,
+    logoutSOAP,
     renewSOAP,
     validSOAP,
     ensureLogin
@@ -93,6 +94,7 @@ export {
     searchDocuments,
 
     loginSOAP,
+    logoutSOAP,
     renewSOAP,
     validSOAP,
     ensureLogin

@@ -50,4 +50,7 @@ export default Routes = {
     Scan: {
         screen: Screens.Scan,
     },
+    Print: {
+        screen: Screens.Print,
+    },
 }

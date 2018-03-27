@@ -24,4 +24,5 @@ public class MainActivity extends ReactActivity {
         // test crash handler
 //        System.out.println(s.equals("any string"));
     }
+
 }
