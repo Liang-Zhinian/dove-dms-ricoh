@@ -174,7 +174,8 @@ class Home extends Component {
 				if (!that.state.screenDismissed) {
 					that.props.navigation.navigate('Account');
 				}
-			});
+			}
+		});
 
 		DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
 			let entryInfo = JSON.parse(e.entryInfo);
@@ -231,6 +232,10 @@ class Home extends Component {
 		this.setState({
 			hasFocus: true
 		});
+	}
+
+	componentWillUnmount(nextProps) {
+		this.logout();
 	}
 
 	render() {
