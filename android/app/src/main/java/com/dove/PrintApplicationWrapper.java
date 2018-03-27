@@ -32,8 +32,9 @@ import java.util.Map;
  * Creates print job and monitors the print service.
  * The state machine is responsible for the job monitoring.
  */
-public class PrintSampleApplication extends SmartSDKApplication {
+public class PrintApplicationWrapper extends SmartSDKApplication {
 
+    private SmartSDKApplication mApplication;
     private PrintService mPrintService;
     private PrintJob mPrintJob;
     private PrintJobAttributeListener mJobAttributeListener;
@@ -71,8 +72,14 @@ public class PrintSampleApplication extends SmartSDKApplication {
      * Define the prefix for log information with abbreviation package and class name
      */
     private final static String PREFIX = "application:PrintSApp:";
+
+    public PrintApplicationWrapper(SmartSDKApplication app){
+        mApplication = app;
+
+        onCreate();
+    }
     
-    @Override
+//    @Override
     public void onCreate() {
         
         //Register the log tag of PrintSample module which is used in function/wrapper layer
@@ -92,7 +99,7 @@ public class PrintSampleApplication extends SmartSDKApplication {
         mPrintService = PrintService.getService();
     }
 
-    @Override
+//    @Override
     public void onTerminate(){
         mSystemStateMonitor.stop();
         super.onTerminate();
