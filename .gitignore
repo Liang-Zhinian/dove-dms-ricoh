@@ -34,11 +34,11 @@ local.properties
 #
 node_modules/
 npm-debug.log
-assets
+# assets
 # BUCK
 buck-out/
 \.buckd/
-android/app/libs
+# android/app/libs
 android/keystores/debug.keystore
 android/gradle.properties
 source/config/index.bak.js
