@@ -166,7 +166,7 @@ class Home extends Component {
 
 	componentWillMount() {
 		var that = this;
-
+/*
 		DeviceEventEmitter.addListener('onLoginStatusReceived', function (e) {
 			that.setState({ loginStatus: e.loginStatus, screenDismissed: true });
 			if (e.loginStatus == 'LOGOUT') {
@@ -199,7 +199,7 @@ class Home extends Component {
 						// navigate to Explorer screen
 						//that.props.navigation.navigate('Explorer');
 
-						Toast.show(`Welcome, ${user.username}`, Toast.LENGTH_SHORT)
+						Toast.show(`Welcome, ${user.username}`, Toast.SHORT)
 
 					} else {
 						//alert('Please register your account!');
@@ -217,7 +217,7 @@ class Home extends Component {
 			}, (error) => {
 				console.log('error!!')
 			});
-
+*/
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -235,7 +235,8 @@ class Home extends Component {
 	}
 
 	componentWillUnmount(nextProps) {
-		this.logout();
+		Toast.show(`componentWillUnmount`, Toast.SHORT);
+		this.props.sid && this.logout();
 	}
 
 	render() {
@@ -353,7 +354,7 @@ class Home extends Component {
 					}
 				</View>
 				{/*this.renderSpacer()*/}
-				<View style={[CommonStyles.flex_1, CommonStyles.flexRow, styles.row, styles.lastRow]}>
+				{/* <View style={[CommonStyles.flex_1, CommonStyles.flexRow, styles.row, styles.lastRow]}>
 					{
 						fourthLineItems && fourthLineItems.map((nav, index) => {
 							return this.renderNavItem(nav, index)
@@ -361,7 +362,7 @@ class Home extends Component {
 					}
 				</View>
 
-				{this.renderSpacer()}
+				{this.renderSpacer()} */}
 			</View>
 		)
 	}
@@ -377,8 +378,8 @@ class Home extends Component {
 	}
 
 	logout() {
-		Toast.show(`Goodbye, ${this.props.username}`, Toast.LENGTH_SHORT)
-		that.props.logout(this.props.sid);
+		Toast.show(`Goodbye, ${this.props.username}`, Toast.SHORT);
+		this.props.logout(this.props.sid, this.props.navigation);
 	}
 }
 
@@ -398,7 +399,7 @@ const mapDispatchToProps = (dispatch) => {
 	return {
 		// 发送行为
 		login: (username, password) => dispatch(actions.login(username, password)),
-		logout: (sid) => dispatch(actions.logout(sid)),
+		logout: (sid, navigation) => dispatch(actions.logout(sid, navigation)),
 		saveAccount: (username, password) => dispatch(actions.saveAccount(username, password)),
 	}
 };

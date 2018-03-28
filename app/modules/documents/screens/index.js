@@ -15,12 +15,14 @@ import Scan from './Scan';
 import Print from './Print';
 import Splash from './Splash';
 import Registration from './Registration';
+import Login from './Login';
 
 
 
 
 
 export default {
+    Login,
     Splash,
     Registration,
     Home,

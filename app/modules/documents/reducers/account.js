@@ -57,6 +57,18 @@ export default handleActions(
       }
     },
 
+    [LOGOUT]: (state: State = initialState, action) => {
+      const { payload: { username, password, token } } = action
+      return {
+        ...state,
+        username,
+        password,
+        isAuthenticated: false,
+        token,
+      }
+    },
+
+
     [RENEW]: (state: State = initialState, action) => {
       const { payload: { token } } = action;
       return {

@@ -2,6 +2,9 @@
 import Screens from '../screens';
 
 export default Routes = {
+    Login: {
+        screen: Screens.Login,
+    },
     Splash: {
         screen: Screens.Splash,
     },

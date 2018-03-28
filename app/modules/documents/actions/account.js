@@ -1,7 +1,7 @@
 import { createAction } from 'redux-actions';
 import moment from 'moment';
 import { SAVE_ACCOUNT, LOGIN, LOGOUT, RENEW, VALID } from '../constants'
-import { loginSOAP, validSOAP, renewSOAP } from '../api'
+import { loginSOAP, logoutSOAP, validSOAP, renewSOAP } from '../api'
 
 
 export type Action = {
@@ -58,11 +58,19 @@ export const login = (username: string, password: string): ActionAsync => {
   }
 }
 
-export const logout = (sid: string): ActionAsync => {
+export const logout = (sid: string, navigation: any): ActionAsync => {
   return (dispatch, getState) => {
 
     logoutSOAP(sid)
       .then(result => {
+
+        // navigation.dispatch({
+        //   type: 'Navigation/RESET',
+        //   index: 0,
+        //   actions: [{ type: 'Navigate', routeName: 'Login' }]
+        // })
+        dispatch({ type: 'Logout' });
+
         dispatch({
           type: LOGOUT,
           payload: {

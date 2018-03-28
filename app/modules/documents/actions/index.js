@@ -6,6 +6,7 @@ import * as document from './document';
 // account actions
 export const saveAccount = account.saveAccount;
 export const login = account.login;
+export const logout = account.logout;
 export const valid = account.valid;
 export const renew = account.renew;
 

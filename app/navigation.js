@@ -82,7 +82,8 @@ const {
     RepositoryUsage,
     CheckedoutReport,
     LockedReport,
-    Scan
+    Scan,
+    Login
 } = DocumentRoutes; 
 
 const HomeStack = StackNavigator(
@@ -90,7 +91,7 @@ const HomeStack = StackNavigator(
         Home,
         Search,
         Downloads,
-        Account,
+        // Account,
         Settings,
         CheckedoutReport,
         LockedReport,
@@ -138,6 +139,17 @@ const BottomTabs = TabNavigator(
     }
 )
 
+const MainStack = StackNavigator({
+    Login,
+    Main: {
+        screen: BottomTabs
+    },
+    Logout,
+    Registration
+}, {
+    headerMode: 'none'
+})
+
 const styles = StyleSheet.create({
     drawer: {
         flex: 1,
@@ -184,5 +196,5 @@ const styles = StyleSheet.create({
     }
 })
 
-export default BottomTabs
+export default MainStack
 

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import { BackHandler, Platform } from 'react-native';
 import * as ReactNavigation from 'react-navigation';
 import { connect } from 'react-redux';
 import MainNavigation from './navigation';
-import { BackHandler, Platform } from 'react-native';
+import { addListener } from './utils/redux';
 //import { NAME } from './constants';
 
 
@@ -55,7 +56,8 @@ class ReduxNavigation extends Component {
 
         const navigation = ReactNavigation.addNavigationHelpers({
             dispatch,
-            state: nav
+            state: nav,
+            addListener,
         })
         return <MainNavigation navigation={navigation} />
     }

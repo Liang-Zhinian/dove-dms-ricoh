@@ -11,19 +11,21 @@ import { persistStore, autoRehydrate } from 'redux-persist';
 import { AsyncStorage } from 'react-native';
 import reducers from './reducers';
 
+import { middleware } from './utils/redux';
+
 
 var isDebuggingInChrome = __DEV__ && !!window.navigator.userAgent;
-let middleware = [thunk];
+let middlewares = [thunk, middleware];
 // debugger;
 if (__DEV__) {
 	const reduxImmutableStateInvariant = require('redux-immutable-state-invariant').default();
-	middleware = [...middleware, reduxImmutableStateInvariant, logger];
+	middlewares = [...middlewares, reduxImmutableStateInvariant, logger];
 } else {
-	middleware = [...middleware];
+	middlewares = [...middlewares];
 }
 
 var enhancer = compose(
-	applyMiddleware(...middleware),
+	applyMiddleware(...middlewares),
 	autoRehydrate()
 );
 
