@@ -22,6 +22,8 @@ import * as actions from '../actions';
 import { NAME } from '../constants';
 import RicohAuthAndroid from '../../../components/RCTRicohAuthAndroid';
 import { default as Toast } from '../../../components/RCTToastModuleAndroid';
+import { login, logout, valid } from '../../../actions/auth';
+import { HeaderButton } from './components/HeaderButtons';
 
 import {
 	ComponentStyles,
@@ -98,52 +100,59 @@ const fourthLineItems = [
 	},];
 
 class Home extends Component {
-	static navigationOptions = {
-		// headerStyle: { backgroundColor: colors.primary },
-		// headerTintColor: colors.textOnPrimary,
-		headerTitle: 'Home',
-		headerLeft: (
-			<TouchableOpacity
-				style={{ marginLeft: 14 }}
-				accessibilityLabel='bell'
-			>
-				<MaterialCommunityIcons
-					name='bell-outline'
-					size={24}
-					style={{ color: colors.textOnPrimary }}
-				/>
-			</TouchableOpacity>
-		),
-		headerRight: (
-			<View style={[
-				// CommonStyles.headerRight,
-				CommonStyles.flexRow,
-				// CommonStyles.flexItemsMiddle, 
-				// CommonStyles.flexItemsBetween,
-			]}>
+	static navigationOptions = ({ navigation }) => {
+		const { params = {} } = navigation.state;
+
+		return {
+			headerTitle: 'Home',
+			headerLeft: (
 				<TouchableOpacity
-					style={{ marginRight: 14 }}
-					accessibilityLabel='info'
+					style={{ marginLeft: 14 }}
+					accessibilityLabel='bell'
 				>
-					<Icon
-						name='info-outline'
+					<MaterialCommunityIcons
+						name='bell-outline'
 						size={24}
 						style={{ color: colors.textOnPrimary }}
 					/>
 				</TouchableOpacity>
-				<TouchableOpacity
-					style={{ marginRight: 14 }}
-					accessibilityLabel='help'
-				>
-					<Icon
-						name='help-outline'
-						size={24}
-						style={{ color: colors.textOnPrimary }}
-					/>
-				</TouchableOpacity>
-			</View>
-		),
-	}
+			),
+			headerRight: (
+				<View style={[
+					// CommonStyles.headerRight,
+					CommonStyles.flexRow,
+					// CommonStyles.flexItemsMiddle, 
+					// CommonStyles.flexItemsBetween,
+				]}>
+					<TouchableOpacity
+						style={{ marginRight: 14 }}
+						accessibilityLabel='info'
+					>
+						<Icon
+							name='info-outline'
+							size={24}
+							style={{ color: colors.textOnPrimary }}
+						/>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={{ marginRight: 14 }}
+						accessibilityLabel='help'
+					>
+						<Icon
+							name='help-outline'
+							size={24}
+							style={{ color: colors.textOnPrimary }}
+						/>
+					</TouchableOpacity>
+{params.isLoggedIn &&
+					<HeaderButton
+						onPress={params.onLogoutButtonPressed}
+						text='Log Out!'
+					/>}
+				</View>
+			),
+		}
+	};
 
 	constructor(props) {
 		console.log('constructor');
@@ -160,23 +169,53 @@ class Home extends Component {
 		};
 
 		this.onLayout = this.onLayout.bind(this);
-		// this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+		this._bootstrapAsync();
 	}
 
 
+	// Fetch the token from storage then navigate to our appropriate place
+	_bootstrapAsync = async () => {
+		const { login, valid, auth } = this.props;
+		const { user } = auth;
+		
+		if (!user) {
+			this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Login' }));
+			return;
+		}
+
+		if (user.token.sid) {
+			let isValid = await valid(user.token.sid);
+			console.log(`isValid: ${isValid}`);
+			if (!isValid) {
+				console.log(`login again`);
+				await login(user.username, user.password);
+			}
+		}
+	};
+
+	_signOutAsync = async () => {
+		const { navigation, logout, auth } = this.props;
+		const { user } = auth;
+		
+		if (!user) {
+			this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Login' }));
+			return;
+		}
+
+		const sid = auth.user.token.sid;
+		await logout(sid);
+	}
+
 	componentWillMount() {
 		var that = this;
-/*
+
 		DeviceEventEmitter.addListener('onLoginStatusReceived', function (e) {
 			that.setState({ loginStatus: e.loginStatus, screenDismissed: true });
 			if (e.loginStatus == 'LOGOUT') {
-				that.logout();
-				if (!that.state.screenDismissed) {
-					that.props.navigation.navigate('Account');
-				}
+				that._signOutAsync();
 			}
 		});
-
+/*
 		DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
 			let entryInfo = JSON.parse(e.entryInfo);
 
@@ -237,6 +276,16 @@ class Home extends Component {
 	componentWillUnmount(nextProps) {
 		Toast.show(`componentWillUnmount`, Toast.SHORT);
 		this.props.sid && this.logout();
+	}
+
+	componentDidMount() {
+		console.log('componentDidMount');
+		const { navigation } = this.props;
+		// We can only set the function after the component has been initialized
+		navigation.setParams({
+			onLogoutButtonPressed: this._signOutAsync.bind(this),
+			isLoggedIn: this.props.auth.isLoggedIn,
+		});
 	}
 
 	render() {
@@ -379,7 +428,7 @@ class Home extends Component {
 
 	logout() {
 		Toast.show(`Goodbye, ${this.props.username}`, Toast.SHORT);
-		this.props.logout(this.props.sid, this.props.navigation);
+		this._signOutAsync(this.props.sid);
 	}
 }
 
@@ -390,7 +439,8 @@ const mapStateToProps = (state) => {
 		isLoggedIn: state[NAME].account.isLoggedIn,
 		username: state[NAME].account.username,
 		password: state[NAME].account.password,
-		sid: state[NAME].account.sid
+		sid: state[NAME].account.sid,
+		auth: state.auth
 	}
 };
 
@@ -398,6 +448,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		// 发送行为
+		valid: (sid) => dispatch(valid(sid)),
 		login: (username, password) => dispatch(actions.login(username, password)),
 		logout: (sid, navigation) => dispatch(actions.logout(sid, navigation)),
 		saveAccount: (username, password) => dispatch(actions.saveAccount(username, password)),

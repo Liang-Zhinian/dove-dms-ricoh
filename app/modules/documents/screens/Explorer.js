@@ -692,7 +692,7 @@ class Explorer extends Component {
       
       that.resetDownloadTask();
 
-      navigate('Print', { filePath: path });
+      navigate('Print', { filePath: path, fileType: type, fileName });
     })
     .catch((err) => {
       that.resetDownloadTask();

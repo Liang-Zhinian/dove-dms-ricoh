@@ -25,18 +25,18 @@ function normalize(size: number): number {
 
 const styles = StyleSheet.create({
   font: {
-    fontFamily: require('../env').fontFamily,
+    fontFamily: 'Arial',
   },
   h1: {
     fontSize: normalize(24),
     lineHeight: normalize(27),
-    color: F8Colors.darkText,
+    color: DoveColors.darkText,
     fontWeight: 'bold',
     letterSpacing: -1,
   },
   p: {
     fontSize: normalize(15),
     lineHeight: normalize(23),
-    color: F8Colors.lightText,
+    color: DoveColors.lightText,
   },
 });

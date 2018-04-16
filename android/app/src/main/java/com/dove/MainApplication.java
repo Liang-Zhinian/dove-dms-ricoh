@@ -4,6 +4,7 @@ package com.dove;
 
 import com.dove.sample.function.common.SmartSDKApplication;
 import com.facebook.react.ReactApplication;
+import com.BV.LinearGradient.LinearGradientPackage;
 import com.microsoft.codepush.react.CodePush;
 import com.horcrux.svg.SvgPackage;
 import com.imagepicker.ImagePickerPackage;
@@ -37,6 +38,7 @@ public class MainApplication extends SmartSDKApplication implements ReactApplica
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+                    new LinearGradientPackage(),
                     new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
                     new SvgPackage(),
                     new ImagePickerPackage(),
@@ -48,7 +50,8 @@ public class MainApplication extends SmartSDKApplication implements ReactApplica
                     new RCTRicohScannerReactPackage(),
                     new RCTRicohAuthReactPackage(),
                     new RCTToastReactPackage(),
-                    new RCTRicohPrinterReactPackage()
+                    new RCTRicohPrinterReactPackage(),
+                    new AppStateAndroidPluginPackage()
             );
         }
 

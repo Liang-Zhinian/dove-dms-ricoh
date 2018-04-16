@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.facebook.react.ReactActivity;
+import com.facebook.react.ReactInstanceManager;
 
 public class MainActivity extends ReactActivity {
     /**
@@ -23,6 +24,11 @@ public class MainActivity extends ReactActivity {
 
         // test crash handler
 //        System.out.println(s.equals("any string"));
+
+//        this.getReactInstanceManager()
+//        ReactInstanceManager.builder().addPackage()
+//        this.getReactNativeHost().getReactInstanceManager().get
     }
+
 
 }

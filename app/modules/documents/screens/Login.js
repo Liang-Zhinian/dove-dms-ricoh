@@ -4,7 +4,8 @@ import {
 	Text,
 	TextInput,
 	View,
-	Button
+	Button,
+	DeviceEventEmitter,
 } from 'react-native';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
@@ -14,13 +15,15 @@ import { default as Toast } from '../../../components/RCTToastModuleAndroid';
 
 class Login extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            username: '',
-            password: '',
-        };
-    }
+	constructor(props) {
+		super(props);
+		this.state = {
+            loginStatus: null,
+			username: '',
+			password: '',
+			// user: null,
+		};
+	}
 
 	componentWillMount() {
 		var that = this;
@@ -31,10 +34,7 @@ class Login extends Component {
 		DeviceEventEmitter.addListener('onLoginStatusReceived', function (e) {
 			that.setState({ loginStatus: e.loginStatus, screenDismissed: true });
 			if (e.loginStatus == 'LOGOUT') {
-				that.logout();
-				if (!that.state.screenDismissed) {
-					that.props.navigation.navigate('Account');
-				}
+				that.doLogout();
 			}
 		});
 
@@ -55,7 +55,7 @@ class Login extends Component {
 				})
 				.then(user => {
 					if (user != null) {
-						that.setState({ username: user.username, password: user.password }, ()=>{
+						that.setState({ username: user.username, password: user.password }, () => {
 							that.doLogin();
 						});
 
@@ -66,7 +66,7 @@ class Login extends Component {
 
 						Toast.show(`Welcome, ${user.username}`, Toast.SHORT);
 
-						
+
 
 					} else {
 						//alert('Please register your account!');
@@ -95,12 +95,12 @@ class Login extends Component {
 					Login
                 </Text>
 				<TextInput placeholder='Username'
-                    onChangeText={(username) => this.setState({ username })}
-                    returnKeyType='next' />
-                <TextInput placeholder='Password'
-                    onChangeText={(password) => this.setState({ password })}
-                    secureTextEntry={true} />
-                <View style={{ margin: 7 }} />
+					onChangeText={(username) => this.setState({ username })}
+					returnKeyType='next' />
+				<TextInput placeholder='Password'
+					onChangeText={(password) => this.setState({ password })}
+					secureTextEntry={true} />
+				<View style={{ margin: 7 }} />
 				<Button
 					onPress={this.onLoginPress.bind(this)}
 					title="Submit"
@@ -119,6 +119,11 @@ class Login extends Component {
 		navigation.dispatch({ type: 'Login' });
 		navigation.navigate('Main');
 	}
+
+	doLogout = () => {
+		const { sid, logout, navigation } = this.props;
+		logout(sid, navigation);
+	}
 }
 
 function select(store) {
@@ -133,6 +138,7 @@ function dispatch(dispatch) {
 	return {
 		// 发送行为
 		login: (username, password) => dispatch(actions.login(username, password)),
+		logout: (sid, navigation) => dispatch(actions.logout(sid, navigation)),
 	}
 };
 

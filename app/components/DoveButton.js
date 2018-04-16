@@ -3,23 +3,24 @@
 
 import React, { Component } from 'react';
 import {
-    StyleSheet,
-    TouchableOpacity,
-    Image,
-    View,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  View,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import PropTypes from 'prop-types';
 
 import DoveColors from './DoveColors';
 import { Text } from './DoveText';
 
 class DoveButton extends Component {
   static propTypes = {
-    type: 'primary' | 'secondary' | 'bordered',
-    icon?: number,
-    caption: string,
-    style?: any,
-    onPress: () => mixed,
+    type: PropTypes.oneOf(['primary', 'secondary', 'bordered']),
+    icon: PropTypes.number,
+    caption: PropTypes.string.isRequired,
+    style: PropTypes.any,
+    onPress: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -36,7 +37,7 @@ class DoveButton extends Component {
     if (this.props.type === 'primary') {
       content = (
         <LinearGradient
-          start={[0.5, 1]} end={[1, 1]}
+          start={{ x: 0.5, y: 1 }} end={{ x: 1, y: 1 }}
           colors={['#6A6AD5', '#6F86D9']}
           style={[styles.button, styles.primaryButton]}>
           {icon}

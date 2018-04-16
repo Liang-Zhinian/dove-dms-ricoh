@@ -16,6 +16,7 @@ import Print from './Print';
 import Splash from './Splash';
 import Registration from './Registration';
 import Login from './Login';
+import Logout from './Logout';
 
 
 
@@ -23,6 +24,7 @@ import Login from './Login';
 
 export default {
     Login,
+    Logout,
     Splash,
     Registration,
     Home,

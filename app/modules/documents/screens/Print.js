@@ -20,8 +20,10 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import ModalSelector from 'react-native-modal-selector';
+import RNFS from 'react-native-fs';
 import { NAME } from '../constants';
 import RicohPrinterAndroid from '../../../components/RCTRicohPrinterAndroid';
+import { default as Toast } from '../../../components/RCTToastModuleAndroid';
 import * as actions from '../actions';
 import Base64 from '../lib/Base64';
 import {
@@ -30,6 +32,7 @@ import {
     colors,
     StyleConfig,
 } from '../styles';
+import { convert } from '../api/converter';
 
 function alert(title, msg) {
     Alert.alert(title, msg, [{ text: 'OK', onPress: () => console.log('OK Pressed') },], { cancelable: false });
@@ -60,32 +63,56 @@ export default class Settings extends Component<{}> {
     componentWillMount() {
         var that = this;
 
-        // DeviceEventEmitter.addListener('ConnectStateUpdated', function (e) {
-        //     that.setState({ connectState: e.stateLabel });
-        // });
-        // DeviceEventEmitter.addListener('ScanServiceAttributeUpdated', function (e) {
-        //     that.setState({ scanServiceAttributeState: e.stateLabel });
-        // });
-        // DeviceEventEmitter.addListener('ScanJobStateUpdated', function (e) {
-        //     that.setState({ scanJobState: e.stateLabel });
-        // });
-        // DeviceEventEmitter.addListener('ScanServiceAttributeListenerErrorUpdated', function (e) {
-        //     that.setState({ scanServiceAttributeListenerError: e.stateLabel });
-        // });
-        // DeviceEventEmitter.addListener('ScanJobListenerErrorUpdated', function (e) {
-        //     that.setState({ scanJobListenerError: e.stateLabel });
-        // });
+        const { navigate, state } = that.props.navigation;
+        const { filePath, fileType, fileName } = state.params;
+        var newPath = filePath + '.pdf';
+
+        if (fileType != 'pdf') {
+            RNFS.readFile(filePath, 'base64') // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
+                .then((content) => {
+                    console.log('GOT CONTENT', content);
+
+                    // convert to pdf
+                    convert(fileName, fileType, content)
+                        .then(pdfContent => {
+                            // save to a new path
+                            RNFS.writeFile(newPath, pdfContent, 'base64')
+                                .then(() => {
+                                    console.log('File save @', newPath);
+                                    Toast.show(`File save @ ${newPath}`, Toast.SHORT);
+
+                                    that.initPrinter(newPath);
+                                })
+                                .catch((err) => {
+                                    console.log(err.message, err.code);
+                                    // Toast.show(`WRITE FILE ERROR => ${err.code}: ${err.message}`, Toast.SHORT);
+                                    throw err;
+                                });;
+                        })
+                })
+                .catch((err) => {
+                    console.log(err.message, err.code);
+                    // Toast.show(`READ FILE ERROR => ${err.code}: ${err.message}`, Toast.SHORT);
+                    throw err;
+                });
+
+        } else {
+            that.initPrinter(filePath);
+        }
+
         DeviceEventEmitter.addListener('PrintServiceAttributeStatusUpdated', function (e) {
             that.setState({ printServiceAttributeStatus: e.status });
             console.log(e.status);
 
         });
+    }
 
+    initPrinter(filePath) {
         RicohPrinterAndroid.onCreate()
             .then((msg) => {
                 alert('Print document', msg);
                 const { navigate, state } = that.props.navigation;
-                const filePath = state.params.filePath;
+                // const {filePath, fileType} = state.params;
                 RicohPrinterAndroid.setPrintFilePath(filePath)
                     .then(msg => alert('Print document', msg),
                         error => alert('Print document', error.message()))
@@ -134,7 +161,7 @@ export default class Settings extends Component<{}> {
     }
 
     print() {
-        if (!this.isPrintFileReady()){
+        if (!this.isPrintFileReady()) {
             alert('Print document', 'The document to be printed is not ready.');
             return false;
         }

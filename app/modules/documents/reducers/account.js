@@ -1,6 +1,6 @@
 
 import { handleActions } from 'redux-actions'
-import { SAVE_ACCOUNT, LOGIN, RENEW, VALID, } from '../constants'
+import { SAVE_ACCOUNT, LOGIN, LOGOUT, RENEW, VALID, } from '../constants'
 import * as types from '../middlewares/authenticationTypes';
 
 type State = {

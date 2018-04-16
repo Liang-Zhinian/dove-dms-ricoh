@@ -5,6 +5,9 @@ export default Routes = {
     Login: {
         screen: Screens.Login,
     },
+    Logout: {
+        screen: Screens.Logout,
+    },
     Splash: {
         screen: Screens.Splash,
     },
