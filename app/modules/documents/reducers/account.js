@@ -1,6 +1,6 @@
 
 import { handleActions } from 'redux-actions'
-import { SAVE_ACCOUNT, LOGIN, LOGOUT, RENEW, VALID, } from '../constants'
+import { SAVE_ACCOUNT, LOGIN, LOGOUT, RENEW, VALID, ERROR } from '../constants'
 import * as types from '../middlewares/authenticationTypes';
 
 type State = {
@@ -102,7 +102,7 @@ export default handleActions(
     },
 
     // Handle API request errors
-    ['ERROR']: (state: State = initialState, action) => { return initialState; },
+    [ERROR]: (state: State = initialState, action) => { return { ...state, }; },
 
   },
   initialState

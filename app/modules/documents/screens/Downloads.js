@@ -11,6 +11,7 @@ import {
 import RNFS from 'react-native-fs';
 import moment from 'moment';
 import ListItem from './components/ListItem';
+import FileViewerAndroid from '../../../components/RCTFileViewerAndroid';
 
 class Downloads extends Component {
     static navigationOptions = {
@@ -155,7 +156,6 @@ class Downloads extends Component {
     previewDocument = (item: any) => {
         const that = this;
         const { path, name, size } = item;
-        debugger;
         const type = name.split('.').pop();
 
         that.openLocalUrl(path, name, type);

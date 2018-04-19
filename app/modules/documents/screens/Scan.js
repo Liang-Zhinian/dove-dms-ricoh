@@ -17,6 +17,7 @@ import {
     DeviceEventEmitter,
     ScrollView,
     Button,
+    ActivityIndicator,
 } from 'react-native';
 import { connect } from 'react-redux'
 import { NAME } from '../constants'
@@ -44,6 +45,7 @@ class Scan extends Component<{}> {
     constructor(props) {
         super(props);
         this.state = {
+            isLoading: true,
             connectState: '',
             scanJobState: '',
             scanServiceAttributeState: '',
@@ -62,9 +64,16 @@ class Scan extends Component<{}> {
 
         DeviceEventEmitter.addListener('ConnectStateUpdated', function (e) {
             that.setState({ connectState: e.stateLabel });
+            if (that.isReady()){
+                that.setState({isLoading: false});
+            }
         });
         DeviceEventEmitter.addListener('ScanServiceAttributeUpdated', function (e) {
             that.setState({ scanServiceAttributeState: e.stateLabel });
+
+            if (that.isReady()){
+                that.setState({isLoading: false});
+            }
         });
         DeviceEventEmitter.addListener('ScanJobStateUpdated', function (e) {
             that.setState({ scanJobState: e.stateLabel });
@@ -79,7 +88,7 @@ class Scan extends Component<{}> {
             that.setState({ scannedImage: e.stateLabel });
             console.log(e.stateLabel);
             if (e.stateLabel != null && e.stateLabel !== '') {
-                that.setState({ isEditMode: true });
+                that.setState({ isEditMode: true/*, isLoading: false*/ });
             } else {
                 that.setState({ isEditMode: false });
             }
@@ -130,6 +139,12 @@ class Scan extends Component<{}> {
                             <TouchableOpacity onPress={this.doUpload.bind(this)} style={[styles.button, { width: 200 }]}>
                                 <Text style={styles.buttonFont}>Upload</Text>
                             </TouchableOpacity>
+                            <TouchableOpacity onPress={this.doUploadEncoded.bind(this)} style={[styles.button, { width: 200 }]}>
+                                <Text style={styles.buttonFont}>Upload (encoded)</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.doUploadDecoded.bind(this)} style={[styles.button, { width: 200 }]}>
+                                <Text style={styles.buttonFont}>Upload (decoded)</Text>
+                            </TouchableOpacity>
                         </View>
                         {this.renderSpacer()}
 
@@ -139,22 +154,28 @@ class Scan extends Component<{}> {
                         <Text style={styles.title}>Scanned Image: {this.state.scannedImage}</Text>
 
                     </View>
+                    {this.renderSpinner()}
                 </ScrollView>
             </View>
         );
     }
 
     scan() {
-        if (!this.isReady()) {
+        var that = this;
+
+        if (!that.isReady()) {
             alert('Scan', 'Please wait for the scan service to be ready.');
             return;
         }
+
+        // that.setState({isLoading: true});
 
         RicohScannerAndroid.start()
             .then((msg) => {
                 console.log('success!!')
             }, (error) => {
                 console.log('error!!')
+                // that.setState({isLoading: false});
             });
     }
 
@@ -206,7 +227,120 @@ class Scan extends Component<{}> {
 
         const { upload } = this.props;
         try {
-            const data = this.state.scannedImage;
+            var data = this.state.scannedImage;
+            //data = Base64.atob(data); // error
+            // data = Base64.btoa(data); 
+        
+            upload(sid, document, data);
+
+            this.setState({
+                scanJobState: '',
+                scanServiceAttributeListenerError: '',
+                scanJobListenerError: '',
+                scannedImage: '',
+                fileName: '',
+                isEditMode: false,
+            });
+        } catch (error) {
+            alert('Upload document', error.message);
+            this.setState({
+                scanJobState: '',
+                scanServiceAttributeListenerError: '',
+                scanJobListenerError: '',
+                scannedImage: '',
+                fileName: '',
+                isEditMode: false,
+            });
+        }
+    }
+
+    doUploadEncoded() {
+        if (!this.state.isEditMode) {
+            alert('Upload document', 'Please wait for the scan operation to be done.');
+            return;
+        }
+
+        if (!this.state.fileName) {
+            alert('Upload document', 'Please input a file name.');
+            return;
+        }
+
+        // this.setState({ uploadButtonText: 'Uploading' });
+
+        const { sid, username, password, navigation } = this.props;
+        let name = this.state.fileName;
+        let type = 'pdf';
+        let folderId = this.state.folderId;
+        let document = {
+            "id": 0,
+            "fileSize": this.state.scannedImage.length,
+            "title": name,
+            "type": type,
+            "fileName": name + (type === '' ? '' : `.${type}`),
+            "folderId": folderId,
+        };
+
+        const { upload } = this.props;
+        try {
+            var data = this.state.scannedImage;
+            //data = Base64.atob(data); // error
+            data = Base64.btoa(data); 
+        
+            upload(sid, document, data);
+
+            this.setState({
+                scanJobState: '',
+                scanServiceAttributeListenerError: '',
+                scanJobListenerError: '',
+                scannedImage: '',
+                fileName: '',
+                isEditMode: false,
+            });
+        } catch (error) {
+            alert('Upload document', error.message);
+            this.setState({
+                scanJobState: '',
+                scanServiceAttributeListenerError: '',
+                scanJobListenerError: '',
+                scannedImage: '',
+                fileName: '',
+                isEditMode: false,
+            });
+        }
+    }
+
+    doUploadDecoded() {
+        if (!this.state.isEditMode) {
+            alert('Upload document', 'Please wait for the scan operation to be done.');
+            return;
+        }
+
+        if (!this.state.fileName) {
+            alert('Upload document', 'Please input a file name.');
+            return;
+        }
+
+        // this.setState({ uploadButtonText: 'Uploading' });
+
+        const { sid, username, password, navigation } = this.props;
+        let name = this.state.fileName;
+        let type = 'pdf';
+        let folderId = this.state.folderId;
+        let document = {
+            "id": 0,
+            "fileSize": this.state.scannedImage.length,
+            "title": name,
+            "type": type,
+            "fileName": name + (type === '' ? '' : `.${type}`),
+            "folderId": folderId,
+        };
+
+        const { upload } = this.props;
+        try {
+            var data = this.state.scannedImage;
+            data = Base64.atob(data); // error
+            //data = Base64.btoa(data); 
+        
             upload(sid, document, data);
 
             this.setState({
@@ -238,6 +372,38 @@ class Scan extends Component<{}> {
 
     isReady() {
         return this.state.connectState == 'CONNECTED' && this.state.scanServiceAttributeState == 'Ready';
+    }
+
+    renderSpinner() {
+        const { isLoading } = this.state;
+        return (
+            <View style={[styles.container, {
+                flex: 1,
+                //backgroundColor: 'transparent',
+                opacity: 0.5,
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                //flexDirection: 'column',
+                display: isLoading ? 'flex' : 'none'
+            }]}>
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    //alignItems: 'center'
+                    height: 40
+                }}>
+                    <ActivityIndicator
+                        animating={true}
+                        style={[styles.gray, { height: 80 }]}
+                        color='red'
+                        size="large"
+                    />
+                </View>
+            </View>);
     }
 }
 

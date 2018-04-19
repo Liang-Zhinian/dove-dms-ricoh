@@ -5,38 +5,48 @@
  */
 
 import React, { Component } from 'react';
-import { View, Platform, StatusBar } from 'react-native';
-import { Provider } from 'react-redux';
+import {
+    StyleSheet,
+} from 'react-native';
+import { connect } from 'react-redux';
 
-import configureStore from './configureStore';
+import LoginScreen from './login/LoginScreen';
+import AppWithNavigationState from './navigators/AppNavigator';
 
-import { Home, Documents } from './modules';
-import AppWithNavigation from './ReduxNavigation';
+class App extends Component<{}> {
+    render() {
+        if (!this.props.isLoggedIn) {
+            return <LoginScreen />;
+        }
 
-
-export default class App extends Component<{}> {
-  constructor() {
-    super();
-    this.state = {
-      isLoading: true,
-      store: configureStore(() => this.setState({ isLoading: false })),
-    };
-  }
-
-  render() {
-    if (this.state.isLoading) {
-      return null;
+        return <AppWithNavigationState />;
     }
-
-    return (
-      <Provider store={this.state.store}>
-        {/*<View style={{ flex: 1 }}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
-    {Platform.OS === 'android' && <View style={{ backgroundColor: 'rgba(0,0,0,0.2)' }} />}*/}
-          <AppWithNavigation />
-        {/*</View>*/}
-      </Provider>
-    );
-  }
 }
 
+// 获取 state 变化
+const mapStateToProps = (state) => {
+    return {
+        isLoggedIn: state.auth.isLoggedIn,
+    }
+};
+
+// 发送行为
+const mapDispatchToProps = (dispatch) => {
+    return {
+    }
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+    null,
+    {
+        withRef: true
+    }
+)(App);
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+});

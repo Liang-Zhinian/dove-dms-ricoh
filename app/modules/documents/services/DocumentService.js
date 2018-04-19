@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import {
     Alert,
+    Platform
 } from 'react-native';
 import RNFS from 'react-native-fs';
 import RNFetchBlob from 'react-native-fetch-blob';
@@ -66,7 +67,7 @@ const downloadToDocumentDirectory = (sid, docs) => {
                 console.log('saving ' + fileName);
                 let path = `${RNFS.DocumentDirectoryPath}/${fileName}`;
                 // write the file
-                RNFS.writeFile(path, Base64.atob(content), 'utf8')
+                RNFS.writeFile(path, content /*Base64.btoa(content)*/, 'base64')
                     .then((success) => {
                         console.log(success)
                         console.log('FILE WRITTEN!');
@@ -84,34 +85,6 @@ const downloadToDocumentDirectory = (sid, docs) => {
         });
 }
 
-/*
-const downloadToCacheDirectory = (sid, doc, onProgress) => {
-    const { fileName } = doc;
-
-    getContentSOAP(sid, doc.id, onProgress)
-        .then(({ id, response }) => {
-            return toJson(response).Body.getContentResponse.return;
-        })
-        .then(content => {
-            console.log('saving ' + fileName);
-            const SHA1 = require('crypto-js/sha1');
-            const path = RNFetchBlob.fs.dirs.CacheDir + '_immutable_images/' + fileName;
-            // write the file
-            RNFS.writeFile(path, Base64.atob(content), 'utf8')
-                .then((success) => {
-                    console.log(success)
-                    console.log('FILE WRITTEN!');
-                })
-                .catch((err) => {
-                    console.log(err.message);
-                });
-        })
-        .catch(reason => {
-            console.log(reason)
-        });
-
-}*/
-
 const downloadToCacheDirectory = (sid, doc, onProgress, onCanceled) => {
     const that = this;
     var downloadManager = new DownloadManager();
@@ -125,7 +98,7 @@ const downloadToCacheDirectory = (sid, doc, onProgress, onCanceled) => {
             // Alert.alert('Download Ticket', ticket, [{ text: 'OK', onPress: () => console.log('OK Pressed') },], { cancelable: false });
 
             const SHA1 = require('crypto-js/sha1');
-            const path = RNFetchBlob.fs.dirs.CacheDir + '_immutable_images/' + SHA1(ticket) + '.' + doc.type;
+            const path = RNFetchBlob.fs.dirs.CacheDir + '/' + SHA1(ticket) + '.' + doc.type;
             // Alert.alert('Temp file path', path, [{ text: 'OK', onPress: () => console.log('OK Pressed') },], { cancelable: false });
 
             return downloadManager.start(ticket, {
@@ -133,9 +106,10 @@ const downloadToCacheDirectory = (sid, doc, onProgress, onCanceled) => {
                 // this is much more performant.
                 fileCache: true,
                 path,
+                //appendExt: doc.type
             });
         })
-        .catch(error=>{
+        .catch(error => {
             Toast.show(error, Toast.SHORT);
             throw new Error(error);
         })

@@ -106,7 +106,7 @@ const mapStateToProps = (state) => {
         isLoggedIn: state[NAME].account.isLoggedIn,
         username: state[NAME].account.username,
         password: state[NAME].account.password,
-        sid: state[NAME].account.sid
+        sid: state[NAME].account.token.sid
     }
 };
 

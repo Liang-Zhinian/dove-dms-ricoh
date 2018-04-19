@@ -17,6 +17,7 @@ import {
     DeviceEventEmitter,
     ScrollView,
     Button,
+    ActivityIndicator,
 } from 'react-native';
 import { connect } from 'react-redux';
 import ModalSelector from 'react-native-modal-selector';
@@ -54,9 +55,11 @@ export default class Settings extends Component<{}> {
     constructor(props) {
         super(props);
         this.state = {
+            isLoading: true,
             printServiceAttributeStatus: null,
-            copies: 1,
+            copies: '1',
             printColor: 'Monochrome',
+            filePath: null,
         };
     }
 
@@ -78,6 +81,8 @@ export default class Settings extends Component<{}> {
                             // save to a new path
                             RNFS.writeFile(newPath, pdfContent, 'base64')
                                 .then(() => {
+
+
                                     console.log('File save @', newPath);
                                     Toast.show(`File save @ ${newPath}`, Toast.SHORT);
 
@@ -104,22 +109,44 @@ export default class Settings extends Component<{}> {
             that.setState({ printServiceAttributeStatus: e.status });
             console.log(e.status);
 
+            that.setState({isLoading: false});
         });
     }
 
     initPrinter(filePath) {
+        var that = this;
+        that.setState({ filePath });
         RicohPrinterAndroid.onCreate()
             .then((msg) => {
-                alert('Print document', msg);
+                //alert('Print document', msg);
                 const { navigate, state } = that.props.navigation;
                 // const {filePath, fileType} = state.params;
-                RicohPrinterAndroid.setPrintFilePath(filePath)
-                    .then(msg => alert('Print document', msg),
-                        error => alert('Print document', error.message()))
+                that.setPrintFilePath(filePath);
+                that.setPrintColor(that.state.printColor);
+                that.setPrintCopies(that.state.copies);
 
+                //that.setState({isLoading: false});
             }, (error) => {
                 alert('Print document', error.message());
             });
+    }
+
+    setPrintFilePath(filePath) {
+        RicohPrinterAndroid.setPrintFilePath(filePath)
+            .then(msg => { }, // alert('Print document', msg),
+                error => alert('Print document', error.message()));
+    }
+
+    setPrintColor(color) {
+        RicohPrinterAndroid.setPrintColor(color)
+            .then(msg => { }, // alert('Print document', msg),
+                error => alert('Print document', error.message()));
+    }
+
+    setPrintCopies(copies) {
+        RicohPrinterAndroid.setPrintCopies('' + copies + '')
+            .then(msg => { }, //alert('Print document', msg),
+                error => alert('Print document', error.message()));
     }
 
     render() {
@@ -133,7 +160,12 @@ export default class Settings extends Component<{}> {
                         ref="txtCopies"
                         blurOnSubmit={true}
                         underlineColorAndroid={'transparent'}
-                        onChangeText={(val) => { this.setState({ copies: val }) }}
+                        onChangeText={(val) => {
+                            this.setState({ copies: val });
+
+                            this.setPrintCopies(val);
+                        }}
+                        value={this.state.copies}
                     // setState is asynchronous and use the second argument to setState which is a callback
                     />
                 </View>
@@ -142,7 +174,10 @@ export default class Settings extends Component<{}> {
                     <ModalSelector
                         data={PrintColors}
                         initValue={PrintColors[1].label}
-                        onChange={(option) => { this.setState({ printColor: option.label }) }} />
+                        onChange={(option) => {
+                            this.setState({ printColor: option.label });
+                            this.setPrintColor(option.label);
+                        }} />
                 </View>
                 <View style={[{ flex: 1 }, styles.row]}>
                     <Text style={[styles.title]}>Print Service Status</Text>
@@ -154,8 +189,9 @@ export default class Settings extends Component<{}> {
                     <Text style={styles.buttonFont}>Print</Text>
                 </TouchableOpacity>
                 {this.renderSpacer()}
-                <Text style={styles.title}>Print File Path: {this.props.navigation.state.params.filePath}</Text>
+                <Text style={styles.title}>Print File Path: {this.state.filePath}</Text>
 
+                {this.renderSpinner()}
             </ScrollView>
         );
     }
@@ -166,9 +202,10 @@ export default class Settings extends Component<{}> {
             return false;
         }
 
+        //that.setState({isLoading: true});
         RicohPrinterAndroid.onStartPrint()
             .then((msg) => {
-                alert('Print document', msg);
+                //alert('Print document', msg);
             }, (error) => {
                 alert('Print document', error.message());
             });
@@ -177,7 +214,7 @@ export default class Settings extends Component<{}> {
     open() {
         RicohPrinterAndroid.openActivity()
             .then((msg) => {
-                alert('Print document', msg);
+                //alert('Print document', msg);
             }, (error) => {
                 alert('Print document', error.message());
             });
@@ -191,6 +228,38 @@ export default class Settings extends Component<{}> {
 
     isPrintFileReady() {
         return this.props.navigation.state.params.filePath && this.props.navigation.state.params.filePath != '';
+    }
+
+    renderSpinner() {
+        const { isLoading } = this.state;
+        return (
+            <View style={[styles.container, {
+                flex: 1,
+                //backgroundColor: 'transparent',
+                opacity: 0.9,
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                //flexDirection: 'column',
+                display: isLoading ? 'flex' : 'none'
+            }]}>
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    //alignItems: 'center'
+                    height: 40
+                }}>
+                    <ActivityIndicator
+                        animating={true}
+                        style={[styles.gray, { height: 80 }]}
+                        color='red'
+                        size="large"
+                    />
+                </View>
+            </View>);
     }
 }
 
@@ -240,4 +309,7 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         borderRadius: 4
     },
+    gray: {
+
+    }
 });

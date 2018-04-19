@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions';
 import moment from 'moment';
-import { USER_PROFILE } from '../constants'
+import { USER_PROFILE, ERROR } from '../constants'
 import { getUserByUsernameSOAP } from '../api'
 
 
@@ -19,13 +19,13 @@ export const getUserByUsername = (sid: string, username: string): ActionAsync =>
             .then(user => {
                 return dispatch({
                     type: USER_PROFILE,
-                    payload: user,
+                    payload: {user},
                 });
             })
             .catch((error) => {
                 dispatch({
-                    type: 'ERROR',
-                    payload: error
+                    type: ERROR,
+                    payload: { error }
                 });
             })
     }

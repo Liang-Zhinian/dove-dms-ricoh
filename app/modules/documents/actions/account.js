@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions';
 import moment from 'moment';
-import { SAVE_ACCOUNT, LOGIN, LOGOUT, RENEW, VALID } from '../constants'
+import { SAVE_ACCOUNT, LOGIN, LOGOUT, RENEW, VALID, ERROR } from '../constants'
 import { loginSOAP, logoutSOAP, validSOAP, renewSOAP } from '../api'
 
 
@@ -30,10 +30,10 @@ export type ActionAsync = (dispatch: Function, getState: Function) => void
 export const login = (username: string, password: string): ActionAsync => {
   return (dispatch, getState) => {
 
-    dispatch(saveAccount(username, password))
 
     loginSOAP(username, password)
       .then(sid => {
+        debugger;
         let expires_date = moment();
         expires_date.add(25, 'minutes');
         expires_date = expires_date.format('YYYY-MM-DD HH:mm:ss')
@@ -48,11 +48,13 @@ export const login = (username: string, password: string): ActionAsync => {
             },
           }
         });
+
+        dispatch(saveAccount(username, password))
       })
       .catch((error) => {
         dispatch({
-          type: 'ERROR',
-          error
+          type: ERROR,
+          payload: { error }
         })
       })
   }
@@ -82,8 +84,8 @@ export const logout = (sid: string, navigation: any): ActionAsync => {
       })
       .catch((error) => {
         dispatch({
-          type: 'ERROR',
-          error
+          type: ERROR,
+          payload: { error }
         })
       })
   }
@@ -111,8 +113,8 @@ export const renew = (sid: string) => async (dispatch, getState) => {
     })
     .catch((error) => {
       dispatch({
-        type: 'ERROR',
-        error
+        type: ERROR,
+        payload: { error }
       })
     })
 }
@@ -131,8 +133,8 @@ export const valid = (sid: string) => async (dispatch, getState) => {
     })
     .catch((error) => {
       dispatch({
-        type: 'ERROR',
-        error
+        type: ERROR,
+        payload: { error }
       });
     })
 

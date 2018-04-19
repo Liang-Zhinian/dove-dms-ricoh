@@ -348,24 +348,25 @@ public class RCTRicohPrinterModule extends ReactContextBaseJavaModule {
             mHolder.setSelectedCopiesValue(null);
         }
         if (categories.contains(Staple.class)) {
-            List<Staple> stapleList = StapleUtil.getSelectableStapleList(mContext);
-
-            if (stapleList != null) {
-                mHolder.setSelectedStaple(stapleList.get(0));
-            } else {
-                mHolder.setSelectedStaple(null);
-            }
+//            List<Staple> stapleList = StapleUtil.getSelectableStapleList(mContext);
+//            if (stapleList != null) {
+//                mHolder.setSelectedStaple(stapleList.get(0));
+                mHolder.setSelectedStaple(Staple.TOP_LEFT);
+//            } else {
+//                mHolder.setSelectedStaple(null);
+//            }
         } else {
             mHolder.setSelectedStaple(null);
         }
         if (categories.contains(PrintColor.class)) {
-            List<PrintColor> printColorList = PrintColorUtil.getSelectablePrintColorList(mContext);
+//            List<PrintColor> printColorList = PrintColorUtil.getSelectablePrintColorList(mContext);
 
-            if (printColorList != null) {
-                mHolder.setSelectedPrintColorValue(printColorList.get(0));
-            } else {
-                mHolder.setSelectedPrintColorValue(null);
-            }
+//            if (printColorList != null) {
+//                mHolder.setSelectedPrintColorValue(printColorList.get(0));
+                mHolder.setSelectedPrintColorValue(PrintColor.MONOCHROME);
+//            } else {
+//                mHolder.setSelectedPrintColorValue(null);
+//            }
         } else {
             mHolder.setSelectedPrintColorValue(null);
         }

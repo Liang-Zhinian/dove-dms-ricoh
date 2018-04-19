@@ -24,6 +24,7 @@ import RicohAuthAndroid from '../../../components/RCTRicohAuthAndroid';
 import { default as Toast } from '../../../components/RCTToastModuleAndroid';
 import { login, logout, valid } from '../../../actions/auth';
 import { HeaderButton } from './components/HeaderButtons';
+import requireAuth from '../../../HOC/require_auth';
 
 import {
 	ComponentStyles,
@@ -439,7 +440,7 @@ const mapStateToProps = (state) => {
 		isLoggedIn: state[NAME].account.isLoggedIn,
 		username: state[NAME].account.username,
 		password: state[NAME].account.password,
-		sid: state[NAME].account.sid,
+		sid: state[NAME].account.token.sid || null,
 		auth: state.auth
 	}
 };
@@ -462,7 +463,7 @@ export default connect(
 	{
 		withRef: true
 	}
-)(Home);
+)(requireAuth(Home));
 
 const styles = StyleSheet.create({
 	container: {

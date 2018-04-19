@@ -25,7 +25,8 @@ export const login = (username: string, password: string): ActionAsync => {
     return async (dispatch, getState) => {
         try {
             let sid = await loginSOAP(username, password);
-            console.log('loginSOAP returns');
+            debugger;
+            console.log('loginSOAP returns'+sid);
             let expires_date = moment();
             expires_date.add(25, 'minutes');
             expires_date = expires_date.format('YYYY-MM-DD HH:mm:ss')
@@ -55,6 +56,7 @@ export const login = (username: string, password: string): ActionAsync => {
             })
             return sid;
         } catch (error) {
+            debugger;
             dispatch({
                 type: 'ERROR',
                 payload: error

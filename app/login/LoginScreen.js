@@ -200,7 +200,7 @@ async function timeout(ms: number): Promise {
     });
 }
 
-function select(store) {
+function select(state) {
     return {
         auth: state.auth
     };

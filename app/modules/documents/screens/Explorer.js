@@ -111,6 +111,32 @@ class Explorer extends Component {
     // console.log('constructor: ' + (params.node ? params.node.name : 'Documents'));
   }
 
+  resetState() {
+    this.setState({
+      refreshing: false,
+      folderCreationModalVisible: false,
+      modalVisible: false,
+      isEditMode: false,
+      lastTick: Date.now(),
+      isLoading: false,
+      dataSource: [],
+      mainListVisible: true,
+      username: '',
+      password: '',
+      sid: '',
+      folderId: null,
+      docId: null,
+      progressBarVisible: false,
+      progress: 0,
+      selectedList: [],
+      folderName: '',
+      isLoginLoading: false,
+      searchListDataSource: [],
+      searchListVisible: false,
+      isConnected: null,
+    });
+  }
+
   componentWillMount() {
     // console.log('componentWillMount');
 
@@ -205,6 +231,8 @@ class Explorer extends Component {
       'connectionChange',
       that._handleConnectivityChange.bind(that)
     )
+
+    that.resetState();
   }
 
   _handleConnectivityChange(isConnected) {
@@ -677,33 +705,33 @@ class Explorer extends Component {
     const { sid, navigation: { navigate } } = that.props;
 
     DocumentService.downloadToCacheDirectory(sid, doc, that.updateProgress, that.resetDownloadTask)
-    .then(man => {
-      that.downloadManger = man;
-      that.downloadManger.onCanceled = that.resetDownloadTask;
-      that.downloadManger.onProgress = (received, total) => { that.updateProgress(received, fileSize) };
+      .then(man => {
+        that.downloadManger = man;
+        that.downloadManger.onCanceled = that.resetDownloadTask;
+        that.downloadManger.onProgress = (received, total) => { that.updateProgress(received, fileSize) };
 
-      return man.task;
-    })
-    .then(task => { return task.path() })
-    .then((path) => {
-      if (!path) return;
-      // the temp file path
-      console.log('The file saved to ', path);
-      
-      that.resetDownloadTask();
+        return man.task;
+      })
+      .then(task => { return task.path() })
+      .then((path) => {
+        if (!path) return;
+        // the temp file path
+        console.log('The file saved to ', path);
 
-      navigate('Print', { filePath: path, fileType: type, fileName });
-    })
-    .catch((err) => {
-      that.resetDownloadTask();
-      if (err.message === 'cancelled') return;
-      console.log(err);
-      // Toast.show(err.message, Toast.SHORT);
+        that.resetDownloadTask();
 
-      alert('Print', err.message);
-    });
-    
-      
+        navigate('Print', { filePath: path, fileType: type, fileName });
+      })
+      .catch((err) => {
+        that.resetDownloadTask();
+        if (err.message === 'cancelled') return;
+        console.log(err);
+        // Toast.show(err.message, Toast.SHORT);
+
+        alert('Print', err.message);
+      });
+
+
 
   }
 
@@ -870,6 +898,8 @@ class Explorer extends Component {
 
 function select(store) {
   //console.log('select');
+  var account = parseAccount(store[NAME].account);
+
   return {
     needReload: store[NAME].document.needReload,
     dataSource: store[NAME].document.dataSource,
@@ -877,11 +907,13 @@ function select(store) {
     isEditMode: store[NAME].document.isEditMode,
     isDownloading: store[NAME].document.isDownloading,
 
-    username: store[NAME].account.username,
-    password: store[NAME].account.password,
-    sid: store[NAME].account.token.sid,
-    expires_date: store[NAME].account.token.expires_date,
-    valid: store[NAME].account.valid,
+    username: account.username,
+    password: account.password,
+    sid: account.token.sid,
+    expires_date: account.token.expires_date,
+    // valid: store[NAME].account.valid,
+
+
   };
 }
 
@@ -904,7 +936,15 @@ function dispatch(dispatch) {
 
 export default connect(select, dispatch)(Explorer);
 
+function parseAccount(acc) {
+  var account = acc;
+  if (!acc.username) account.username = '';
+  if (!acc.password) account.password = '';
+  if (!acc.token) account.token = { sid: null, expires_date: null };
+  if (!acc.username) account.username = '';
 
+  return account;
+}
 
 const styles = StyleSheet.create({
   container: {

@@ -3,6 +3,8 @@
 export const NAME = 'Documents'
 
 //action types
+export const ERROR = `${NAME}/ERROR`;
+
 export const SAVE_ACCOUNT = `${NAME}/SAVE_ACCOUNT`;
 export const LOGIN = `${NAME}/LOGIN`;
 export const LOGOUT = `${NAME}/LOGOUT`;

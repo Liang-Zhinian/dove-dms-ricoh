@@ -47,6 +47,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
@@ -739,6 +740,7 @@ public class RCTRicohScanner extends ReactContextBaseJavaModule implements IScan
                 byte[] b = binResp.getBytes();
                 String imgString = Base64.encodeToString(b, Base64.DEFAULT);
 
+
                 // 2
 //                ByteArrayOutputStream result = new ByteArrayOutputStream();
 //                byte[] buffer = new byte[1024];
@@ -759,6 +761,7 @@ public class RCTRicohScanner extends ReactContextBaseJavaModule implements IScan
                 reactContext = getReactApplicationContext();
                 params = Arguments.createMap();
                 params.putString("stateLabel", imgString);
+
                 sendEvent(reactContext, "ScannedImageUpdated", params);
 
 
