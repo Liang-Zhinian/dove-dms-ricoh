@@ -28,6 +28,8 @@ export const AppNavigator = StackNavigator(
         initialRouteName: 'Main',
     });
 
+
+
 class AppWithNavigationState extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,

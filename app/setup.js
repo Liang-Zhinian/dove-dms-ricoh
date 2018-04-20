@@ -11,6 +11,7 @@ import { Provider } from 'react-redux';
 import configureStore from './store';
 
 import AppWithNavigationState from './navigators/AppNavigator';
+import App from './App';
 
 
 export default class setup extends Component<{}> {
@@ -32,7 +33,7 @@ export default class setup extends Component<{}> {
         {/*<View style={{ flex: 1 }}>
           {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
     {Platform.OS === 'android' && <View style={{ backgroundColor: 'rgba(0,0,0,0.2)' }} />}*/}
-          <AppWithNavigationState />
+          <App />
         {/*</View>*/}
       </Provider>
     );
