@@ -10,20 +10,18 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-// import LoginScreen from './login/LoginScreen';
-import AppNavigator from './navigators';
-// import Main from './router';
+import AppWithNavigationState from './navigators';
 
 class App extends Component<{}> {
     render() {
-        return <AppNavigator />;
+
+        return <AppWithNavigationState />;
     }
 }
 
 // 获取 state 变化
 const mapStateToProps = (state) => {
     return {
-        isLoggedIn: state.auth.isLoggedIn,
     }
 };
 

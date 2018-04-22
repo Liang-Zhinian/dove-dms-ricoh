@@ -9,22 +9,22 @@ import {
 import { addListener } from '../utils/redux';
 
 
-    // import configureAppWithNavigationState from './AppWithNavigationState';
-    import SecurityNavigator from './SecurityNavigator';
-    // import AppWithNavigationState from './AppNavigator';
-    import { BottomTabs } from './navigation';
-    
-    // const auth = configureAppWithNavigationState(SecurityNavigator);
-    // const main = configureAppWithNavigationState(BottomTabs);
-    
-    export const AppNavigator = StackNavigator({
-        Login: { screen: SecurityNavigator },
-        Main: {
-            screen: BottomTabs
-        },
-    }, {
-            headerMode: 'none'
-        })
+// import configureAppWithNavigationState from './AppWithNavigationState';
+import SecurityNavigator from './SecurityNavigator';
+// import AppWithNavigationState from './AppNavigator';
+import { BottomTabs } from './navigation';
+
+// const auth = configureAppWithNavigationState(SecurityNavigator);
+// const main = configureAppWithNavigationState(BottomTabs);
+
+export const AppNavigator = StackNavigator({
+    Login: { screen: SecurityNavigator },
+    Main: {
+        screen: BottomTabs
+    },
+}, {
+        headerMode: 'none'
+    })
 
 class AppWithNavigationState extends Component {
     static propTypes = {

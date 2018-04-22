@@ -10,7 +10,6 @@ import { Provider } from 'react-redux';
 
 import configureStore from './store';
 
-import AppWithNavigationState from './navigators/AppNavigator';
 import App from './App';
 
 
