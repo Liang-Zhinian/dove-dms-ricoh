@@ -7,9 +7,9 @@ import {
     // addNavigationHelpers,
 } from 'react-navigation';
 
-import SplashScreen from '../security/SplashScreen';
-import LoginScreen from '../security/LoginScreen';
-import RegistrationScreen from '../security/RegistrationScreen';
+import SplashScreen from '../login/SplashScreen';
+import LoginScreen from '../login/LoginScreen';
+import RegistrationScreen from '../login/RegistrationScreen';
 
 export default StackNavigator(
     {

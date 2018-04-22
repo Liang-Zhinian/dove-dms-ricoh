@@ -1,25 +1,30 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Dimensions from 'Dimensions';
-import {StyleSheet, Image} from 'react-native';
+import { StyleSheet, Image, ScrollView, View } from 'react-native';
 
 import bgSrc from '../images/wallpaper.png';
 
 export default class Wallpaper extends Component {
   render() {
     return (
-      <Image style={styles.picture} source={bgSrc}>
+      <View style={styles.container}>
+        <Image style={styles.picture} source={bgSrc} />
         {this.props.children}
-      </Image>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   picture: {
     flex: 1,
-    width: null,
-    height: null,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
     resizeMode: 'cover',
+    position: 'absolute'
   },
 });

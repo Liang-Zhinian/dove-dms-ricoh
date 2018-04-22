@@ -3,13 +3,30 @@ import { BackHandler, Platform, DeviceEventEmitter } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-    // StackNavigator,
+    StackNavigator,
     addNavigationHelpers,
 } from 'react-navigation';
-
 import { addListener } from '../utils/redux';
 
-class _nav extends Component {
+
+    // import configureAppWithNavigationState from './AppWithNavigationState';
+    import SecurityNavigator from './SecurityNavigator';
+    // import AppWithNavigationState from './AppNavigator';
+    import { BottomTabs } from './navigation';
+    
+    // const auth = configureAppWithNavigationState(SecurityNavigator);
+    // const main = configureAppWithNavigationState(BottomTabs);
+    
+    export const AppNavigator = StackNavigator({
+        Login: { screen: SecurityNavigator },
+        Main: {
+            screen: BottomTabs
+        },
+    }, {
+            headerMode: 'none'
+        })
+
+class AppWithNavigationState extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
         nav: PropTypes.object.isRequired,
@@ -30,10 +47,9 @@ class _nav extends Component {
     }
 
     render() {
-
-        const { dispatch, nav, navigator } = this.props;
+        const { dispatch, nav } = this.props;
         return (
-            <navigator navigation={addNavigationHelpers({
+            <AppNavigator navigation={addNavigationHelpers({
                 dispatch,
                 state: nav,
                 addListener,
@@ -91,11 +107,4 @@ function mapStateToProps(state) {
     };
 }
 
-var nav = connect(mapStateToProps)(_nav);
-
-export default configureAppWithNavigationState = (navigator) => {
-
-    return <nav navigator={navigator} />;
-}
-
-
+export default connect(mapStateToProps)(AppWithNavigationState);

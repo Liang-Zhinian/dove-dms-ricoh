@@ -75,25 +75,7 @@ class Splash extends Component {
 
         });
 
-        RicohAuthAndroid.getAuthState()
-            .then((msg) => {
-                console.log('success!!')
-            }, (error) => {
-                console.log('error!!')
-            });
-
-        AsyncStorage
-            .getItem('admin')
-            .then(data => {
-                if (data) {
-                    alert('User data from AsyncStorage: ' + data);
-                    let user = JSON.parse(data);
-                    that._signInAsync(user.username, user.password);
-                } else {
-                    that.setState({ newUser: true });
-                }
-                that.props.doneCheckingUser();
-            });
+        that._getAuthStateAsync();
 
     }
 
@@ -109,23 +91,26 @@ class Splash extends Component {
     render() {
         const { container, image, text, title } = styles;
 
-        return (
-            <View style={container}>
-                <Text style={title}>Please wait ...</Text>
-            </View>
-        )
+        if (this.props.userChecking) {
+            return (
+                <View style={container}>
+                    <Text style={title}>Please wait ...</Text>
+                </View>
+            );
+        } else {
+
+            return (
+                <View style={container}>
+                    <Text style={title}>Ready</Text>
+                </View>
+            );
+        }
     }
 
     handleAppStateChange = (appState) => {
         console.log(`current state: ${appState.currentAppState}`);
         if (appState.currentAppState === 'active') {
-
-            RicohAuthAndroid.getAuthState()
-                .then((msg) => {
-                    console.log('success!!')
-                }, (error) => {
-                    console.log('error!!')
-                });
+            this._getAuthStateAsync();
         }
     }
 
@@ -181,6 +166,33 @@ class Splash extends Component {
                 }
             });
     };
+
+    _getAuthStateAsync = async () => {
+        this.props.checkingUser();
+
+        if (RicohAuthAndroid) {
+            RicohAuthAndroid.getAuthState()
+                .then((msg) => {
+                    console.log('success!!')
+                }, (error) => {
+                    console.log('error!!')
+                });
+        } else {
+
+            AsyncStorage
+                .getItem('admin')
+                .then(data => {
+                    if (data) {
+                        alert('User data from AsyncStorage: ' + data);
+                        let user = JSON.parse(data);
+                        that._signInAsync(user.username, user.password);
+                    } else {
+                        that.setState({ newUser: true });
+                    }
+                    that.props.doneCheckingUser();
+                });
+        }
+    }
 }
 
 async function timeout(ms: number): Promise {
@@ -222,7 +234,8 @@ const mapStateToProps = (state) => {
         // username: state[NAME].account.username,
         // password: state[NAME].account.password,
         // sid: state[NAME].account.sid,
-        auth: state.auth
+        auth: state.auth,
+        userChecking: state.auth_ext.userChecking,
     }
 };
 
@@ -232,6 +245,7 @@ const mapDispatchToProps = (dispatch) => {
         // 发送行为
         login: (username, password) => dispatch(login(username, password)),
         logout: (sid) => dispatch(logout(sid)),
+        checkingUser: () => { dispatch({ type: 'CHECKING_USER' }); },
         doneCheckingUser: () => { dispatch({ type: 'DONE_CHECKING_USER' }); }
     }
 };

@@ -20,7 +20,7 @@
 		"adb-install-android": "adb install android/app/build/outputs/apk/app-release.apk",
 		"adb-reverse": "adb reverse tcp:8081 tcp:8081",
 		"adb-uninstall": "adb uninstall com.dove",
-		"ios-dev": "react-native run-ios --simulator='iPhone 6'",
+		"ios-dev": "react-native run-ios --simulator='iPhone 6s'",
 		"ios-codepush-staging": "code-push release-react dmsapp ios",
 		"ios-codepush-production": "code-push release-react dmsapp ios -d Production",
 		"ios-bundle": "react-native bundle --dev false --entry-file index.ios.js --bundle-output ios/main.jsbundle --platform ios",

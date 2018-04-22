@@ -10,16 +10,13 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-import LoginScreen from './security/LoginScreen';
-import AppWithNavigationState from './navigators/AppNavigator';
+// import LoginScreen from './login/LoginScreen';
+import AppNavigator from './navigators';
+// import Main from './router';
 
 class App extends Component<{}> {
     render() {
-        if (!this.props.isLoggedIn) {
-            return <LoginScreen />;
-        }
-
-        return <AppWithNavigationState />;
+        return <AppNavigator />;
     }
 }
 

@@ -106,7 +106,7 @@ class UpdateScreen extends Component<{}> {
           <Text style={styles.syncButton}>Press for dialog-driven sync</Text>
         </TouchableOpacity>
         {progressView}
-        <Image style={styles.image} resizeMode={Image.resizeMode.contain} source={require("../images/laptop_phone_howitworks.png")}/>
+        <Image style={styles.image} resizeMode={Image.resizeMode.contain} source={require("../assets/laptop_phone_howitworks.png")}/>
         <TouchableOpacity onPress={this.toggleAllowRestart.bind(this)}>
           <Text style={styles.restartToggleButton}>Restart { this.state.restartAllowed ? "allowed" : "forbidden"}</Text>
         </TouchableOpacity>

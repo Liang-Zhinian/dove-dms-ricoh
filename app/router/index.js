@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Router, Scene, Actions, ActionConst } from 'react-native-router-flux';
 
-import LoginScreen from './LoginScreen';
-import SecondScreen from './SecondScreen';
+import LoginScreen from '../login/LoginScreen';
+import MainScreen from '../navigators/AppNavigator';
 
 export default class Main extends Component {
   render() {
@@ -15,8 +15,8 @@ export default class Main extends Component {
 	          hideNavBar={true}
 	          initial={true}
 	        />
-	        <Scene key="secondScreen"
-	          component={SecondScreen}
+	        <Scene key="mainScreen"
+	          component={MainScreen}
 	          animation='fade'
 	          hideNavBar={true}
 	        />
