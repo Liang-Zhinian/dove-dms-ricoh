@@ -14,16 +14,32 @@
 		"log": "adb logcat *:S ReactNative:V ReactNativeJS:V",
 		"precommit": "lint-staged && yarn test",
 		"prepush": "yarn test",
-		"release-android": "cd android && ./gradlew assembleRelease && cd ..",
-		"install-android": "adb install android/app/build/outputs/apk/app-release.apk",
-		"uninstall-app": "adb uninstall com.dove",
-		"release-ios": "react-native bundle --entry-file index.ios.js --platform ios --dev false --bundle-output ./ios/bundle/main.jsbundle --assets-dest ./ios/bundle",
-		"reverse": "adb reverse tcp:8081 tcp:8081",
 		"start": "node node_modules/react-native/local-cli/cli.js start",
 		"test": "flow && standard && jest",
-		"test-android": "cd android && gradlew installRelease",
-		"update-android": "code-push release-react dmsapp android",
-		"update-android-production": "code-push promote dmsapp Staging Production"
+
+		"codepush-key": "code-push deployment ls dmsapp -k",
+
+		"adb-install-android": "adb install android/app/build/outputs/apk/app-release.apk",
+		"adb-reverse": "adb reverse tcp:8081 tcp:8081",
+		"adb-uninstall": "adb uninstall com.dove",
+
+		"ios-dev": "react-native run-ios --simulator='iPhone 5'",
+		"ios-codepush-staging": "code-push release-react dmsapp ios",
+		"ios-codepush-production": "code-push release-react dmsapp ios -d Production",
+		"ios-bundle": "react-native bundle --dev false --entry-file index.ios.js --bundle-output ios/main.jsbundle --platform ios",
+		"ios-build": "react-native run-ios --configuration Release",
+
+		"android-codepush-staging": "code-push release-react dmsapp android",
+		"android-codepush-production": "code-push release-react dmsapp android -d Production",
+		"android-clean": "cd android && ./gradlew clean",
+		"android-build-debug": "cd android/ && ./gradlew assembleDebug",
+		"android-build-release": "cd android && ./gradlew assembleRelease",
+		"android-build-install-release": "cd android && gradlew installRelease",
+		"android-signkey": "keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000",
+		"android-release": "cd android && ./gradlew assembleRelease",
+		"android-signer": "cd android/app/build/outputs/apk/ && jarsigner -verbose -keystore ~/.android/debug.keystore -storepass android -keypass android app-release-unsigned.apk androiddebugkey",
+		"android-dev": "adb uninstall com.dove && react-native run-android && adb reverse tcp:8081 tcp:8081 && react-native start",
+		"android-bundle": "react-native bundle --platform android --dev false --entry-file ./index.android.js --bundle-output ./android/app/src/main/assets/index.android.bundle --sourcemap-output ./android/app/src/main/assets/index.android.map --assets-dest ./android/app/src/main/res/"
 	},
 	"lint-staged": {
 		"linters": {
@@ -52,7 +68,7 @@
 		"react-native-svg": "^6.0.1-rc.1",
 		"react-native-vector-icons": "^4.4.2",
 		"react-navigation": "^1.0.0-beta.30",
-    	"react-navigation-redux-helpers": "^1.0.0",
+		"react-navigation-redux-helpers": "^1.0.0",
 		"react-redux": "^5.0.6",
 		"redux": "^3.7.2",
 		"redux-actions": "^2.2.1",
