@@ -43,4 +43,8 @@ android/keystores/debug.keystore
 android/gradle.properties
 source/config/index.bak.js
 
+# yarn
+yarn.lock
+yarn-error.log
+
 __tests__

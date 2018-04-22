@@ -16,19 +16,15 @@
 		"prepush": "yarn test",
 		"start": "node node_modules/react-native/local-cli/cli.js start",
 		"test": "flow && standard && jest",
-
 		"codepush-key": "code-push deployment ls dmsapp -k",
-
 		"adb-install-android": "adb install android/app/build/outputs/apk/app-release.apk",
 		"adb-reverse": "adb reverse tcp:8081 tcp:8081",
 		"adb-uninstall": "adb uninstall com.dove",
-
-		"ios-dev": "react-native run-ios --simulator='iPhone 5'",
+		"ios-dev": "react-native run-ios --simulator='iPhone 6'",
 		"ios-codepush-staging": "code-push release-react dmsapp ios",
 		"ios-codepush-production": "code-push release-react dmsapp ios -d Production",
 		"ios-bundle": "react-native bundle --dev false --entry-file index.ios.js --bundle-output ios/main.jsbundle --platform ios",
 		"ios-build": "react-native run-ios --configuration Release",
-
 		"android-codepush-staging": "code-push release-react dmsapp android",
 		"android-codepush-production": "code-push release-react dmsapp android -d Production",
 		"android-clean": "cd android && ./gradlew clean",
@@ -65,6 +61,7 @@
 		"react-native-parallax-scroll-view": "^0.20.1",
 		"react-native-pdf": "^2.0.1",
 		"react-native-push-notification": "^3.0.1",
+		"react-native-router-flux": "^4.0.0-beta.28",
 		"react-native-svg": "^6.0.1-rc.1",
 		"react-native-vector-icons": "^4.4.2",
 		"react-navigation": "^1.0.0-beta.30",
