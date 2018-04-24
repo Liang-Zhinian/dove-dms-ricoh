@@ -33,7 +33,7 @@ class Splash extends Component {
             newUser: false,
         }
         this._isMounted = false;
-
+        this._sopEnabled = false;
 
     }
 
@@ -56,6 +56,7 @@ class Splash extends Component {
         });
 
         DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
+            console.log('onEntryInfoReceived');
             let entryInfo = JSON.parse(e.entryInfo);
 
             that.setState({ user: entryInfo });
@@ -69,6 +70,7 @@ class Splash extends Component {
                         that._signInAsync(user.username, user.password);
                     } else {
                         that.setState({ newUser: true });
+                        that.props.navigation.navigate('RegistrationScreen', { key: entryInfo.loginUserName });
                     }
                     that.props.doneCheckingUser();
                 });
@@ -81,7 +83,7 @@ class Splash extends Component {
 
     componentWillReceiveProps(nextProps) {
         // if (!nextProps.authenticated) this.props.navigation.navigate('Login')
-        Toast.show(`auth.isLoggedIn: ${auth.isLoggedIn}`, Toast.SHORT);
+        // Toast.show(`auth.isLoggedIn: ${nextProps.auth.isLoggedIn}`, Toast.SHORT);
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -168,9 +170,10 @@ class Splash extends Component {
     };
 
     _getAuthStateAsync = async () => {
-        this.props.checkingUser();
+        var that = this;
+        that.props.checkingUser();
 
-        if (RicohAuthAndroid) {
+        if (that._sopEnabled && RicohAuthAndroid) {
             RicohAuthAndroid.getAuthState()
                 .then((msg) => {
                     console.log('success!!')
@@ -178,17 +181,19 @@ class Splash extends Component {
                     console.log('error!!')
                 });
         } else {
-
+            // for testing
             AsyncStorage
-                .getItem('admin')
+                .getItem('jackl')
                 .then(data => {
                     if (data) {
-                        alert('User data from AsyncStorage: ' + data);
+                        // alert('User data from AsyncStorage: ' + data);
                         let user = JSON.parse(data);
                         that._signInAsync(user.username, user.password);
                     } else {
                         that.setState({ newUser: true });
+                        that.props.navigation.navigate('RegistrationScreen', { key: 'jackl' });
                     }
+                    
                     that.props.doneCheckingUser();
                 });
         }
