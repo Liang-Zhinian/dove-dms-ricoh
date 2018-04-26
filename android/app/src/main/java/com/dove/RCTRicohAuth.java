@@ -44,7 +44,6 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-
 /**
  * Created by Administrator on 2017/12/8.
  */
@@ -67,13 +66,8 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
         return constants;
     }
 
-
-    private void sendEvent(ReactContext reactContext,
-                           String eventName,
-                           @Nullable WritableMap params) {
-        reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
+    private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
     }
 
     private String loginUserId = "";
@@ -98,9 +92,7 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
         this.mIsDialogBtnClicked = mIsDialogBtnClicked;
     }
 
-
-    private AuthStateChangedEvent.EventListener mAuthStateChangedEventListener
-            = new AuthStateChangedEvent.EventListener() {
+    private AuthStateChangedEvent.EventListener mAuthStateChangedEventListener = new AuthStateChangedEvent.EventListener() {
         @Override
         public void onReceiveEvent(AuthStateChangedEvent event) {
             synchronized ((RCTRicohAuth.this)) {
@@ -127,8 +119,8 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
 
         // 1
         try {
-            final ApplicationInfo appInfo = this.getCurrentActivity().getPackageManager().getApplicationInfo(
-                    this.getCurrentActivity().getPackageName(), PackageManager.GET_META_DATA);
+            final ApplicationInfo appInfo = this.getCurrentActivity().getPackageManager()
+                    .getApplicationInfo(this.getCurrentActivity().getPackageName(), PackageManager.GET_META_DATA);
             productId = String.valueOf(appInfo.metaData.getInt("productId", 0));
         } catch (PackageManager.NameNotFoundException e) {
             productId = "";
@@ -136,21 +128,22 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
 
         // 2
         // Add listener and get current auth service state
-        AuthStateChangedEvent.addListener(RCTRicohAuth.this.getReactApplicationContext(), mAuthStateChangedEventListener);
-//        new GetAuthStateCommand(new GetAuthStateCommand.ResultReceiver() {
-//            @Override
-//            public void onReceiveResult(AuthState authState) {
-//                Log.d(Const.TAG, "Auth request result: " + authState.toString());
-//                String authStateStr = "Auth state: " + authState.toString();
-//
-//                WritableMap params = Arguments.createMap();
-//                params.putString("loginStatus", authState.getLoginStatus().toString());
-//                sendEvent(RCTRicohAuth.this.getReactApplicationContext(), "onLoginStatusReceived", params);
-//
-//                loginUserId = authState.getUserId();
-//                searchUser(authState.getUserName());
-//            }
-//        }).execute(this.getCurrentActivity().getApplicationContext());
+        AuthStateChangedEvent.addListener(RCTRicohAuth.this.getReactApplicationContext(),
+                mAuthStateChangedEventListener);
+        //        new GetAuthStateCommand(new GetAuthStateCommand.ResultReceiver() {
+        //            @Override
+        //            public void onReceiveResult(AuthState authState) {
+        //                Log.d(Const.TAG, "Auth request result: " + authState.toString());
+        //                String authStateStr = "Auth state: " + authState.toString();
+        //
+        //                WritableMap params = Arguments.createMap();
+        //                params.putString("loginStatus", authState.getLoginStatus().toString());
+        //                sendEvent(RCTRicohAuth.this.getReactApplicationContext(), "onLoginStatusReceived", params);
+        //
+        //                loginUserId = authState.getUserId();
+        //                searchUser(authState.getUserName());
+        //            }
+        //        }).execute(this.getCurrentActivity().getApplicationContext());
     }
 
     @ReactMethod
@@ -169,7 +162,7 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
 
                     if (authState.getLoginStatus() == AuthState.LOGIN_STATUS.LOGIN) {
                         loginUserId = authState.getUserId();
-                        searchUser(authState.getUserName());
+                         searchUser(authState.getUserName());
                     }
                 }
             }).execute(this.getCurrentActivity().getApplicationContext());
@@ -181,15 +174,24 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void searchUser(String searchString, Promise promise) {
+        try {
+
+            searchUser(searchString);
+            promise.resolve("searchUser success!!");
+        } catch (android.content.ActivityNotFoundException e) {
+
+            promise.reject("searchUser error!!");
+        }
+    }
 
     private void searchUser(String searchString) {
-        final SearchUserListAsyncTask searchUserListTask =
-                new SearchUserListAsyncTask();
+        final SearchUserListAsyncTask searchUserListTask = new SearchUserListAsyncTask();
         searchUserListTask.execute(searchString);
     }
 
-    class SearchUserListAsyncTask
-            extends AsyncTask<String, Void, List<Entry>> {
+    class SearchUserListAsyncTask extends AsyncTask<String, Void, List<Entry>> {
 
         private static final int USER_BUTTON_TEXT_SIZE_PIXELS = 20;
         private static final int USER_BUTTON_HEIGHT_PIXELS = 55;
@@ -242,8 +244,7 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
             final AddressBookSampleLogic logic = new AddressBookSampleLogic(productId);
 
             // 1
-            final List<Entry> entryList =
-                    new ArrayList<Entry>();
+            final List<Entry> entryList = new ArrayList<Entry>();
 
             GetEntryListResponseBody firstResponse = logic.getEntryList();
             if (firstResponse == null) {
@@ -256,8 +257,7 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
                 if (isCancelled()) {
                     return null;
                 }
-                final GetEntryListResponseBody nextResponse =
-                        logic.getContinuationEntryList(nextLink);
+                final GetEntryListResponseBody nextResponse = logic.getContinuationEntryList(nextLink);
                 addResultToEntryList(nextResponse, entryList);
                 if (nextResponse == null) {
                     return null;
@@ -266,17 +266,13 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
             }
 
             // 2
-            final List<Entry> hitEntryList =
-                    new ArrayList<Entry>();
+            final List<Entry> hitEntryList = new ArrayList<Entry>();
 
-            for (final Iterator<Entry> iterator = entryList.iterator();
-                 iterator.hasNext(); ) {
-                final Entry simpleEntry =
-                        (Entry) iterator.next();
+            for (final Iterator<Entry> iterator = entryList.iterator(); iterator.hasNext();) {
+                final Entry simpleEntry = (Entry) iterator.next();
 
                 final String name = simpleEntry.getName();
-                if (name != null
-                        && name.contains(searchStr)) {
+                if (name != null && name.contains(searchStr)) {
                     hitEntryList.add(simpleEntry);
                 }
 
@@ -299,8 +295,7 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
                 return;
             }
             final EntryArray entryArray = result.getEntriesData();
-            for (final Iterator<Entry> iterator = entryArray.iterator();
-                 iterator.hasNext(); ) {
+            for (final Iterator<Entry> iterator = entryArray.iterator(); iterator.hasNext();) {
                 final Entry entry = iterator.next();
 
                 list.add(entry);
@@ -339,9 +334,8 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
 
             // 1
             if (hitEntryList == null) {
-                final Toast toast =
-                        Toast.makeText(RCTRicohAuth.this.getReactApplicationContext(),
-                                R.string.err_msg_get_entry_list, Toast.LENGTH_LONG);
+                final Toast toast = Toast.makeText(RCTRicohAuth.this.getReactApplicationContext(),
+                        R.string.err_msg_get_entry_list, Toast.LENGTH_LONG);
                 toast.show();
                 return;
             }
@@ -351,19 +345,16 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
             if (hitCount > 5) {
                 final TextView messageView = new TextView(RCTRicohAuth.this.getReactApplicationContext());
                 messageView.setTextSize(TypedValue.COMPLEX_UNIT_PX, USER_BUTTON_TEXT_SIZE_PIXELS);
-                final String message =
-                        String.format(
-                                RCTRicohAuth.this.getCurrentActivity().getString(R.string.err_msg_user_name_search_over),
-                                hitCount);
-                final Toast toast =
-                        Toast.makeText(RCTRicohAuth.this.getReactApplicationContext(),
-                                message, Toast.LENGTH_LONG);
+                final String message = String.format(
+                        RCTRicohAuth.this.getCurrentActivity().getString(R.string.err_msg_user_name_search_over),
+                        hitCount);
+                final Toast toast = Toast.makeText(RCTRicohAuth.this.getReactApplicationContext(), message,
+                        Toast.LENGTH_LONG);
                 toast.show();
                 return;
             }
 
-            for (final Iterator<Entry> iterator = hitEntryList.iterator();
-                 iterator.hasNext(); ) {
+            for (final Iterator<Entry> iterator = hitEntryList.iterator(); iterator.hasNext();) {
                 // 2
                 final Entry simpleEntry = iterator.next();
                 final String entryId = simpleEntry.getEntryId();
@@ -381,25 +372,25 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
 
                         String entryInfoStrs = entryJson.toString();
 
-//                        String entryInfoStrs = "{\"entryId\":\""
-//                                + simpleEntry.getEntryId()
-//                                + "\",\"registrationNumber\":\""
-//                                + simpleEntry.getRegistrationNumber()
-//                                + "\",\"name\":\""
-//                                + simpleEntry.getName()
-//                                + "\",\"mailAddress\":\"\",\"loginUserName\":\""
-//                                + simpleEntry.getUserCodeData().getLoginUserName()
-//                                + "\"}";
-                        Log.d(Const.TAG, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                        //                        String entryInfoStrs = "{\"entryId\":\""
+                        //                                + simpleEntry.getEntryId()
+                        //                                + "\",\"registrationNumber\":\""
+                        //                                + simpleEntry.getRegistrationNumber()
+                        //                                + "\",\"name\":\""
+                        //                                + simpleEntry.getName()
+                        //                                + "\",\"mailAddress\":\"\",\"loginUserName\":\""
+                        //                                + simpleEntry.getUserCodeData().getLoginUserName()
+                        //                                + "\"}";
+                        Log.d(Const.TAG,
+                                ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                         Log.d(Const.TAG, "Entry JSON string: " + entryInfoStrs);
 
                         WritableMap params = Arguments.createMap();
                         params.putString("entryInfo", entryInfoStrs);
                         sendEvent(RCTRicohAuth.this.getReactApplicationContext(), "onEntryInfoReceived", params);
 
-                        final Toast toast =
-                                Toast.makeText(RCTRicohAuth.this.getReactApplicationContext(),
-                                        entryInfoStrs, Toast.LENGTH_LONG);
+                        final Toast toast = Toast.makeText(RCTRicohAuth.this.getReactApplicationContext(),
+                                entryInfoStrs, Toast.LENGTH_LONG);
                         toast.show();
                     } catch (JSONException e) {
                         WritableMap params = Arguments.createMap();

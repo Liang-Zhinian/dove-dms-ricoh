@@ -33,7 +33,7 @@ class Splash extends Component {
             newUser: false,
         }
         this._isMounted = false;
-        this._sopEnabled = false;
+        this._sopEnabled = true;
 
     }
 
@@ -58,8 +58,14 @@ class Splash extends Component {
         DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
             console.log('onEntryInfoReceived');
             let entryInfo = JSON.parse(e.entryInfo);
+            alert('Get loggedin user');
+            alert(e.entryInfo);
 
             that.setState({ user: entryInfo });
+
+            var userId = entryInfo.loginUserName;
+            if (!userId)
+                userId = entryInfo.userId;
 
             AsyncStorage
                 .getItem(entryInfo.loginUserName)
