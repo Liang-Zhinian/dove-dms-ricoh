@@ -12,6 +12,8 @@ const initialNavState = AppNavigator.router.getStateForAction(
   tempNavState
 );
 
+initialNavState = AppNavigator.router.getStateForAction(NavigationActions.init())
+
 export default function nav(state = initialNavState, action) {
   let nextState;
   switch (action.type) {

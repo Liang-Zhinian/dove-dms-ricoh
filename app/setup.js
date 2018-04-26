@@ -13,29 +13,36 @@ import configureStore from './store';
 import App from './App';
 
 
-export default class setup extends Component<{}> {
-  constructor() {
-    super();
-    this.state = {
-      isLoading: true,
-      store: configureStore(() => this.setState({ isLoading: false })),
-    };
-  }
+export default setup = () => {
 
-  render() {
-    if (this.state.isLoading) {
-      return null;
+  
+
+  class Root extends Component<{}> {
+    constructor() {
+      super();
+      this.state = {
+        isLoading: true,
+        store: configureStore(() => this.setState({ isLoading: false })),
+      };
     }
 
-    return (
-      <Provider store={this.state.store}>
-        {/*<View style={{ flex: 1 }}>
+    render() {
+      if (this.state.isLoading) {
+        return null;
+      }
+
+      return (
+        <Provider store={this.state.store}>
+          {/*<View style={{ flex: 1 }}>
           {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
     {Platform.OS === 'android' && <View style={{ backgroundColor: 'rgba(0,0,0,0.2)' }} />}*/}
           <App />
-        {/*</View>*/}
-      </Provider>
-    );
+          {/*</View>*/}
+        </Provider>
+      );
+    }
   }
+
+  return Root;
 }
 

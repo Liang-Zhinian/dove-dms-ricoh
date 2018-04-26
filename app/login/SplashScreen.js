@@ -9,6 +9,7 @@ import {
     TextInput,
     AsyncStorage,
     DeviceEventEmitter,
+    Button
 } from 'react-native';
 import { connect } from 'react-redux';
 import RicohAuthAndroid from '../components/RCTRicohAuthAndroid';
@@ -33,19 +34,8 @@ class Splash extends Component {
             newUser: false,
         }
         this._isMounted = false;
-        this._sopEnabled = true;
+        this._sopEnabled = false;
 
-    }
-
-
-    componentDidMount() {
-        this._isMounted = true;
-
-        DeviceEventEmitter.addListener('appStateChange', this.handleAppStateChange);
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
     }
 
     componentWillMount() {
@@ -87,6 +77,17 @@ class Splash extends Component {
 
     }
 
+    componentDidMount() {
+        console.log('componentDidMount');
+        this._isMounted = true;
+
+        // DeviceEventEmitter.addListener('appStateChange', this.handleAppStateChange);
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     componentWillReceiveProps(nextProps) {
         // if (!nextProps.authenticated) this.props.navigation.navigate('Login')
         // Toast.show(`auth.isLoggedIn: ${nextProps.auth.isLoggedIn}`, Toast.SHORT);
@@ -103,15 +104,24 @@ class Splash extends Component {
             return (
                 <View style={container}>
                     <Text style={title}>Please wait ...</Text>
+
+                    <Button
+                        onPress={() => this.props.navigation.navigate('Login')}
+                        title="Go to Log In!"
+                    />
                 </View>
             );
         } else {
-
             return (
                 <View style={container}>
                     <Text style={title}>Ready</Text>
+
+                    <Button
+                        onPress={() => this.props.navigation.navigate('Signup')}
+                        title="Go to Signup!"
+                    />
                 </View>
-            );
+            )
         }
     }
 
@@ -188,20 +198,23 @@ class Splash extends Component {
                 });
         } else {
             // for testing
-            AsyncStorage
+            await AsyncStorage
                 .getItem('jackl')
                 .then(data => {
+                    that.props.doneCheckingUser();
                     if (data) {
                         // alert('User data from AsyncStorage: ' + data);
                         let user = JSON.parse(data);
+                        console.log('user found: ' + user.username);
                         that._signInAsync(user.username, user.password);
                     } else {
+                        console.log('new user');
                         that.setState({ newUser: true });
                         that.props.navigation.navigate('RegistrationScreen', { key: 'jackl' });
                     }
-                    
-                    that.props.doneCheckingUser();
+
                 });
+
         }
     }
 }

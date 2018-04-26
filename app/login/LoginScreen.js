@@ -28,7 +28,7 @@ class LoginScreen extends Component {
     static defaultProps = { _isMounted: PropTypes.boolean };
 
     static navigationOptions = {
-        headerLeft: null
+        header: null
     };
 
     constructor(props) {
@@ -65,60 +65,6 @@ class LoginScreen extends Component {
         const { username, password, token: { sid } } = user;
         if (username && password)
             that.setState({ username, password })
-
-        DeviceEventEmitter.addListener('onLoginStatusReceived', function (e) {
-            that.setState({ loginStatus: e.loginStatus, screenDismissed: true });
-            if (e.loginStatus == 'LOGOUT') {
-                that._signOutAsyc();
-            }
-        });
-
-        DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
-            let entryInfo = JSON.parse(e.entryInfo);
-
-            // that.setState({ user: entryInfo });
-
-            AsyncStorage
-                .getItem(entryInfo.loginUserName)
-                .then(data => {
-                    if (!!data) {
-                        //alert('User data from AsyncStorage: ' + data);
-                        return JSON.parse(data);
-                    }
-
-                    return null;
-                })
-                .then(user => {
-                    if (user != null) {
-                        that.setState({ username: user.username, password: user.password }, () => {
-                            that._signInAsync();
-                        });
-
-                        // that.props.saveAccount(user.username, user.password);
-                        //that.props.login(user.username, user.password);
-                        // navigate to Explorer screen
-                        //that.props.navigation.navigate('Main');
-
-                        Toast.show(`Welcome, ${user.username}`, Toast.SHORT);
-
-
-
-                    } else {
-                        //alert('Please register your account!');
-                        // navigate to Registration screen
-                        that.props.navigation.navigate('Registration', { key: entryInfo.loginUserName });
-                    }
-                });
-
-            // alert(entryInfo);
-        });
-
-        RicohAuthAndroid.getAuthState()
-            .then((msg) => {
-                console.log('success!!')
-            }, (error) => {
-                console.log('error!!')
-            });
 
     }
 

@@ -14,8 +14,8 @@ import RegistrationScreen from '../login/RegistrationScreen';
 export default StackNavigator(
     {
         SplashScreen: { screen: SplashScreen },
-        LoginScreen: { screen: LoginScreen },
         RegistrationScreen: { screen: RegistrationScreen },
+        LoginScreen: { screen: LoginScreen },
     },
     {
         headerMode: 'none',

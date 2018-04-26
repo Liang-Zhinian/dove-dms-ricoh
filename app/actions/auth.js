@@ -25,8 +25,8 @@ export const login = (username: string, password: string): ActionAsync => {
     return async (dispatch, getState) => {
         try {
             let sid = await loginSOAP(username, password);
-            debugger;
-            console.log('loginSOAP returns'+sid);
+            
+            console.log('loginSOAP returns '+sid);
             let expires_date = moment();
             expires_date.add(25, 'minutes');
             expires_date = expires_date.format('YYYY-MM-DD HH:mm:ss')
@@ -41,11 +41,6 @@ export const login = (username: string, password: string): ActionAsync => {
             };
 
             dispatch({
-                type: 'Login',
-                payload: user
-            })
-
-            dispatch({
                 type: `${Documents.NAME}/LOGIN`,
                 payload: user
             })
@@ -54,6 +49,12 @@ export const login = (username: string, password: string): ActionAsync => {
                 type: `${Documents.NAME}/SAVE_ACCOUNT`,
                 payload: user
             })
+
+            dispatch({
+                type: 'Login',
+                payload: user
+            })
+            
             return sid;
         } catch (error) {
             debugger;
@@ -72,6 +73,8 @@ export const logout = (sid: string): ActionAsync => {
             let result = await logoutSOAP(sid);
 
             console.log(`logoutSOAP.result.${result}`);
+
+            AsyncStorage.removeItem(getState().auth.username);
 
             dispatch({ type: 'Logout' });
 

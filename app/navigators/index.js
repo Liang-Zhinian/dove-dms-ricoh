@@ -9,22 +9,31 @@ import {
 import { addListener } from '../utils/redux';
 
 
-// import configureAppWithNavigationState from './AppWithNavigationState';
 import SecurityNavigator from './SecurityNavigator';
-// import AppWithNavigationState from './AppNavigator';
 import { BottomTabs } from './navigation';
+import MainScreen from '../screens/MainScreen';
+import SplashScreen from '../login/SplashScreen';
+import LoginScreen from '../login/LoginScreen';
+import RegistrationScreen from '../login/RegistrationScreen';
 
-// const auth = configureAppWithNavigationState(SecurityNavigator);
-// const main = configureAppWithNavigationState(BottomTabs);
-
-export const AppNavigator = StackNavigator({
-    Login: { screen: SecurityNavigator },
+var routesConfig = {
+    // Login: { screen: SecurityNavigator },
+    // Splash: { screen: SplashScreen },
+    // Signup: { screen: RegistrationScreen },
+    Login: { screen: LoginScreen },
     Main: {
         screen: BottomTabs
     },
-}, {
-        headerMode: 'none'
-    })
+};
+
+export const AppNavigator = StackNavigator(
+    routesConfig, {
+        headerMode: 'none',
+        initialRouteName: 'Main'
+    }
+); //naviagtor for after login
+
+export const AppBeforeLogin = StackNavigator(routesConfig); //naviagtor for before login
 
 class AppWithNavigationState extends Component {
     static propTypes = {
@@ -34,14 +43,14 @@ class AppWithNavigationState extends Component {
 
     componentDidMount() {
         if (Platform.OS === 'android') {
-            DeviceEventEmitter.addListener('appStateChange', this.handleAppStateChange);
+            // DeviceEventEmitter.addListener('appStateChange', this.handleAppStateChange);
             BackHandler.addEventListener("hardwareBackPress", this.onBackPress);
         }
     }
 
     componentWillUnmount() {
         if (Platform.OS === 'android') {
-            DeviceEventEmitter.removeListener('appStateChange', this.handleAppStateChange);
+            // DeviceEventEmitter.removeListener('appStateChange', this.handleAppStateChange);
             BackHandler.removeEventListener("hardwareBackPress", this.onBackPress);
         }
     }
@@ -56,13 +65,6 @@ class AppWithNavigationState extends Component {
             })} />
 
         );
-    }
-
-    handleAppStateChange = (appState) => {
-        console.log(`current state: ${appState.currentAppState}`);
-        if (appState.currentAppState === 'active') {
-
-        }
     }
 
     onBackPress = () => {

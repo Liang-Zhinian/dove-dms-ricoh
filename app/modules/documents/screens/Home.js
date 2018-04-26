@@ -463,7 +463,7 @@ export default connect(
 	{
 		withRef: true
 	}
-)(requireAuth(Home));
+)(Home);
 
 const styles = StyleSheet.create({
 	container: {

@@ -46,6 +46,7 @@ class RegistrationScreen extends Component<{}> {
     }
 
     componentDidMount() {
+        console.log('componentDidMount');
         const { params = {} } = this.props.navigation.state;
         const key = params.key;
         // alert(key);
@@ -104,7 +105,7 @@ class RegistrationScreen extends Component<{}> {
                         alert('Registration finished.');
 
                         // navigate to Explorer screen
-                        that.props.navigation.navigate('Main');
+                        // that.props.navigation.navigate('Main');
                     } else {
                         alert('Registration failed.');
                     }

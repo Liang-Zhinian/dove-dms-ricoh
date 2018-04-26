@@ -33,7 +33,7 @@ export const login = (username: string, password: string): ActionAsync => {
 
     loginSOAP(username, password)
       .then(sid => {
-        debugger;
+        console.log('loginSOAP');
         let expires_date = moment();
         expires_date.add(25, 'minutes');
         expires_date = expires_date.format('YYYY-MM-DD HH:mm:ss')
