@@ -24,6 +24,8 @@ export type ActionAsync = (dispatch: Function, getState: Function) => void;
 export const login = (username: string, password: string): ActionAsync => {
     return async (dispatch, getState) => {
         try {
+            if (!username) throw new Error('Please enter username.');
+
             let sid = await loginSOAP(username, password);
             
             console.log('loginSOAP returns '+sid);
@@ -57,9 +59,8 @@ export const login = (username: string, password: string): ActionAsync => {
             
             return sid;
         } catch (error) {
-            debugger;
             dispatch({
-                type: 'ERROR',
+                type: 'AUTH_ERROR',
                 payload: error
             })
             return error;
@@ -90,7 +91,7 @@ export const logout = (sid: string): ActionAsync => {
         }
         catch (error) {
             dispatch({
-                type: 'ERROR',
+                type: 'AUTH_ERROR',
                 payload: error
             })
             return error;
@@ -107,7 +108,7 @@ export const valid = (sid: string): ActionAsync => {
         }
         catch (error) {
             dispatch({
-                type: 'ERROR',
+                type: 'AUTH_ERROR',
                 payload: error
             });
             return error;

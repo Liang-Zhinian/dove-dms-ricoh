@@ -9,10 +9,9 @@ export default function auth(state = initialAuthState, action) {
       return { ...state, isLoggedIn: true, user: action.payload };
     case 'Logout':
       return { ...state, isLoggedIn: false, user: null };
-    case 'ERROR':
-      console.log(action.error);
-      debugger;
-      Toast.show(action.error.message, Toast.SHORT);
+    case 'AUTH_ERROR':
+      console.log(action.payload);
+      Toast.show(action.payload.message, Toast.LONG);
       return { ...state, /*error: payload.message*/ };
     default:
       return state;

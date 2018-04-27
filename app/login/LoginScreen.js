@@ -56,15 +56,15 @@ class LoginScreen extends Component {
 
     componentWillMount() {
         var that = this;
-        const { auth } = that.props;
+        // const { auth } = that.props;
 
-        if (!auth.user) return;
+        // if (!auth.user) return;
 
-        const { user = { username: null, password: null, token: { sid: null } } } = auth;
+        // const { user = { username: null, password: null, token: { sid: null } } } = auth;
 
-        const { username, password, token: { sid } } = user;
-        if (username && password)
-            that.setState({ username, password })
+        // const { username, password, token: { sid } } = user;
+        // if (username && password)
+        //     that.setState({ username, password })
 
     }
 

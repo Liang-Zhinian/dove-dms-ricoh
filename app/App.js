@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-import SOP from './SOP';
+import SOPApp from './SOPApp';
 import AppWithNavigationState, { AppBeforeLogin } from './navigators';
 
 class App extends Component<{}> {
@@ -38,24 +38,15 @@ class App extends Component<{}> {
     }
 
     render = () => {
-        if (this.props.checkingSOPAuthState) {
-            return (
-                <View>
-                    <Text>Checking SOP Auth State ...</Text>
-                    <SOP
-                        onLoginStatusReceived={onLoginStatusReceived.bind(this)}
-                        onEntryInfoReceived={onEntryInfoReceived.bind(this)}
-                    />
-                </View>
-            );
-        }
-
-        if (this.props.isLoggedIn)
-            return <AppWithNavigationState />;
-        else
-            return <AppBeforeLogin />;
-
-        // return <AppWithNavigationState />
+        return (
+            <SOPApp>
+                {
+                    this.props.isLoggedIn ?
+                        <AppWithNavigationState />
+                        : <AppBeforeLogin />
+                }
+            </SOPApp>
+        )
     }
 
     handleAppStateChange = (appState) => {
@@ -69,17 +60,12 @@ class App extends Component<{}> {
                 break;
         }
     }
-
-    onLoginStatusReceived = (loginStatus) => { }
-
-    onEntryInfoReceived = (loggedInUser) => { }
 }
 
 // 获取 state 变化
 const mapStateToProps = (state) => {
     return {
         isLoggedIn: state.auth.isLoggedIn,
-        checkingSOPAuthState: state.auth_ext.userChecking
     }
 };
 

@@ -36,7 +36,7 @@ export const loginSOAP = (username: string, password: string): Promise<string> =
             .then(xml => convertToJson(xml))
             .then(filterFault)
             .then(responseJson => resolve(responseJson.Body.loginResponse.return))
-            .catch(reason => reject(reason))
+            .catch(reason => {reject(reason)})
     });
 }
 

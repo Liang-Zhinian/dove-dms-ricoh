@@ -12,124 +12,99 @@ import {
     Button
 } from 'react-native';
 import { connect } from 'react-redux';
+
 import RicohAuthAndroid from '../components/RCTRicohAuthAndroid';
 import { login, logout } from '../actions/auth';
-import DoveButton from '../components/DoveButton';
 import Toast from '../components/ToastModule';
+import Spinner from '../components/Spinner';
+import LoginButton from './LoginButton';
+import DoveButton from '../components/DoveButton';
 
 function alert(msg) {
     Alert.alert('Splash Component', msg, [{ text: 'OK', onPress: () => console.log('OK Pressed') },], { cancelable: false });
 }
 
 class Splash extends Component {
+
+    static navigationOptions = {
+        header: null
+    };
+
     constructor(props) {
         super(props)
         this.state = {
-            key: null,
-            isLoading: false,
-            loginStatus: null,
-            user: null,
-            username: 'admin',
-            password: 'admin',
-            newUser: false,
+            isLoading: true,
+            savedUser: null,
         }
         this._isMounted = false;
-        this._sopEnabled = false;
 
     }
 
     componentWillMount() {
-        var that = this;
-
-        DeviceEventEmitter.addListener('onLoginStatusReceived', function (e) {
-            that.setState({ loginStatus: e.loginStatus });
-        });
-
-        DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
-            console.log('onEntryInfoReceived');
-            let entryInfo = JSON.parse(e.entryInfo);
-            alert('Get loggedin user');
-            alert(e.entryInfo);
-
-            that.setState({ user: entryInfo });
-
-            var userId = entryInfo.loginUserName;
-            if (!userId)
-                userId = entryInfo.userId;
-
-            AsyncStorage
-                .getItem(entryInfo.loginUserName)
-                .then(data => {
-                    if (data) {
-                        alert('User data from AsyncStorage: ' + data);
-                        let user = JSON.parse(data);
-                        that._signInAsync(user.username, user.password);
-                    } else {
-                        that.setState({ newUser: true });
-                        that.props.navigation.navigate('RegistrationScreen', { key: entryInfo.loginUserName });
-                    }
-                    that.props.doneCheckingUser();
-                });
-
-        });
-
-        that._getAuthStateAsync();
-
     }
 
     componentDidMount() {
         console.log('componentDidMount');
-        this._isMounted = true;
+        var that = this;
+        if (!that.props.isLoggedIn) {
+            that.getSavedUser(that.props.queryUserName)
+                .then(savedUser => {
+                    that.setState({ savedUser, isLoading: false });
+                })
 
-        // DeviceEventEmitter.addListener('appStateChange', this.handleAppStateChange);
+        }
+
+        this._isMounted = true;
     }
 
     componentWillUnmount() {
         this._isMounted = false;
     }
 
-    componentWillReceiveProps(nextProps) {
-        // if (!nextProps.authenticated) this.props.navigation.navigate('Login')
-        // Toast.show(`auth.isLoggedIn: ${nextProps.auth.isLoggedIn}`, Toast.SHORT);
-    }
-
-    componentWillUpdate(nextProps, nextState) {
-        if (nextState.loginStatus == 'LOGOUT') this._signOutAsync();
-    }
-
     render() {
         const { container, image, text, title } = styles;
 
-        if (this.props.userChecking) {
+        if (this.state.isLoading) {
             return (
                 <View style={container}>
-                    <Text style={title}>Please wait ...</Text>
-
-                    <Button
-                        onPress={() => this.props.navigation.navigate('Login')}
-                        title="Go to Log In!"
+                    <Spinner
+                        style={[styles.gray, { height: 80 }]}
+                        color='red'
+                        size="large"
                     />
                 </View>
             );
-        } else {
+        }
+
+        if (this.state.savedUser) {
+            const { username, password } = this.state.savedUser;
             return (
                 <View style={container}>
-                    <Text style={title}>Ready</Text>
+                    <Text style={title}>Welcome, {username}</Text>
 
-                    <Button
-                        onPress={() => this.props.navigation.navigate('Signup')}
-                        title="Go to Signup!"
+                    {/* <Button
+                        onPress={() => this._signInAsync(username, password)}
+                        title="Log In!"
+                    /> */}
+                    <LoginButton style={[styles.button]} username={username} password={password} />
+                    <Text style={title}>or</Text>
+
+                    <DoveButton style={[styles.button]}
+                        onPress={() => this.props.navigation.navigate('Login')}
+                        caption="Use another account!"
                     />
                 </View>
-            )
+            );
         }
-    }
-
-    handleAppStateChange = (appState) => {
-        console.log(`current state: ${appState.currentAppState}`);
-        if (appState.currentAppState === 'active') {
-            this._getAuthStateAsync();
-        }
+        // this.props.navigation.navigate('Login');
+        return (
+            <View style={container}>
+                <DoveButton style={[styles.button]}
+                    onPress={() => this.props.navigation.navigate('Login')}
+                    caption="Go to Log In!"
+                />
+            </View>
+        );
     }
 
     _signInAsync = async (username, password) => {
@@ -185,38 +160,17 @@ class Splash extends Component {
             });
     };
 
-    _getAuthStateAsync = async () => {
-        var that = this;
-        that.props.checkingUser();
-
-        if (that._sopEnabled && RicohAuthAndroid) {
-            RicohAuthAndroid.getAuthState()
-                .then((msg) => {
-                    console.log('success!!')
-                }, (error) => {
-                    console.log('error!!')
-                });
-        } else {
-            // for testing
-            await AsyncStorage
-                .getItem('jackl')
-                .then(data => {
-                    that.props.doneCheckingUser();
-                    if (data) {
-                        // alert('User data from AsyncStorage: ' + data);
-                        let user = JSON.parse(data);
-                        console.log('user found: ' + user.username);
-                        that._signInAsync(user.username, user.password);
-                    } else {
-                        console.log('new user');
-                        that.setState({ newUser: true });
-                        that.props.navigation.navigate('RegistrationScreen', { key: 'jackl' });
-                    }
-
-                });
-
-        }
-    }
+    getSavedUser = (userId) => {
+        return AsyncStorage
+            .getItem(userId)
+            .then(data => {
+                if (data) {
+                    let user = JSON.parse(data);
+                    return user;
+                }
+                return null;
+            });
+    };
 }
 
 async function timeout(ms: number): Promise {
@@ -246,6 +200,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         margin: 10,
     },
+    button: {
+        width: 300
+    }
 })
 
 // export default Splash
@@ -260,6 +217,8 @@ const mapStateToProps = (state) => {
         // sid: state[NAME].account.sid,
         auth: state.auth,
         userChecking: state.auth_ext.userChecking,
+        isLoggedIn: state.auth.isLoggedIn,
+        queryUserName: state.storage.queryUserName,
     }
 };
 

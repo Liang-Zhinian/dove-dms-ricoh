@@ -40,7 +40,7 @@ export const getUserByUsername = (sid: string, username: string): ActionAsync =>
             })
             .catch((error) => {
                 dispatch({
-                    type: 'ERROR',
+                    type: 'SECURITY_ERROR',
                     payload: error
                 })
             })

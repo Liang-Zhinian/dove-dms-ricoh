@@ -18,8 +18,8 @@ import RegistrationScreen from '../login/RegistrationScreen';
 
 var routesConfig = {
     // Login: { screen: SecurityNavigator },
-    // Splash: { screen: SplashScreen },
-    // Signup: { screen: RegistrationScreen },
+    Splash: { screen: SplashScreen },
+    Signup: { screen: RegistrationScreen },
     Login: { screen: LoginScreen },
     Main: {
         screen: BottomTabs

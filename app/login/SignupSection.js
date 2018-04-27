@@ -4,6 +4,11 @@ import Dimensions from 'Dimensions';
 import {StyleSheet, View, Text} from 'react-native';
 
 export default class SignupSection extends Component {
+
+  static navigationOptions = {
+      header: null
+  };
+  
   render() {
     return (
       <View style={styles.container}>
