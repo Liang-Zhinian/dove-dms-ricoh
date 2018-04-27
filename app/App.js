@@ -11,6 +11,7 @@ import {
     View,
     Text,
     AsyncStorage,
+    NetInfo
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -22,6 +23,8 @@ class App extends Component<{}> {
     constructor(props) {
         super(props);
         this.state = {
+            isConnected: false,
+            isLoading: true,
         };
 
         console.log('App did constructed');
@@ -29,15 +32,32 @@ class App extends Component<{}> {
 
     componentDidMount() {
         console.log('App did mount');
-        DeviceEventEmitter.addListener('appStateChange', this.handleAppStateChange);
+        var that = this;
+        DeviceEventEmitter.addListener('appStateChange', that.handleAppStateChange);
+
+        NetInfo.isConnected.addEventListener(
+            'connectionChange',
+            that.handleConnectivityChange
+        );
+        that.fetchNetStatus();
     }
 
     componentWillUnmount() {
         console.log('App did unmount');
         DeviceEventEmitter.removeListener('appStateChange', this.handleAppStateChange);
+        DeviceEventEmitter.removeListener('connectionChange', this.handleConnectivityChange);
     }
 
     render = () => {
+
+        if (!this.state.isConnected) {
+            return (
+                <View style={{ flex: 1 }}>
+                    <Text>Please check your network settings.</Text>
+                </View>
+            );
+        }
+
         return (
             <SOPApp>
                 {
@@ -59,6 +79,17 @@ class App extends Component<{}> {
 
                 break;
         }
+    }
+
+    handleConnectivityChange(isConnected) {
+        this.setState({ isConnected });
+    }
+
+    fetchNetStatus = () => {
+        this.setState({ isLoading: true });
+        NetInfo.isConnected.fetch().done(
+            (isConnected) => { this.setState({ isConnected }); }
+        );
     }
 }
 

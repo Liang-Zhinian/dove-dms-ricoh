@@ -9,7 +9,8 @@ import {
     TextInput,
     AsyncStorage,
     DeviceEventEmitter,
-    Button
+    Button,
+    NetInfo,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -41,11 +42,13 @@ class Splash extends Component {
     }
 
     componentWillMount() {
+        
     }
 
     componentDidMount() {
         console.log('componentDidMount');
         var that = this;
+
         if (!that.props.isLoggedIn) {
             that.getSavedUser(that.props.queryUserName)
                 .then(savedUser => {
@@ -82,11 +85,10 @@ class Splash extends Component {
                 <View style={container}>
                     <Text style={title}>Welcome, {username}</Text>
 
-                    {/* <Button
-                        onPress={() => this._signInAsync(username, password)}
-                        title="Log In!"
-                    /> */}
-                    <LoginButton style={[styles.button]} username={username} password={password} />
+                    <LoginButton
+                        style={[styles.button]}
+                        username={username}
+                        password={password} />
                     <Text style={title}>or</Text>
 
                     <DoveButton style={[styles.button]}
@@ -96,7 +98,7 @@ class Splash extends Component {
                 </View>
             );
         }
-        // this.props.navigation.navigate('Login');
+        
         return (
             <View style={container}>
                 <DoveButton style={[styles.button]}
@@ -161,6 +163,7 @@ class Splash extends Component {
     };
 
     getSavedUser = (userId) => {
+        this.setState({ isLoading: true });
         return AsyncStorage
             .getItem(userId)
             .then(data => {

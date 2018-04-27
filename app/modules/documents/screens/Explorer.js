@@ -85,7 +85,7 @@ class Explorer extends Component {
       modalVisible: false,
       isEditMode: false,
       lastTick: Date.now(),
-      isLoading: false,
+      isLoading: true,
       dataSource: [],
       mainListVisible: true,
       username: '',
@@ -106,9 +106,6 @@ class Explorer extends Component {
     this.downloadTask = null;
 
     this.downloadManger = new DownloadManager();
-
-    // const { params = {} } = this.props.navigation.state;
-    // console.log('constructor: ' + (params.node ? params.node.name : 'Documents'));
   }
 
   resetState() {
@@ -138,16 +135,10 @@ class Explorer extends Component {
   }
 
   componentWillMount() {
-    // console.log('componentWillMount');
+    console.log('componentWillMount');
 
     const { username, password, sid, expires_date, login } = this.props;
-    // console.log(`${username} | ${password} | ${sid} | ${expires_date}`)
-
-    // check if sid is expired
-    // if (isExpired(expires_date)) {
-    //   login(username, password);
-    // }
-    // else {
+    
     this.setState({
       username,
       password,
@@ -178,7 +169,6 @@ class Explorer extends Component {
     );
   }
 
-  // Start changing images with timer on first initial load
   componentWillReceiveProps(nextProps) {
     //console.log('componentWillReceiveProps');
     const that = this;
@@ -209,10 +199,6 @@ class Explorer extends Component {
     needReload && setTimeout(that.fetchData, 1000);
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return nextState.progressBarVisible || nextProps.needReload || !nextState.isLoading && this.state.dataSource != nextState.dataSource;
-  // }
-
   componentWillUpdate(nextProps, nextState) {
     // console.log('componentWillUpdate');
   }
@@ -235,10 +221,6 @@ class Explorer extends Component {
     that.resetState();
   }
 
-  _handleConnectivityChange(isConnected) {
-    this.setState({ isConnected });
-  }
-
   render() {
     console.log('render');
 
@@ -257,7 +239,10 @@ class Explorer extends Component {
 
     //加载数据
     return this.renderData();
-    //return null;
+  }
+
+  _handleConnectivityChange(isConnected) {
+    this.setState({ isConnected });
   }
 
   toggleActionSheet() {
