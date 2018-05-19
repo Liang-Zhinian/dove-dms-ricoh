@@ -42,6 +42,7 @@ export const login = (username: string, password: string): ActionAsync => {
           payload: {
             // username,
             // password,
+            isAuthenticated: true,
             token: {
               sid,
               expires_date,
@@ -71,7 +72,7 @@ export const logout = (sid: string, navigation: any): ActionAsync => {
         //   index: 0,
         //   actions: [{ type: 'Navigate', routeName: 'Login' }]
         // })
-        dispatch({ type: 'Logout' });
+        // dispatch({ type: 'Logout' });
 
         dispatch({
           type: LOGOUT,
@@ -79,6 +80,7 @@ export const logout = (sid: string, navigation: any): ActionAsync => {
             token: { sid: null, expires_date: null },
             username: null,
             password: null,
+            isAuthenticated: false,
           }
         });
       })

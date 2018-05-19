@@ -44,15 +44,15 @@ export const login = (username: string, password: string): ActionAsync => {
 
             AsyncStorage.setItem(username, JSON.stringify(user));
 
-            dispatch({
-                type: `${Documents.NAME}/LOGIN`,
-                payload: user
-            })
+            // dispatch({
+            //     type: `${Documents.NAME}/LOGIN`,
+            //     payload: user
+            // })
 
-            dispatch({
-                type: `${Documents.NAME}/SAVE_ACCOUNT`,
-                payload: user
-            })
+            // dispatch({
+            //     type: `${Documents.NAME}/SAVE_ACCOUNT`,
+            //     payload: user
+            // })
 
             dispatch({
                 type: 'Login',
@@ -79,14 +79,14 @@ export const logout = (sid: string): ActionAsync => {
                 result = await logoutSOAP(sid);
                 console.log(`logoutSOAP.result.${result}`);
 
-                dispatch({
-                    type: `${Documents.NAME}/LOGOUT`,
-                    payload: {
-                        token: { sid: null, expires_date: null },
-                        username: null,
-                        password: null,
-                    }
-                });
+                // dispatch({
+                //     type: `${Documents.NAME}/LOGOUT`,
+                //     payload: {
+                //         token: { sid: null, expires_date: null },
+                //         username: null,
+                //         password: null,
+                //     }
+                // });
             }
 
             // AsyncStorage.removeItem(getState().auth.username);
@@ -108,7 +108,7 @@ export const valid = (sid: string): ActionAsync => {
     return async (dispatch, getState) => {
         try {
             let valid = await validSOAP(sid);
-            console.log('validSOAP returns');
+            console.log('validSOAP returns', valid);
             return valid;
         }
         catch (error) {

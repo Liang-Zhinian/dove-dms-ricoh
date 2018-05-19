@@ -162,8 +162,8 @@ class DocumentDetails extends Component {
 
 function select(store) {
   return {
-    username: store[NAME].account.username,
-    password: store[NAME].account.password,
+    username: store.auth.user.username,
+    password: store.auth.user.password,
   };
 }
 

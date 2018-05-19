@@ -155,11 +155,11 @@ class Scan extends Component<{}> {
                         </View>
                         {this.renderSpacer()}
 
-                        <Text style={styles.title}>Scanner: {this.isReady()?'Ready':'Please wait ...'}</Text>
+                        <Text style={styles.title}>Scanner: {this.isReady() ? 'Ready' : 'Please wait ...'}</Text>
                         {/* <Text style={styles.title}>Connection State: {this.state.connectState}</Text> */}
                         {/* <Text style={styles.title}>Scan Job State: {this.state.scanJobState}</Text> */}
                         {/* <Text style={styles.title}>Scan Service Attribute State: {this.state.scanServiceAttributeState}</Text> */}
-                        <Text style={styles.title}>Scanned Image: {this.state.scannedImage?'Ready':'Empty'}</Text>
+                        <Text style={styles.title}>Scanned Image: {this.state.scannedImage ? 'Ready' : 'Empty'}</Text>
 
                     </View>
                     {this.renderSpinner()}
@@ -419,12 +419,14 @@ class Scan extends Component<{}> {
 
 function select(store) {
     return {
-        sid: store[NAME].account.token.sid,
-        username: store[NAME].account.username,
-        password: store[NAME].account.password,
         uploaded: store[NAME].document.uploaded,
         progress: store[NAME].document.progress,
         isLoading: store[NAME].document.isLoading,
+
+        isLoggedIn: store.auth.isLoggedIn,
+        username: store.auth.user.username,
+        password: store.auth.user.password,
+        sid: store.auth.user.token.sid
     };
 }
 

@@ -18,6 +18,8 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { default as Ionicons } from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
+
+import Spinner from '../../../components/Spinner';
 import * as actions from '../actions';
 import { NAME } from '../constants';
 import RicohAuthAndroid from '../../../components/RCTRicohAuthAndroid';
@@ -145,11 +147,11 @@ class Home extends Component {
 							style={{ color: colors.textOnPrimary }}
 						/>
 					</TouchableOpacity>
-{params.isLoggedIn &&
-					<HeaderButton
-						onPress={params.onLogoutButtonPressed}
-						text='Log Out!'
-					/>}
+					{params.isLoggedIn &&
+						<HeaderButton
+							onPress={params.onLogoutButtonPressed}
+							text='Log Out!'
+						/>}
 				</View>
 			),
 		}
@@ -159,6 +161,7 @@ class Home extends Component {
 		console.log('constructor');
 		super(props);
 		this.state = {
+			isLoading: true,
 			screenDismissed: false,
 			loginStatus: null,
 			user: null,
@@ -176,34 +179,49 @@ class Home extends Component {
 
 	// Fetch the token from storage then navigate to our appropriate place
 	_bootstrapAsync = async () => {
-		const { login, valid, auth } = this.props;
-		const { user } = auth;
-		
-		if (!user) {
-			this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Login' }));
-			return;
-		}
+		// const { saveAccount, login, valid, auth, isLoggedIn } = this.props;
+		// const { isLoggedIn, user } = auth;
 
-		if (user.token.sid) {
-			let isValid = await valid(user.token.sid);
-			console.log(`isValid: ${isValid}`);
-			if (!isValid) {
-				console.log(`login again`);
-				await login(user.username, user.password);
-			}
-		}
+		// if (isLoggedIn) {
+		// 	Toast.show('signed in dms', Toast.SHORT);
+		// 	this.setState({ isLoading: false });
+		// } else {
+		// 	Toast.show('not signed in dms', Toast.SHORT);
+		// 	let isValid = await valid(user.token.sid);
+
+		// 	if (!isValid) await login(user.username, user.password);
+		// 	else saveAccount(user.username, user.password)
+
+		// 	this.setState({ isLoading: false });
+		// }
+
+		// console.log('Home page', auth);
+		// if (!user) {
+		// 	this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Login' }));
+		// 	return;
+		// }
+
+		// if (user.token.sid) {
+		// 	let isValid = await valid(user.token.sid);
+		// 	console.log(`isValid: ${isValid}`);
+		// 	if (!isValid) {
+		// 		console.log(`login again`);
+		// 		Toast.show('invalid sid: ' + user.token.sid, Toast.SHORT);
+		// 		// await login(user.username, user.password);
+		// 	}
+		// }
 	};
 
 	_signOutAsync = async () => {
-		const { navigation, logout, auth } = this.props;
+		const { navigation, auth } = this.props;
 		const { user } = auth;
-		
-		if (!user) {
-			this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Login' }));
-			return;
-		}
 
-		const sid = auth.user.token.sid;
+		// if (!user) {
+		// 	this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Login' }));
+		// 	return;
+		// }
+
+		const sid = user.token.sid;
 		await logout(sid);
 	}
 
@@ -216,48 +234,50 @@ class Home extends Component {
 				that._signOutAsync();
 			}
 		});
-/*
-		DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
-			let entryInfo = JSON.parse(e.entryInfo);
-
-			that.setState({ user: entryInfo });
-
-			AsyncStorage
-				.getItem(entryInfo.loginUserName)
-				.then(data => {
-					if (!!data) {
-						//alert('User data from AsyncStorage: ' + data);
-						return JSON.parse(data);
-					}
-
-					return null;
-				})
-				.then(user => {
-					if (user != null) {
-						that.props.saveAccount(user.username, user.password);
-						that.props.login(user.username, user.password);
-						// navigate to Explorer screen
-						//that.props.navigation.navigate('Explorer');
-
-						Toast.show(`Welcome, ${user.username}`, Toast.SHORT)
-
-					} else {
-						//alert('Please register your account!');
-						// navigate to Registration screen
-						that.props.navigation.navigate('Registration', { key: entryInfo.loginUserName });
-					}
+		/*
+				DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
+					let entryInfo = JSON.parse(e.entryInfo);
+		
+					that.setState({ user: entryInfo });
+		
+					AsyncStorage
+						.getItem(entryInfo.loginUserName)
+						.then(data => {
+							if (!!data) {
+								//alert('User data from AsyncStorage: ' + data);
+								return JSON.parse(data);
+							}
+		
+							return null;
+						})
+						.then(user => {
+							if (user != null) {
+								that.props.saveAccount(user.username, user.password);
+								that.props.login(user.username, user.password);
+								// navigate to Explorer screen
+								//that.props.navigation.navigate('Explorer');
+		
+								Toast.show(`Welcome, ${user.username}`, Toast.SHORT)
+		
+							} else {
+								//alert('Please register your account!');
+								// navigate to Registration screen
+								that.props.navigation.navigate('Registration', { key: entryInfo.loginUserName });
+							}
+						});
+		
+					// alert(entryInfo);
 				});
-
-			// alert(entryInfo);
-		});
-
-		RicohAuthAndroid.getAuthState()
-			.then((msg) => {
-				console.log('success!!')
-			}, (error) => {
-				console.log('error!!')
-			});
-*/
+		
+				RicohAuthAndroid.getAuthState()
+					.then((msg) => {
+						console.log('success!!')
+					}, (error) => {
+						console.log('error!!')
+					});
+		*/
+		
+		// this._bootstrapAsync();
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -290,6 +310,19 @@ class Home extends Component {
 	}
 
 	render() {
+		
+        // if (this.state.isLoading) {
+        //     return (
+        //         <View style={styles.container}>
+        //             <Spinner
+        //                 style={[styles.gray, { height: 80 }]}
+        //                 color='red'
+        //                 size="large"
+        //             />
+        //         </View>
+        //     );
+		// }
+		
 		const { router, user } = this.props;
 		return (
 			<View
@@ -435,12 +468,14 @@ class Home extends Component {
 
 // 获取 state 变化
 const mapStateToProps = (state) => {
+	// const auth = state.auth;
+
 	return {
 		// 获取 state 变化
-		isLoggedIn: state[NAME].account.isLoggedIn,
-		username: state[NAME].account.username,
-		password: state[NAME].account.password,
-		sid: state[NAME].account.token.sid || null,
+		// isLoggedIn: auth.isLoggedIn,
+		// username: dmsAccount ? dmsAccount.username : null,
+		// password: dmsAccount ? dmsAccount.password : null,
+		// sid: dmsAccount ? dmsAccount.token.sid : null,
 		auth: state.auth
 	}
 };
@@ -451,7 +486,10 @@ const mapDispatchToProps = (dispatch) => {
 		// 发送行为
 		valid: (sid) => dispatch(valid(sid)),
 		login: (username, password) => dispatch(actions.login(username, password)),
-		logout: (sid, navigation) => dispatch(actions.logout(sid, navigation)),
+		logout: (sid, navigation) => {
+			dispatch(actions.logout(sid, navigation));
+			dispatch(logout(sid));
+		},
 		saveAccount: (username, password) => dispatch(actions.saveAccount(username, password)),
 	}
 };

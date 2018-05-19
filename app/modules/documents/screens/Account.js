@@ -320,10 +320,10 @@ class Account extends Component {
 const mapStateToProps = (state) => {
   return {
     // 获取 state 变化
-    isLoggedIn: state[NAME].account.isLoggedIn,
-    username: state[NAME].account.username,
-    password: state[NAME].account.password,
-    sid: state[NAME].account.token.sid
+    isLoggedIn: state.auth.isLoggedIn,
+    username: state.auth.user.username,
+    password: state.auth.user.password,
+    sid: state.auth.user.token.sid
   }
 };
 

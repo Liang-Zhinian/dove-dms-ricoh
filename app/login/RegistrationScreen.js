@@ -133,11 +133,6 @@ class RegistrationScreen extends Component<{}> {
 // 获取 state 变化
 const mapStateToProps = (state) => {
     return {
-        // 获取 state 变化
-        // isLoggedIn: state[NAME].account.isLoggedIn,
-        // username: state[NAME].account.username,
-        // password: state[NAME].account.password,
-        // sid: state[NAME].account.token.sid
     }
 };
 

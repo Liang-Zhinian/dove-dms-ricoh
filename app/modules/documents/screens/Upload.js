@@ -378,12 +378,14 @@ class Upload extends Component {
 // export default UploadContainer;
 function select(store) {
     return {
-        sid: store[NAME].account.token.sid,
-        username: store[NAME].account.username,
-        password: store[NAME].account.password,
         uploaded: store[NAME].document.uploaded,
         progress: store[NAME].document.progress,
         isLoading: store[NAME].document.isLoading,
+
+        isLoggedIn: store.auth.isLoggedIn,
+        username: store.auth.user.username,
+        password: store.auth.user.password,
+        sid: store.auth.user.token.sid
     };
 }
 

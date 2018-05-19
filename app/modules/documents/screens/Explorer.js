@@ -898,7 +898,7 @@ class Explorer extends Component {
 
 function select(store) {
   //console.log('select');
-  var account = parseAccount(store[NAME].account);
+  var account = parseAccount(store.auth.user);
 
   return {
     needReload: store[NAME].document.needReload,
@@ -907,11 +907,10 @@ function select(store) {
     isEditMode: store[NAME].document.isEditMode,
     isDownloading: store[NAME].document.isDownloading,
 
-    username: account.username,
-    password: account.password,
-    sid: account.token.sid,
-    expires_date: account.token.expires_date,
-    // valid: store[NAME].account.valid,
+    username: store.auth.user.username,
+    password: store.auth.user.password,
+    sid: store.auth.user.token.sid,
+    expires_date: store.auth.user.token.expires_date,
 
 
   };

@@ -40,8 +40,8 @@ class SOPApp extends Component {
             hasSkippedLogin: false,
         }
         this._isMounted = false;
-        this.sopEnabled = true;
-        // this.setSavedUser();
+        this.sopEnabled = false;
+        this.setSavedUser();
     }
 
     componentWillMount() {
@@ -134,7 +134,11 @@ class SOPApp extends Component {
             entryInfo.mailAddress = 'admin@atpath.com';
             entryInfo.loginUserName = 'admin';
 
-            that.setState({ sopLoggedInUser: entryInfo });
+            var authState = {};
+            authState.userId = 'admin';
+            authState.loginStatus = 'LOGIN';
+
+            that.setState({ sopLoggedInUser: entryInfo, sopAuthState: authState });
             setTimeout(() => {
                 that.props.setQueryUserName(entryInfo.loginUserName);
                 that.setState({ isLoading: false });

@@ -211,9 +211,9 @@ const styles = StyleSheet.create({
 
 function select(store) {
     return {
-        username: store[NAME].account.username,
-        password: store[NAME].account.password,
-        sid: store[NAME].account.token.sid,
+        username: store.auth.user.username,
+        password: store.auth.user.password,
+        sid: store.auth.user.token.sid,
     };
 }
 

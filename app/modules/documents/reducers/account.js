@@ -4,6 +4,7 @@ import { SAVE_ACCOUNT, LOGIN, LOGOUT, RENEW, VALID, ERROR } from '../constants'
 import * as types from '../middlewares/authenticationTypes';
 
 type State = {
+  isAuthenticated: boolean,
   username: ?string,
   password: ?string,
   token: ?{
@@ -13,6 +14,7 @@ type State = {
 }
 
 const initialState: State = {
+  isAuthenticated: false,
   username: null,
   password: null,
   token: {
@@ -44,7 +46,7 @@ export default handleActions(
     },
 
     [LOGIN]: (state: State = initialState, action) => {
-      const { payload: { username, password, token } } = action
+      const { payload: { username, password, token, isAuthenticated } } = action
 
       //because payload contains the id and we already know that we are about
       //to increment the value of that id, we modify only that value by one
@@ -53,6 +55,7 @@ export default handleActions(
         ...state,
         // username,
         // password,
+        isAuthenticated,
         token,
       }
     },
@@ -81,6 +84,7 @@ export default handleActions(
       const { payload: { valid } } = action
       return {
         ...state,
+        isAuthenticated: valid,
         valid,
       }
     },

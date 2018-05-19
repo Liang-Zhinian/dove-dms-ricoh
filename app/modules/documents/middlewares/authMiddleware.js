@@ -10,12 +10,12 @@ export default function authMiddleware({ dispatch, getState }) {
             let state = getState();
             if (!state) {
                 // debugger;
-                if (state[NAME].account.token.sid && isExpired(state[NAME].account.token)) {
+                if (state.auth.user.token.sid && isExpired(state.auth.user.token)) {
                     // make sure we are not already refreshing the token
-                    if (!state[NAME].account.refreshTokenPromise) {
+                    if (!state.auth.user.refreshTokenPromise) {
                         return refreshToken(dispatch, state).then(() => next(action));
                     } else {
-                        return state[NAME].account.refreshTokenPromise.then(() => next(action));
+                        return state.auth.user.refreshTokenPromise.then(() => next(action));
                     }
 
                 }
@@ -33,7 +33,7 @@ function isExpired(token) {
 }
 
 function refreshToken(dispatch, state) {
-    let refreshTokenPromise = renewSOAP(state[NAME].account.token.sid)
+    let refreshTokenPromise = renewSOAP(state.auth.user.token.sid)
         .then(([response, responseText]) => {
             dispatch({
                 type: types.DONE_REFRESHING_TOKEN
