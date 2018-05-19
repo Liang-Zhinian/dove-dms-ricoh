@@ -89,7 +89,7 @@ export const logout = (sid: string): ActionAsync => {
                 });
             }
 
-            AsyncStorage.removeItem(getState().auth.username);
+            // AsyncStorage.removeItem(getState().auth.username);
 
             dispatch({ type: 'Logout' });
             return result;
