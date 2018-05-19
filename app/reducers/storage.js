@@ -1,6 +1,10 @@
 import Toast from '../components/ToastModule';
 
-export default function storage(state = {}, action) {
+const initState = {
+  queryUserName: null,
+}
+
+export default function storage(state = initState, action) {
   const { payload } = action;
   switch (action.type) {
     case 'QUERY_USER':

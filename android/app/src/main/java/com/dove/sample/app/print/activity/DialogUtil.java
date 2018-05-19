@@ -28,7 +28,6 @@ import com.dove.PrintApplicationWrapper;
 import com.dove.sample.app.print.Const;
 import com.dove.R;
 import com.dove.R.id;
-//import com.dove.sample.app.print.application.PrintSampleApplication;
 import com.dove.sample.app.print.application.PrintSettingSupportedHolder;
 import com.dove.sample.function.print.PrintFile;
 import com.dove.sample.function.print.PrintFile.PDL;

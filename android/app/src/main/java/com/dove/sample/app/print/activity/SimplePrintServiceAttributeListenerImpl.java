@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.widget.TextView;
 
 import com.dove.R;
-//import com.dove.sample.app.print.application.PrintSampleApplication;
 import com.dove.sample.function.common.SmartSDKApplication;
 import com.dove.sample.function.print.attribute.PrintServiceAttributeSet;
 import com.dove.sample.function.print.attribute.standard.PrinterOccuredErrorLevel;

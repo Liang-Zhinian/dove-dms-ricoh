@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Home from '../modules/documents/screens/Home';
 import { BottomTabs } from '../navigators/navigation';
 
@@ -23,7 +23,7 @@ class MainScreen extends React.Component {
   }
 
   render() {
-    return <View><Text>Home Screen</Text></View>
+    return <View></View>
   }
 
 }

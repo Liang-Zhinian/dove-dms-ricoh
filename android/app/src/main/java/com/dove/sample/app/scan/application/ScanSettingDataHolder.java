@@ -14,6 +14,7 @@ import com.dove.sample.function.scan.attribute.standard.OriginalSide;
 import com.dove.sample.function.scan.attribute.standard.ScanColor;
 import com.dove.sample.function.scan.attribute.standard.SendStoredFileSetting;
 import com.dove.sample.function.scan.attribute.standard.StoreLocalSetting;
+import com.dove.sample.function.scan.attribute.standard.StoreTemporarySetting;
 import com.dove.sample.function.scan.supported.FileSettingSupported;
 
 import java.util.ArrayList;
@@ -154,7 +155,9 @@ public class ScanSettingDataHolder {
 	        {
 	            put(R.string.txid_scan_b_jobmode_scan_and_send,        JobMode.SCAN_AND_SEND);
                 put(R.string.txid_scan_b_jobmode_scan_and_store_local, JobMode.SCAN_AND_STORE_LOCAL);
+				put(R.string.txid_scan_b_jobmode_scan_and_store_temporary,     JobMode.SCAN_AND_STORE_TEMPORARY);
                 put(R.string.txid_scan_b_jobmode_send_stored_file,     JobMode.SEND_STORED_FILE);
+
 	        }
 
 	    };
@@ -224,7 +227,7 @@ public class ScanSettingDataHolder {
 		mSelectedColorLabel = R.string.txid_scan_b_top_mono_text;
 		mSelectedFileSettingLabel = R.string.txid_scan_b_top_file_mpdf;
 		mSelectedSideLabel = R.string.txid_scan_b_top_one_sided;
-		mSelectedPreviewLabel = R.string.txid_scan_b_other_preview_on;
+		mSelectedPreviewLabel = R.string.txid_scan_b_other_preview_off;
 
 		mSupportedJobModeLabelList = new ArrayList<Integer>();
 		mSupportedColorLabelList = new ArrayList<Integer>();
@@ -272,11 +275,12 @@ public class ScanSettingDataHolder {
                     localJobModeList.add(JobMode.SEND_STORED_FILE);
                 }
             }
-//			if (jobModeList.contains(JobMode.SCAN_AND_STORE_TEMPORARY)) {
-//				if (scanService.getSupportedAttributeValues(SendStoredFileSetting.class) != null) {
-//					localJobModeList.add(JobMode.SCAN_AND_STORE_TEMPORARY);
-//				}
-//			}
+			if (jobModeList.contains(JobMode.SCAN_AND_STORE_TEMPORARY)) {
+				if (scanService.getSupportedAttributeValues(StoreTemporarySetting.class) != null) {
+
+					localJobModeList.add(JobMode.SCAN_AND_STORE_TEMPORARY);
+				}
+			}
         }
         setSupportedJobModeList(localJobModeList);
 

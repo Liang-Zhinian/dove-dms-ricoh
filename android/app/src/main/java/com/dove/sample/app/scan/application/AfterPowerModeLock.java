@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
+import com.dove.IScanApplication;
 import com.dove.sample.app.scan.Const;
 
 public class AfterPowerModeLock {

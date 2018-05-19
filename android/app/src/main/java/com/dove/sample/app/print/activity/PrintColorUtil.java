@@ -9,13 +9,14 @@ import android.content.res.Resources;
 
 import com.dove.PrintApplicationWrapper;
 import com.dove.R;
-//import com.dove.sample.app.print.application.PrintSampleApplication;
 import com.dove.sample.app.print.application.PrintSettingSupportedHolder;
 import com.dove.sample.function.print.PrintFile;
 import com.dove.sample.function.print.attribute.standard.PrintColor;
 
 import java.util.List;
 import java.util.Map;
+
+//import com.dove.sample.app.print.application.PrintSampleApplication;
 
 /**
  * 印刷カラー指定に関連する処理をまとめたクラスです。

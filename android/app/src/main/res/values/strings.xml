@@ -67,6 +67,7 @@
     <string name="txid_scan_b_jobmode_scan_and_send">Scan and Send</string>
     <string name="txid_scan_b_jobmode_scan_and_store_local">Scan and Store Local</string>
     <string name="txid_scan_b_jobmode_send_stored_file">Send Stored File</string>
+    <string name="txid_scan_b_jobmode_scan_and_store_temporary">Send Stored File</string>
 
     <!-- Store File -->
     <string name="txid_storage_t_store_title">Store file setting</string>
@@ -252,6 +253,6 @@
     <string name="dlg_printing_message_printing_stopped">printing stopped.</string>
 
     <!-- Default value -->
-    <string name="default_copies">3</string>
+    <string name="default_copies">1</string>
 
 </resources>

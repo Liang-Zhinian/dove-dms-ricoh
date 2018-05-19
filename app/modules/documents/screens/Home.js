@@ -120,7 +120,10 @@ class Home extends Component {
 			),
 			headerRight: (
 				<View style={[
+					// CommonStyles.headerRight,
 					CommonStyles.flexRow,
+					// CommonStyles.flexItemsMiddle, 
+					// CommonStyles.flexItemsBetween,
 				]}>
 					<TouchableOpacity
 						style={{ marginRight: 14 }}
@@ -167,7 +170,7 @@ class Home extends Component {
 		};
 
 		this.onLayout = this.onLayout.bind(this);
-		// this._bootstrapAsync();
+		this._bootstrapAsync();
 	}
 
 
@@ -213,12 +216,56 @@ class Home extends Component {
 				that._signOutAsync();
 			}
 		});
+/*
+		DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
+			let entryInfo = JSON.parse(e.entryInfo);
+
+			that.setState({ user: entryInfo });
+
+			AsyncStorage
+				.getItem(entryInfo.loginUserName)
+				.then(data => {
+					if (!!data) {
+						//alert('User data from AsyncStorage: ' + data);
+						return JSON.parse(data);
+					}
+
+					return null;
+				})
+				.then(user => {
+					if (user != null) {
+						that.props.saveAccount(user.username, user.password);
+						that.props.login(user.username, user.password);
+						// navigate to Explorer screen
+						//that.props.navigation.navigate('Explorer');
+
+						Toast.show(`Welcome, ${user.username}`, Toast.SHORT)
+
+					} else {
+						//alert('Please register your account!');
+						// navigate to Registration screen
+						that.props.navigation.navigate('Registration', { key: entryInfo.loginUserName });
+					}
+				});
+
+			// alert(entryInfo);
+		});
+
+		RicohAuthAndroid.getAuthState()
+			.then((msg) => {
+				console.log('success!!')
+			}, (error) => {
+				console.log('error!!')
+			});
+*/
 	}
 
 	componentWillReceiveProps(nextProps) {
+		// if (!nextProps.authenticated) this.props.navigation.navigate('Login')
 	}
 
 	componentWillUpdate(nextProps, nextState) {
+		// if (nextState.loginStatus == 'LOGOUT') this.props.navigation.navigate('Account')
 	}
 
 	componentDidFocus() {
@@ -249,6 +296,7 @@ class Home extends Component {
 				onLayout={this.onLayout}
 				style={[styles.container, { flexDirection: 'column' }]}
 			>
+				{/*this.renderContent()*/}
 				{this.renderLogo()}
 				{this.renderNavContent()}
 			</View>
@@ -339,6 +387,7 @@ class Home extends Component {
 						})
 					}
 				</View>
+				{/*this.renderSpacer()*/}
 				<View style={[CommonStyles.flex_1, CommonStyles.flexRow, styles.row]}>
 					{
 						secondLineItems && secondLineItems.map((nav, index) => {
@@ -346,6 +395,7 @@ class Home extends Component {
 						})
 					}
 				</View>
+				{/*this.renderSpacer()*/}
 				<View style={[CommonStyles.flex_1, CommonStyles.flexRow, styles.row, styles.lastRow]}>
 					{
 						thirdLineItems && thirdLineItems.map((nav, index) => {
@@ -353,21 +403,26 @@ class Home extends Component {
 						})
 					}
 				</View>
+				{/*this.renderSpacer()*/}
 				{/* <View style={[CommonStyles.flex_1, CommonStyles.flexRow, styles.row, styles.lastRow]}>
 					{
 						fourthLineItems && fourthLineItems.map((nav, index) => {
 							return this.renderNavItem(nav, index)
 						})
 					}
-				</View>*/}
+				</View>
+
+				{this.renderSpacer()} */}
 			</View>
 		)
 	}
 
 	renderContent() {
 		return (
-			<View style={[{ borderColor: 'grey', borderWidth: 2 }]}>
+			<View style={[/*CommonStyles.flex_1, CommonStyles.flexSelfTop,*/ { borderColor: 'grey', borderWidth: 2 }]}>
+				{/*this.renderLogo()*/}
 				{this.renderNavContent()}
+				{/*<Text>Hello World</Text>*/}
 			</View>
 		)
 	}
@@ -378,8 +433,10 @@ class Home extends Component {
 	}
 }
 
+// 获取 state 变化
 const mapStateToProps = (state) => {
 	return {
+		// 获取 state 变化
 		isLoggedIn: state[NAME].account.isLoggedIn,
 		username: state[NAME].account.username,
 		password: state[NAME].account.password,
@@ -388,8 +445,10 @@ const mapStateToProps = (state) => {
 	}
 };
 
+// 发送行为
 const mapDispatchToProps = (dispatch) => {
 	return {
+		// 发送行为
 		valid: (sid) => dispatch(valid(sid)),
 		login: (username, password) => dispatch(actions.login(username, password)),
 		logout: (sid, navigation) => dispatch(actions.logout(sid, navigation)),
@@ -409,9 +468,16 @@ export default connect(
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		//alignItems: 'center',
+		//justifyContent: 'center',
+		//width: null,
+		//height: null,
 		backgroundColor: colors.primary,
 	},
 	row: {
+		//flex: 1,
+		//width: StyleConfig.screen_width,
+
 		"borderTopColor": colors.borderOnPrimary,
 		"borderTopWidth": 1,
 		"borderRightColor": colors.borderOnPrimary,
@@ -432,6 +498,7 @@ const styles = StyleSheet.create({
 		"borderLeftWidth": 0,
 	},
 	cell: {
+		// height: 100,
 		"borderTopColor": colors.borderOnPrimary,
 		"borderTopWidth": 0,
 		"borderRightColor": colors.borderOnPrimary,
@@ -453,6 +520,13 @@ const styles = StyleSheet.create({
 		marginLeft: 14
 	},
 	image: {
+		//flex: 1,
+		//marginLeft: 30,
+		//marginRight: 30,
+		// marginTop: 0,
+		// marginBottom: 0,
+		// width: Dimensions.get("window").width - 50,
+		// height: 365 * (Dimensions.get("window").width - 150) / 651,
 	},
 	welcome: {
 		fontSize: 20,

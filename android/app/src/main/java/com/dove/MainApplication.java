@@ -2,6 +2,8 @@ package com.dove;
 
 //import android.app.Application;
 
+import android.app.Application;
+
 import com.dove.sample.function.common.SmartSDKApplication;
 import com.facebook.react.ReactApplication;
 import com.BV.LinearGradient.LinearGradientPackage;
@@ -47,7 +49,7 @@ public class MainApplication extends SmartSDKApplication implements ReactApplica
                     new RNReactNativeDocViewerPackage(),
                     new VectorIconsPackage(),
                     new RCTFileViewerReactPackage(),
-                    new RCTRicohScannerReactPackage(),
+                    new RCTRicohScannerReactPackage(MainApplication.this),
                     new RCTRicohAuthReactPackage(),
                     new RCTToastReactPackage(),
                     new RCTRicohPrinterReactPackage(),

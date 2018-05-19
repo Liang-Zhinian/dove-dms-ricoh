@@ -22,6 +22,7 @@ import {
 import { connect } from 'react-redux';
 import ModalSelector from 'react-native-modal-selector';
 import RNFS from 'react-native-fs';
+
 import { NAME } from '../constants';
 import RicohPrinterAndroid from '../../../components/RCTRicohPrinterAndroid';
 import { default as Toast } from '../../../components/RCTToastModuleAndroid';
@@ -34,6 +35,7 @@ import {
     StyleConfig,
 } from '../styles';
 import { convert } from '../api/converter';
+import { Numeric } from '../../../components/TextInputs';
 
 function alert(title, msg) {
     Alert.alert(title, msg, [{ text: 'OK', onPress: () => console.log('OK Pressed') },], { cancelable: false });
@@ -60,6 +62,7 @@ export default class Settings extends Component<{}> {
             copies: '1',
             printColor: 'Monochrome',
             filePath: null,
+            printFilePath: null
         };
     }
 
@@ -86,7 +89,9 @@ export default class Settings extends Component<{}> {
                                     console.log('File save @', newPath);
                                     Toast.show(`File save @ ${newPath}`, Toast.SHORT);
 
-                                    that.initPrinter(newPath);
+                                    that.setState({ printFilePath: `file://${newPath}` });
+
+                                    that.initPrinter(`file://${newPath}`);
                                 })
                                 .catch((err) => {
                                     console.log(err.message, err.code);
@@ -102,6 +107,7 @@ export default class Settings extends Component<{}> {
                 });
 
         } else {
+            that.setState({ printFilePath: `file://${filePath}` });
             that.initPrinter(filePath);
         }
 
@@ -109,7 +115,7 @@ export default class Settings extends Component<{}> {
             that.setState({ printServiceAttributeStatus: e.status });
             console.log(e.status);
 
-            that.setState({isLoading: false});
+            that.setState({ isLoading: false });
         });
     }
 
@@ -144,6 +150,8 @@ export default class Settings extends Component<{}> {
     }
 
     setPrintCopies(copies) {
+        if (!copies) return;
+
         RicohPrinterAndroid.setPrintCopies('' + copies + '')
             .then(msg => { }, //alert('Print document', msg),
                 error => alert('Print document', error.message()));
@@ -155,10 +163,9 @@ export default class Settings extends Component<{}> {
                 {this.renderSpacer()}
                 <View style={[{ flex: 1 }, styles.row]}>
                     <Text style={[styles.title]}>Copies</Text>
-                    <TextInput
+                    <Numeric
                         style={{ flex: 1 }}
                         ref="txtCopies"
-                        blurOnSubmit={true}
                         underlineColorAndroid={'transparent'}
                         onChangeText={(val) => {
                             this.setState({ copies: val });
@@ -189,6 +196,11 @@ export default class Settings extends Component<{}> {
                     <Text style={styles.buttonFont}>Print</Text>
                 </TouchableOpacity>
                 {this.renderSpacer()}
+
+                <TouchableOpacity onPress={this.isPrintFileReady() ? this.printStaticPdf.bind(this) : null} style={styles.button}>
+                    <Text style={styles.buttonFont}>Print static pdf</Text>
+                </TouchableOpacity>
+                {this.renderSpacer()}
                 <Text style={styles.title}>Print File Path: {this.state.filePath}</Text>
 
                 {this.renderSpinner()}
@@ -202,7 +214,27 @@ export default class Settings extends Component<{}> {
             return false;
         }
 
-        //that.setState({isLoading: true});
+        if (!this.state.copies) {
+            alert('Print document', 'Please input print copies.');
+            return false;
+        }
+
+        //that.setPrintFilePath(filePath);
+
+        RicohPrinterAndroid.onStartPrint()
+            .then((msg) => {
+                //alert('Print document', msg);
+            }, (error) => {
+                alert('Print document', error.message());
+            });
+    }
+
+    printStaticPdf() {
+        if (!this.isPrintFileReady()) {
+            alert('Print document', 'The document to be printed is not ready.');
+            return false;
+        }
+        that.setPrintFilePath('test.pdf');
         RicohPrinterAndroid.onStartPrint()
             .then((msg) => {
                 //alert('Print document', msg);

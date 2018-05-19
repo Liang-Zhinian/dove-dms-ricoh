@@ -25,6 +25,7 @@
 		"ios-codepush-production": "code-push release-react dmsapp ios -d Production",
 		"ios-bundle": "react-native bundle --dev false --entry-file index.ios.js --bundle-output ios/main.jsbundle --platform ios",
 		"ios-build": "react-native run-ios --configuration Release",
+		"android-reinstall": "adb uninstall com.dove && cd android && ./gradlew assembleRelease && adb install android/app/build/outputs/apk/app-release.apk",
 		"android-codepush-staging": "code-push release-react dmsapp android",
 		"android-codepush-production": "code-push release-react dmsapp android -d Production",
 		"android-clean": "cd android && ./gradlew clean",

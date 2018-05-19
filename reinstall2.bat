@@ -1,0 +1,1 @@
+release.bat && uninstall.bat && install.bat

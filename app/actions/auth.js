@@ -27,8 +27,8 @@ export const login = (username: string, password: string): ActionAsync => {
             if (!username) throw new Error('Please enter username.');
 
             let sid = await loginSOAP(username, password);
-            
-            console.log('loginSOAP returns '+sid);
+
+            console.log('loginSOAP returns ' + sid);
             let expires_date = moment();
             expires_date.add(25, 'minutes');
             expires_date = expires_date.format('YYYY-MM-DD HH:mm:ss')
@@ -41,6 +41,8 @@ export const login = (username: string, password: string): ActionAsync => {
                     expires_date,
                 }
             };
+
+            AsyncStorage.setItem(username, JSON.stringify(user));
 
             dispatch({
                 type: `${Documents.NAME}/LOGIN`,
@@ -56,7 +58,7 @@ export const login = (username: string, password: string): ActionAsync => {
                 type: 'Login',
                 payload: user
             })
-            
+
             return sid;
         } catch (error) {
             dispatch({
@@ -71,22 +73,25 @@ export const login = (username: string, password: string): ActionAsync => {
 export const logout = (sid: string): ActionAsync => {
     return async (dispatch, getState) => {
         try {
-            let result = await logoutSOAP(sid);
+            var result = '';
 
-            console.log(`logoutSOAP.result.${result}`);
+            if (sid) {
+                result = await logoutSOAP(sid);
+                console.log(`logoutSOAP.result.${result}`);
+
+                dispatch({
+                    type: `${Documents.NAME}/LOGOUT`,
+                    payload: {
+                        token: { sid: null, expires_date: null },
+                        username: null,
+                        password: null,
+                    }
+                });
+            }
 
             AsyncStorage.removeItem(getState().auth.username);
 
             dispatch({ type: 'Logout' });
-
-            dispatch({
-                type: `${Documents.NAME}/LOGOUT`,
-                payload: {
-                    token: { sid: null, expires_date: null },
-                    username: null,
-                    password: null,
-                }
-            });
             return result;
         }
         catch (error) {

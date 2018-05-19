@@ -9,15 +9,15 @@ import android.content.Context;
 
 import com.dove.PrintApplicationWrapper;
 import com.dove.R;
-//import com.dove.sample.app.print.application.PrintSampleApplication;
 import com.dove.sample.app.print.application.PrintSettingSupportedHolder;
-import com.dove.sample.function.common.SmartSDKApplication;
 import com.dove.sample.function.print.PrintFile;
 import com.dove.sample.function.print.PrintFile.PDL;
 import com.dove.sample.function.print.attribute.standard.Staple;
 
 import java.util.List;
 import java.util.Map;
+
+//import com.dove.sample.app.print.application.PrintSampleApplication;
 
 /**
  * ステープル設定に関連する処理をまとめたクラスです。

@@ -745,7 +745,7 @@ public class SimplePrintStateMachine {
 
             PrintFile printFile;
             try {
-                printFile = holders[0].getPrintFile();
+                printFile = holders[0].getPrintFile(mApplication.getResources());
             } catch (PrintException e) {
                 Log.w(Const.TAG, PREFIX + e.toString());
                 message = "Print Job Failed. " + e.getMessage();

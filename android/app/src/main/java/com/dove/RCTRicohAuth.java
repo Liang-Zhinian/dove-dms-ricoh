@@ -18,6 +18,8 @@ import com.dove.sample.wrapper.auth.command.GetAuthStateCommand;
 import com.dove.sample.wrapper.auth.data.AuthState;
 import com.dove.sample.wrapper.auth.event.AuthStateChangedEvent;
 import com.dove.sample.wrapper.common.Utils;
+import com.dove.sample.wrapper.json.EncodedException;
+import com.dove.sample.wrapper.json.JsonUtils;
 import com.dove.sample.wrapper.log.Logger;
 import com.dove.sample.wrapper.log.Logger.LogRecorder;
 import com.dove.sample.wrapper.rws.addressbook.Entry;
@@ -98,12 +100,18 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
             synchronized ((RCTRicohAuth.this)) {
                 mCurrentState = event.getAuthState();
 
-                Log.d(Const.TAG, "Auth request result: " + mCurrentState.toString());
-                Log.d(Const.TAG, "Login status: " + mCurrentState.getLoginStatus().toString());
+                try {
+                    String entryInfoStrs = "";
+                    entryInfoStrs = JsonUtils.getEncoder().encode(mCurrentState);
+                    WritableMap params = Arguments.createMap();
+                    params.putString("authState", entryInfoStrs);
+                    sendEvent(RCTRicohAuth.this.getReactApplicationContext(), "onAuthStateReceived", params);
 
-                WritableMap params = Arguments.createMap();
-                params.putString("loginStatus", mCurrentState.getLoginStatus().toString());
-                sendEvent(RCTRicohAuth.this.getReactApplicationContext(), "onLoginStatusReceived", params);
+                } catch (EncodedException e) {
+                    WritableMap params = Arguments.createMap();
+                    params.putString("message", e.getLocalizedMessage());
+                    sendEvent(RCTRicohAuth.this.getReactApplicationContext(), "onAuthStateReceivedError", params);
+                }
             }
         }
     };
@@ -156,13 +164,17 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
                     Log.d(Const.TAG, "Auth request result: " + authState.toString());
                     String authStateStr = "Auth state: " + authState.toString();
 
-                    WritableMap params = Arguments.createMap();
-                    params.putString("loginStatus", authState.getLoginStatus().toString());
-                    sendEvent(RCTRicohAuth.this.getReactApplicationContext(), "onLoginStatusReceived", params);
+                    try {
+                        String entryInfoStrs = "";
+                        entryInfoStrs = JsonUtils.getEncoder().encode(authState);
+                        WritableMap params = Arguments.createMap();
+                        params.putString("authState", entryInfoStrs);
+                        sendEvent(RCTRicohAuth.this.getReactApplicationContext(), "onAuthStateReceived", params);
 
-                    if (authState.getLoginStatus() == AuthState.LOGIN_STATUS.LOGIN) {
-                        loginUserId = authState.getUserId();
-                         searchUser(authState.getUserName());
+                    } catch (EncodedException e) {
+                        WritableMap params = Arguments.createMap();
+                        params.putString("message", e.getLocalizedMessage());
+                        sendEvent(RCTRicohAuth.this.getReactApplicationContext(), "onAuthStateReceivedError", params);
                     }
                 }
             }).execute(this.getCurrentActivity().getApplicationContext());
@@ -268,7 +280,7 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
             // 2
             final List<Entry> hitEntryList = new ArrayList<Entry>();
 
-            for (final Iterator<Entry> iterator = entryList.iterator(); iterator.hasNext();) {
+            for (final Iterator<Entry> iterator = entryList.iterator(); iterator.hasNext(); ) {
                 final Entry simpleEntry = (Entry) iterator.next();
 
                 final String name = simpleEntry.getName();
@@ -295,7 +307,7 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
                 return;
             }
             final EntryArray entryArray = result.getEntriesData();
-            for (final Iterator<Entry> iterator = entryArray.iterator(); iterator.hasNext();) {
+            for (final Iterator<Entry> iterator = entryArray.iterator(); iterator.hasNext(); ) {
                 final Entry entry = iterator.next();
 
                 list.add(entry);
@@ -354,7 +366,7 @@ public class RCTRicohAuth extends ReactContextBaseJavaModule {
                 return;
             }
 
-            for (final Iterator<Entry> iterator = hitEntryList.iterator(); iterator.hasNext();) {
+            for (final Iterator<Entry> iterator = hitEntryList.iterator(); iterator.hasNext(); ) {
                 // 2
                 final Entry simpleEntry = iterator.next();
                 final String entryId = simpleEntry.getEntryId();

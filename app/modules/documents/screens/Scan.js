@@ -48,6 +48,7 @@ class Scan extends Component<{}> {
             isLoading: true,
             connectState: '',
             scanJobState: '',
+            scanJobAttributeState: '',
             scanServiceAttributeState: '',
             scanServiceAttributeListenerError: '',
             scanJobListenerError: '',
@@ -55,46 +56,52 @@ class Scan extends Component<{}> {
             folderId: null,
             fileName: '',
             isEditMode: false,
-            uploadButtonText: 'Upload'
+            uploadButtonText: 'Upload',
+
         };
     }
 
     componentWillMount() {
         var that = this;
 
-        DeviceEventEmitter.addListener('ConnectStateUpdated', function (e) {
-            that.setState({ connectState: e.stateLabel });
-            if (that.isReady()){
-                that.setState({isLoading: false});
+        DeviceEventEmitter.addListener('onConnectStateUpdated', function (e) {
+            that.setState({ connectState: e.label });
+            if (that.isReady()) {
+                that.setState({ isLoading: false });
             }
         });
-        DeviceEventEmitter.addListener('ScanServiceAttributeUpdated', function (e) {
-            that.setState({ scanServiceAttributeState: e.stateLabel });
+        DeviceEventEmitter.addListener('onScanServiceAttributeUpdated', function (e) {
+            that.setState({ scanServiceAttributeState: e.label });
 
-            if (that.isReady()){
-                that.setState({isLoading: false});
+            if (that.isReady()) {
+                that.setState({ isLoading: false });
             }
         });
-        DeviceEventEmitter.addListener('ScanJobStateUpdated', function (e) {
-            that.setState({ scanJobState: e.stateLabel });
+        DeviceEventEmitter.addListener('onScanJobStateUpdated', function (e) {
+            that.setState({ scanJobState: e.label });
         });
-        DeviceEventEmitter.addListener('ScanServiceAttributeListenerErrorUpdated', function (e) {
-            that.setState({ scanServiceAttributeListenerError: e.stateLabel });
+        DeviceEventEmitter.addListener('onScanJobAttributeUpdated', function (e) {
+            that.setState({ scanJobAttributeState: e.label });
+
+            if (that.isReady()) {
+                that.setState({ isLoading: false });
+            }
         });
-        DeviceEventEmitter.addListener('ScanJobListenerErrorUpdated', function (e) {
-            that.setState({ scanJobListenerError: e.stateLabel });
+        DeviceEventEmitter.addListener('onScanServiceAttributeListenerErrorUpdated', function (e) {
+            that.setState({ scanServiceAttributeListenerError: e.label });
         });
-        DeviceEventEmitter.addListener('ScannedImageUpdated', function (e) {
-            that.setState({ scannedImage: e.stateLabel });
-            console.log(e.stateLabel);
-            if (e.stateLabel != null && e.stateLabel !== '') {
+        DeviceEventEmitter.addListener('onScanJobListenerErrorUpdated', function (e) {
+            that.setState({ scanJobListenerError: e.label });
+        });
+        DeviceEventEmitter.addListener('onScannedImageUpdated', function (e) {
+            that.setState({ scannedImage: e.label });
+            console.log(e.label);
+            if (e.label != null && e.label !== '') {
                 that.setState({ isEditMode: true/*, isLoading: false*/ });
             } else {
                 that.setState({ isEditMode: false });
             }
         });
-
-
 
         that.init();
 
@@ -115,9 +122,9 @@ class Scan extends Component<{}> {
             <View>
                 <ScrollView style={{ padding: 20 }}>
                     <View>
-                        <TouchableOpacity onPress={this.restore.bind(this)} style={styles.button}>
+                        {/* <TouchableOpacity onPress={this.restore.bind(this)} style={styles.button}>
                             <Text style={styles.buttonFont}>Restore</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                         {this.renderSpacer()}
 
                         <TouchableOpacity onPress={this.scan.bind(this)} style={styles.button}>
@@ -137,21 +144,22 @@ class Scan extends Component<{}> {
                                 style={styles.textInput}
                             />
                             <TouchableOpacity onPress={this.doUpload.bind(this)} style={[styles.button, { width: 200 }]}>
-                                <Text style={styles.buttonFont}>Upload</Text>
+                                <Text style={styles.buttonFont}>{this.props.isLoading ? 'Uploading ...' : 'Upload'}</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={this.doUploadEncoded.bind(this)} style={[styles.button, { width: 200 }]}>
+                            {/* <TouchableOpacity onPress={this.doUploadEncoded.bind(this)} style={[styles.button, { width: 200 }]}>
                                 <Text style={styles.buttonFont}>Upload (encoded)</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={this.doUploadDecoded.bind(this)} style={[styles.button, { width: 200 }]}>
                                 <Text style={styles.buttonFont}>Upload (decoded)</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
                         {this.renderSpacer()}
 
-                        <Text style={styles.title}>Connection State: {this.state.connectState}</Text>
-                        <Text style={styles.title}>Scan Job State: {this.state.scanJobState}</Text>
-                        <Text style={styles.title}>Scan Service Attribute State: {this.state.scanServiceAttributeState}</Text>
-                        <Text style={styles.title}>Scanned Image: {this.state.scannedImage}</Text>
+                        <Text style={styles.title}>Scanner: {this.isReady()?'Ready':'Please wait ...'}</Text>
+                        {/* <Text style={styles.title}>Connection State: {this.state.connectState}</Text> */}
+                        {/* <Text style={styles.title}>Scan Job State: {this.state.scanJobState}</Text> */}
+                        {/* <Text style={styles.title}>Scan Service Attribute State: {this.state.scanServiceAttributeState}</Text> */}
+                        <Text style={styles.title}>Scanned Image: {this.state.scannedImage?'Ready':'Empty'}</Text>
 
                     </View>
                     {this.renderSpinner()}
@@ -172,9 +180,10 @@ class Scan extends Component<{}> {
 
         RicohScannerAndroid.start()
             .then((msg) => {
-                console.log('success!!')
+                console.log('Start scan success!!');
+                // that.setState({isLoading: true});
             }, (error) => {
-                console.log('error!!')
+                console.log('Start scan error!!')
                 // that.setState({isLoading: false});
             });
     }
@@ -183,9 +192,9 @@ class Scan extends Component<{}> {
 
         RicohScannerAndroid.init()
             .then((msg) => {
-                console.log('success!!')
+                console.log('Init scanner success!!')
             }, (error) => {
-                console.log('error!!')
+                console.log('Init scanner error!!')
             });
     }
 
@@ -219,7 +228,7 @@ class Scan extends Component<{}> {
         let document = {
             "id": 0,
             "fileSize": this.state.scannedImage.length,
-            "title": name,
+            // "title": name,
             "type": type,
             "fileName": name + (type === '' ? '' : `.${type}`),
             "folderId": folderId,
@@ -230,7 +239,7 @@ class Scan extends Component<{}> {
             var data = this.state.scannedImage;
             //data = Base64.atob(data); // error
             // data = Base64.btoa(data); 
-        
+
             upload(sid, document, data);
 
             this.setState({
@@ -284,8 +293,8 @@ class Scan extends Component<{}> {
         try {
             var data = this.state.scannedImage;
             //data = Base64.atob(data); // error
-            data = Base64.btoa(data); 
-        
+            data = Base64.btoa(data);
+
             upload(sid, document, data);
 
             this.setState({
@@ -340,7 +349,7 @@ class Scan extends Component<{}> {
             var data = this.state.scannedImage;
             data = Base64.atob(data); // error
             //data = Base64.btoa(data); 
-        
+
             upload(sid, document, data);
 
             this.setState({
@@ -376,6 +385,7 @@ class Scan extends Component<{}> {
 
     renderSpinner() {
         const { isLoading } = this.state;
+
         return (
             <View style={[styles.container, {
                 flex: 1,

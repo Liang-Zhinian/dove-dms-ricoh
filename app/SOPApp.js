@@ -10,17 +10,20 @@ import {
     DeviceEventEmitter,
     AsyncStorage,
     View,
+    Text,
     ActivityIndicator,
 } from 'react-native';
 import { connect } from 'react-redux';
 
+import { login, logout } from './actions/auth';
 import RicohAuthAndroid from './components/RCTRicohAuthAndroid';
 import Spinner from './components/Spinner';
+import DoveButton from './components/DoveButton';
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#F5FCFF',
@@ -32,9 +35,9 @@ class SOPApp extends Component {
         super(props)
         this.state = {
             isLoading: true,
-            sopLoginStatus: 'LOGOUT',
+            sopAuthState: null,
             sopLoggedInUser: null,
-            savedUser: null
+            hasSkippedLogin: false,
         }
         this._isMounted = false;
         this.sopEnabled = false;
@@ -44,15 +47,19 @@ class SOPApp extends Component {
     componentWillMount() {
         var that = this;
 
-        DeviceEventEmitter.addListener('onLoginStatusReceived', function (e) {
-            that.onLoginStatusReceived(e.loginStatus);
+        DeviceEventEmitter.addListener('onAuthStateReceived', function (e) {
+            console.log(e.authState);
+            that.onAuthStateReceived(JSON.parse(e.authState));
+        });
+        DeviceEventEmitter.addListener('onAuthStateReceivedError', function (e) {
+            alert(e.message);
         });
 
-        DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
-            console.log('onEntryInfoReceived');
-            console.log(e.entryInfo);
-            that.onEntryInfoReceived(JSON.parse(e.entryInfo));
-        });
+        // DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
+        //     console.log('onEntryInfoReceived');
+        //     console.log(e.entryInfo);
+        //     that.onEntryInfoReceived(JSON.parse(e.entryInfo));
+        // });
 
 
     }
@@ -64,8 +71,9 @@ class SOPApp extends Component {
     }
 
     componentWillUnmount() {
-        DeviceEventEmitter.removeListener('onLoginStatusReceived');
-        DeviceEventEmitter.removeListener('onEntryInfoReceived');
+        DeviceEventEmitter.removeListener('onAuthStateReceived');
+        DeviceEventEmitter.removeListener('onAuthStateReceivedError');
+        // DeviceEventEmitter.removeListener('onEntryInfoReceived');
 
         this._isMounted = false;
     }
@@ -83,7 +91,18 @@ class SOPApp extends Component {
             );
         }
 
-        //if (this.isSOPLoggedIn()) { }
+        if (!this.isSOPLoggedIn() && !this.state.hasSkippedLogin) {
+            return (
+                <View style={styles.container}>
+                    <Text style={styles.text}>Please login the SOP or </Text>
+
+                    <DoveButton style={[styles.button]}
+                        onPress={() => this.setState({ hasSkippedLogin: true })}
+                        caption="Skip login"
+                    />
+                </View>
+            );
+        }
 
         return (
             <View style={{ flex: 1 }}>
@@ -124,9 +143,18 @@ class SOPApp extends Component {
         }
     }
 
-    onLoginStatusReceived = (status) => {
-        this.setState({ sopLoginStatus: status });
-        console.log('SOP login status: ' + status);
+    onAuthStateReceived = (authState) => {
+        this.setState({ sopAuthState: authState }, () => {
+            if (this.isSOPLoggedIn()) {
+                this.props.setQueryUserName(this.state.sopAuthState.userId);
+            } else {
+                // SOP logged out
+                this.props.isLoggedIn && this.props.logout();
+            }
+            this._isMounted && this.setState({ isLoading: false });
+        });
+        console.log('SOP login status: ' + authState.loginStatus);
+
     }
 
     onEntryInfoReceived = (entryInfo) => {
@@ -134,20 +162,12 @@ class SOPApp extends Component {
 
         that.setState({ sopLoggedInUser: entryInfo });
 
-        // var userId = entryInfo.loginUserName;
-        // if (!userId)
-        //     userId = entryInfo.userId;
-
-        // // for testing
-        // let user = await that.getSavedUser(userId);
-        // that.setState({ savedUser: user });
-
-        that.setQueryUserName(entryInfo.loginUserName);
+        that.props.setQueryUserName(entryInfo.loginUserName);
         that._isMounted && that.setState({ isLoading: false });
     }
 
     isSOPLoggedIn = () => {
-        return this.state.sopLoginStatus == 'LOGIN';
+        return this.state.sopAuthState.loginStatus == 'LOGIN';
     }
 
     getSavedUser = async (userId) => {
@@ -178,6 +198,7 @@ async function timeout(ms: number): Promise {
 
 const mapStateToProps = (state) => {
     return {
+        isLoggedIn: state.auth.isLoggedIn
     }
 };
 
@@ -186,6 +207,7 @@ const mapDispatchToProps = (dispatch) => {
         checkingUser: () => { dispatch({ type: 'CHECKING_USER' }); },
         doneCheckingUser: () => { dispatch({ type: 'DONE_CHECKING_USER' }); },
         setQueryUserName: (username) => { dispatch({ type: 'QUERY_USER', payload: username }); },
+        logout: () => dispatch(logout()),
     }
 };
 

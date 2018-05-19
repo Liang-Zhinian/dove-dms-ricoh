@@ -9,8 +9,7 @@ import {
     TextInput,
     AsyncStorage,
     DeviceEventEmitter,
-    Button,
-    NetInfo,
+    Button
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -42,19 +41,23 @@ class Splash extends Component {
     }
 
     componentWillMount() {
-        
     }
 
     componentDidMount() {
         console.log('componentDidMount');
         var that = this;
-
-        if (!that.props.isLoggedIn) {
-            that.getSavedUser(that.props.queryUserName)
+        const { isLoggedIn, queryUserName } = that.props;
+        var username = "";
+        if (typeof queryUserName !== 'undefined') username = queryUserName;
+        if (!isLoggedIn) {
+            that.getSavedUser(username)
                 .then(savedUser => {
-                    that.setState({ savedUser, isLoading: false });
+                    that.setState({ savedUser, isLoading: false }, () => {
+                        !that.state.savedUser && that.props.navigation.navigate('Login');
+                    });
                 })
-
+        } else {
+            that.setState({ isLoading: false });
         }
 
         this._isMounted = true;
@@ -85,10 +88,11 @@ class Splash extends Component {
                 <View style={container}>
                     <Text style={title}>Welcome, {username}</Text>
 
-                    <LoginButton
-                        style={[styles.button]}
-                        username={username}
-                        password={password} />
+                    {/* <Button
+                        onPress={() => this._signInAsync(username, password)}
+                        title="Log In!"
+                    /> */}
+                    <LoginButton style={[styles.button]} username={username} password={password} />
                     <Text style={title}>or</Text>
 
                     <DoveButton style={[styles.button]}
@@ -98,7 +102,7 @@ class Splash extends Component {
                 </View>
             );
         }
-        
+        // this.props.navigation.navigate('Login');
         return (
             <View style={container}>
                 <DoveButton style={[styles.button]}
@@ -163,7 +167,8 @@ class Splash extends Component {
     };
 
     getSavedUser = (userId) => {
-        this.setState({ isLoading: true });
+        // if (typeof userId == 'undefined' || !userId) Promise.reject(null);
+
         return AsyncStorage
             .getItem(userId)
             .then(data => {

@@ -1,3 +1,7 @@
+/*
+ *  Copyright (C) 2013-2017 RICOH Co.,LTD.
+ *  All rights reserved.
+ */
 package com.dove;
 
 import android.app.Activity;
@@ -17,18 +21,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dove.sample.app.scan.activity.PreviewActivity;
-import com.dove.sample.app.scan.activity.AddressActivity;
-import com.dove.sample.app.scan.activity.StorageActivity;
-import com.dove.sample.app.scan.activity.DialogUtil;
-
-import com.dove.sample.app.scan.application.StorageSettingDataHolder.StorageSendData;
-import com.dove.sample.app.scan.application.StorageSettingDataHolder.StorageStoreData;
 import com.dove.sample.app.scan.Const;
-import com.dove.sample.app.scan.application.AfterPowerModeLock;
+import com.dove.sample.app.scan.activity.PreviewActivity;
 import com.dove.sample.app.scan.application.DestinationSettingDataHolder;
 import com.dove.sample.app.scan.application.ScanSettingDataHolder;
 import com.dove.sample.app.scan.application.StorageSettingDataHolder;
+import com.dove.sample.app.scan.application.StorageSettingDataHolder.StorageSendData;
+import com.dove.sample.app.scan.application.StorageSettingDataHolder.StorageStoreData;
 import com.dove.sample.function.common.SmartSDKApplication;
 import com.dove.sample.function.scan.attribute.HashScanRequestAttributeSet;
 import com.dove.sample.function.scan.attribute.ScanException;
@@ -49,6 +48,7 @@ import com.dove.sample.function.scan.attribute.standard.SendStoredFileSetting.St
 import com.dove.sample.function.scan.attribute.standard.StoreLocalSetting;
 
 import java.util.Map;
+
 
 /**
  * スキャンサンプルアプリのステートマシン
@@ -134,7 +134,7 @@ public class SimpleScanStateMachine {
      * スキャンサンプルアプリケーション
      * Scan sample application object
      */
-    private static IScanApplication mApplication;
+    private static RCTRicohScannerModule mApplication;
 
     /**
      * UIスレッドのハンドラー
@@ -142,9 +142,9 @@ public class SimpleScanStateMachine {
      */
     private Handler mHandler;
 
-    private AfterPowerModeLock mAfterPowerModeLock;
+    private SimpleAfterPowerModeLock mAfterPowerModeLock;
 
-    public SimpleScanStateMachine(IScanApplication app, Handler handler) {
+    public SimpleScanStateMachine(RCTRicohScannerModule app, Handler handler) {
         mApplication = app;
         mHandler = handler;
         mAfterPowerModeLock = null;
@@ -282,7 +282,7 @@ public class SimpleScanStateMachine {
          * Job reset completed event
          */
         REBOOT_COMPLETED,
-        
+
         /**
          * Job canceled by user
          */
@@ -298,7 +298,7 @@ public class SimpleScanStateMachine {
     /**
      * Define the prefix for log information with abbreviation package and class name
      */
-    private final static String PREFIX = "application:StateMachine:";
+    private final static String PREFIX = "application:SimpleScanStateMachine:";
 
     /**
      * 状態定義
@@ -336,9 +336,9 @@ public class SimpleScanStateMachine {
             @Override
             public State getNextState(final SimpleScanStateMachine sm, final ScanEvent event, final Object prm) {
                 switch (event) {
-                    case CHANGE_JOB_STATE_PENDING:
+                    case CHANGE_JOB_STATE_PENDING :
                         return JOB_PENDING;
-                    case REQUEST_JOB_START:
+                    case REQUEST_JOB_START :
                         return WAITING_JOB_START;
                     default:
                         return super.getNextState(sm, event, prm);
@@ -356,14 +356,14 @@ public class SimpleScanStateMachine {
                     case REQUEST_JOB_CANCEL:
                         return WAITING_JOB_CANCEL;
 
-                    case CHANGE_JOB_STATE_PENDING:
+                    case CHANGE_JOB_STATE_PENDING :
                         return JOB_PENDING;
-                    case CHANGE_JOB_STATE_PROCESSING:
+                    case CHANGE_JOB_STATE_PROCESSING :
                         return JOB_PROCESSING;
 
-                    case CHANGE_JOB_STATE_ABORTED:
+                    case CHANGE_JOB_STATE_ABORTED :
                         return JOB_ABORTED;
-                    case CHANGE_JOB_STATE_CANCELED:
+                    case CHANGE_JOB_STATE_CANCELED :
                         return JOB_CANCELED;
 
                     case ACTIVITY_DESTROYED:
@@ -372,7 +372,6 @@ public class SimpleScanStateMachine {
                         return super.getNextState(sm, event, prm);
                 }
             }
-
             @Override
             public void entry(final SimpleScanStateMachine sm, final Object prm) {
                 super.entry(sm, prm);
@@ -388,14 +387,14 @@ public class SimpleScanStateMachine {
             @Override
             public State getNextState(final SimpleScanStateMachine sm, final ScanEvent event, final Object prm) {
                 switch (event) {
-                    case CHANGE_JOB_STATE_PROCESSING:
+                    case CHANGE_JOB_STATE_PROCESSING :
                         return JOB_PROCESSING;
                     case REQUEST_JOB_CANCEL:
                         return WAITING_JOB_CANCEL;
 
-                    case CHANGE_JOB_STATE_ABORTED:
+                    case CHANGE_JOB_STATE_ABORTED :
                         return JOB_ABORTED;
-                    case CHANGE_JOB_STATE_CANCELED:
+                    case CHANGE_JOB_STATE_CANCELED :
                         return JOB_CANCELED;
 
                     case ACTIVITY_DESTROYED:
@@ -413,25 +412,25 @@ public class SimpleScanStateMachine {
             @Override
             public State getNextState(final SimpleScanStateMachine sm, final ScanEvent event, final Object prm) {
                 switch (event) {
-                    case CHANGE_JOB_STATE_ABORTED:
+                    case CHANGE_JOB_STATE_ABORTED :
                         return JOB_ABORTED;
-                    case CHANGE_JOB_STATE_CANCELED:
+                    case CHANGE_JOB_STATE_CANCELED :
                         return JOB_CANCELED;
 
-                    case CHANGE_JOB_STATE_STOPPED_PREVIEW:
+                    case CHANGE_JOB_STATE_STOPPED_PREVIEW :
                         return JOB_STOPPED_PREVIEW;
-                    case CHANGE_JOB_STATE_STOPPED_COUNTDOWN:
+                    case CHANGE_JOB_STATE_STOPPED_COUNTDOWN :
                         return JOB_STOPPED_COUNTDOWN;
-                    case CHANGE_JOB_STATE_STOPPED_OTHER:
+                    case CHANGE_JOB_STATE_STOPPED_OTHER :
                         return JOB_STOPPED_OTHER;
 
-                    case CHANGE_JOB_STATE_COMPLETED:
+                    case CHANGE_JOB_STATE_COMPLETED :
                         return JOB_COMPLETED;
                     case REQUEST_JOB_STOP:
                         return WAITING_JOB_STOP;
                     case REQUEST_JOB_CANCEL:
                         return WAITING_JOB_CANCEL;
-                    case UPDATE_JOB_STATE_PROCESSING:
+                    case UPDATE_JOB_STATE_PROCESSING :
                         return JOB_PROCESSING;
 
                     case ACTIVITY_DESTROYED:
@@ -442,7 +441,6 @@ public class SimpleScanStateMachine {
                         return super.getNextState(sm, event, prm);
                 }
             }
-
             @Override
             public void entry(final SimpleScanStateMachine sm, final Object prm) {
                 super.entry(sm, prm);
@@ -459,20 +457,19 @@ public class SimpleScanStateMachine {
         JOB_ABORTED {
             public State getNextState(final SimpleScanStateMachine sm, final ScanEvent event, final Object prm) {
                 switch (event) {
-                    case REBOOT_COMPLETED:
+                    case REBOOT_COMPLETED :
                         return IDLE;
                     default:
                         return super.getNextState(sm, event, prm);
                 }
             }
-
             @Override
             public void entry(final SimpleScanStateMachine sm, final Object prm) {
                 super.entry(sm, prm);
-                actCloseScanningDialog(sm, prm);
+                actCloseScanningDialog(sm,prm);
                 actCloseJobStoppedDialog(sm, prm);
-                actCloseWaitForNextOriginal(sm, prm);
-                actClosePreview(sm, prm);
+                actCloseWaitForNextOriginal(sm,prm);
+                actClosePreview(sm,prm);
 
                 // show toast message with aborted reason
                 String message = "job aborted.";
@@ -502,20 +499,19 @@ public class SimpleScanStateMachine {
                 switch (event) {
                     case CHANGE_JOB_STATE_PENDING:
                         return JOB_PENDING;
-                    case REBOOT_COMPLETED:
+                    case REBOOT_COMPLETED :
                         return IDLE;
                     default:
                         return super.getNextState(sm, event, prm);
                 }
             }
-
             @Override
             public void entry(final SimpleScanStateMachine sm, final Object prm) {
                 super.entry(sm, prm);
-                actCloseScanningDialog(sm, prm);
+                actCloseScanningDialog(sm,prm);
                 actCloseJobStoppedDialog(sm, prm);
-                actCloseWaitForNextOriginal(sm, prm);
-                actClosePreview(sm, prm);
+                actCloseWaitForNextOriginal(sm,prm);
+                actClosePreview(sm,prm);
                 actInitJobSetting(sm, prm);
             }
         },
@@ -534,16 +530,16 @@ public class SimpleScanStateMachine {
                     case REQUEST_JOB_END:
                         return WAITING_JOB_END;
 
-                    case CHANGE_JOB_STATE_PROCESSING:
+                    case CHANGE_JOB_STATE_PROCESSING :
                         return JOB_PROCESSING;
-                    case CHANGE_JOB_STATE_COMPLETED:
+                    case CHANGE_JOB_STATE_COMPLETED :
                         return JOB_COMPLETED;
-                    case CHANGE_JOB_STATE_ABORTED:
+                    case CHANGE_JOB_STATE_ABORTED :
                         return JOB_ABORTED;
-                    case CHANGE_JOB_STATE_CANCELED:
+                    case CHANGE_JOB_STATE_CANCELED :
                         return JOB_CANCELED;
 
-                    case CHANGE_JOB_STATE_STOPPED_PREVIEW:
+                    case CHANGE_JOB_STATE_STOPPED_PREVIEW :
                         return JOB_STOPPED_PREVIEW;
 
                     case ACTIVITY_DESTROYED:
@@ -552,7 +548,6 @@ public class SimpleScanStateMachine {
                         return super.getNextState(sm, event, prm);
                 }
             }
-
             @Override
             public void entry(final SimpleScanStateMachine sm, final Object prm) {
                 super.entry(sm, prm);
@@ -573,13 +568,13 @@ public class SimpleScanStateMachine {
                     case REQUEST_JOB_CANCEL:
                         return WAITING_JOB_CANCEL;
 
-                    case CHANGE_JOB_STATE_PROCESSING:
+                    case CHANGE_JOB_STATE_PROCESSING :
                         return JOB_PROCESSING;
-                    case CHANGE_JOB_STATE_COMPLETED:
+                    case CHANGE_JOB_STATE_COMPLETED :
                         return JOB_COMPLETED;
-                    case CHANGE_JOB_STATE_ABORTED:
+                    case CHANGE_JOB_STATE_ABORTED :
                         return JOB_ABORTED;
-                    case CHANGE_JOB_STATE_CANCELED:
+                    case CHANGE_JOB_STATE_CANCELED :
                         return JOB_CANCELED;
 
                     case ACTIVITY_DESTROYED:
@@ -588,7 +583,6 @@ public class SimpleScanStateMachine {
                         return super.getNextState(sm, event, prm);
                 }
             }
-
             @Override
             public void entry(final SimpleScanStateMachine sm, final Object prm) {
                 super.entry(sm, prm);
@@ -613,18 +607,18 @@ public class SimpleScanStateMachine {
                     case REQUEST_JOB_END:
                         return WAITING_JOB_END;
 
-                    case CHANGE_JOB_STATE_STOPPED_COUNTDOWN:
+                    case CHANGE_JOB_STATE_STOPPED_COUNTDOWN :
                         return JOB_STOPPED_COUNTDOWN;
-                    case CHANGE_JOB_STATE_STOPPED_PREVIEW:
+                    case CHANGE_JOB_STATE_STOPPED_PREVIEW :
                         return JOB_STOPPED_PREVIEW;
 
-                    case CHANGE_JOB_STATE_PROCESSING:
+                    case CHANGE_JOB_STATE_PROCESSING :
                         return JOB_PROCESSING;
-                    case CHANGE_JOB_STATE_COMPLETED:
+                    case CHANGE_JOB_STATE_COMPLETED :
                         return JOB_COMPLETED;
-                    case CHANGE_JOB_STATE_ABORTED:
+                    case CHANGE_JOB_STATE_ABORTED :
                         return JOB_ABORTED;
-                    case CHANGE_JOB_STATE_CANCELED:
+                    case CHANGE_JOB_STATE_CANCELED :
                         return JOB_CANCELED;
 
                     case ACTIVITY_DESTROYED:
@@ -633,7 +627,6 @@ public class SimpleScanStateMachine {
                         return super.getNextState(sm, event, prm);
                 }
             }
-
             @Override
             public void entry(final SimpleScanStateMachine sm, final Object prm) {
                 super.entry(sm, prm);
@@ -644,27 +637,26 @@ public class SimpleScanStateMachine {
         },
 
         /**
-         * ジョブキャンセル待ち
+         *ジョブキャンセル待ち
          * Job waiting to be cancelled after user request
          */
         JOB_CANCELED_OTHER {
             @Override
             public State getNextState(final SimpleScanStateMachine sm, final ScanEvent event, final Object prm) {
                 switch (event) {
-                    case CHANGE_JOB_STATE_CANCELED:
+                    case CHANGE_JOB_STATE_CANCELED :
                         return JOB_CANCELED;
-                    case CHANGE_JOB_STATE_COMPLETED:
+                    case CHANGE_JOB_STATE_COMPLETED :
                         return JOB_COMPLETED;
-                    case CHANGE_JOB_STATE_ABORTED:
+                    case CHANGE_JOB_STATE_ABORTED :
                         return JOB_ABORTED;
                     default:
                         return super.getNextState(sm, event, prm);
                 }
             }
-
             @Override
             public void entry(final SimpleScanStateMachine sm, final Object prm) {
-                super.entry(sm, prm);
+                super.entry(sm,  prm);
                 sm.new CancelScanJobTask().execute();
             }
         },
@@ -679,21 +671,21 @@ public class SimpleScanStateMachine {
                     case REQUEST_JOB_CANCEL:
                         return WAITING_JOB_CANCEL;
 
-                    case UPDATE_JOB_STATE_PROCESSING:
+                    case UPDATE_JOB_STATE_PROCESSING :
                         return JOB_PROCESSING;
 
-                    case CHANGE_JOB_STATE_STOPPED_PREVIEW:
+                    case CHANGE_JOB_STATE_STOPPED_PREVIEW :
                         return JOB_STOPPED_PREVIEW;
-                    case CHANGE_JOB_STATE_STOPPED_COUNTDOWN:
+                    case CHANGE_JOB_STATE_STOPPED_COUNTDOWN :
                         return JOB_STOPPED_COUNTDOWN;
-                    case CHANGE_JOB_STATE_STOPPED_OTHER:
+                    case CHANGE_JOB_STATE_STOPPED_OTHER :
                         return JOB_STOPPED_OTHER;
 
-                    case CHANGE_JOB_STATE_ABORTED:
+                    case CHANGE_JOB_STATE_ABORTED :
                         return JOB_ABORTED;
-                    case CHANGE_JOB_STATE_CANCELED:
+                    case CHANGE_JOB_STATE_CANCELED :
                         return JOB_CANCELED;
-                    case CHANGE_JOB_STATE_COMPLETED:
+                    case CHANGE_JOB_STATE_COMPLETED :
                         return JOB_COMPLETED;
 
                     case ACTIVITY_DESTROYED:
@@ -702,7 +694,6 @@ public class SimpleScanStateMachine {
                         return super.getNextState(sm, event, prm);
                 }
             }
-
             @Override
             public void entry(final SimpleScanStateMachine sm, final Object prm) {
                 super.entry(sm, prm);
@@ -717,14 +708,14 @@ public class SimpleScanStateMachine {
             @Override
             public State getNextState(final SimpleScanStateMachine sm, final ScanEvent event, final Object prm) {
                 switch (event) {
-                    case CHANGE_JOB_STATE_PROCESSING:
+                    case CHANGE_JOB_STATE_PROCESSING :
                         return JOB_PROCESSING;
 
-                    case CHANGE_JOB_STATE_COMPLETED:
+                    case CHANGE_JOB_STATE_COMPLETED :
                         return JOB_COMPLETED;
-                    case CHANGE_JOB_STATE_ABORTED:
+                    case CHANGE_JOB_STATE_ABORTED :
                         return JOB_ABORTED;
-                    case CHANGE_JOB_STATE_CANCELED:
+                    case CHANGE_JOB_STATE_CANCELED :
                         return JOB_CANCELED;
 
                     case ACTIVITY_DESTROYED:
@@ -733,7 +724,6 @@ public class SimpleScanStateMachine {
                         return super.getNextState(sm, event, prm);
                 }
             }
-
             @Override
             public void entry(final SimpleScanStateMachine sm, final Object prm) {
                 super.entry(sm, prm);
@@ -751,17 +741,16 @@ public class SimpleScanStateMachine {
                     case CHANGE_JOB_STATE_CANCELED:
                         return JOB_CANCELED;
 
-                    case CHANGE_JOB_STATE_PROCESSING:
+                    case CHANGE_JOB_STATE_PROCESSING :
                         return JOB_PROCESSING;
-                    case CHANGE_JOB_STATE_COMPLETED:
+                    case CHANGE_JOB_STATE_COMPLETED :
                         return JOB_COMPLETED;
-                    case CHANGE_JOB_STATE_ABORTED:
+                    case CHANGE_JOB_STATE_ABORTED :
                         return JOB_ABORTED;
                     default:
                         return super.getNextState(sm, event, prm);
                 }
             }
-
             @Override
             public void entry(final SimpleScanStateMachine sm, final Object prm) {
                 super.entry(sm, prm);
@@ -776,25 +765,24 @@ public class SimpleScanStateMachine {
             @Override
             public State getNextState(final SimpleScanStateMachine sm, final ScanEvent event, final Object prm) {
                 switch (event) {
-                    case CHANGE_JOB_STATE_COMPLETED:
+                    case CHANGE_JOB_STATE_COMPLETED :
                         return JOB_COMPLETED;
-                    case CHANGE_JOB_STATE_STOPPED_PREVIEW:
+                    case CHANGE_JOB_STATE_STOPPED_PREVIEW :
                         return JOB_STOPPED_PREVIEW;
 
-                    case CHANGE_JOB_STATE_ABORTED:
+                    case CHANGE_JOB_STATE_ABORTED :
                         return JOB_ABORTED;
-                    case CHANGE_JOB_STATE_CANCELED:
+                    case CHANGE_JOB_STATE_CANCELED :
                         return JOB_CANCELED;
                     /**
                      * Change machine state "WAITING_JOB_END" to "JOB_PENDING"
                      */
-                    case CHANGE_JOB_STATE_PENDING:
+                    case CHANGE_JOB_STATE_PENDING :
                         return JOB_PENDING;
                     default:
                         return super.getNextState(sm, event, prm);
                 }
             }
-
             @Override
             public void entry(final SimpleScanStateMachine sm, final Object prm) {
                 super.entry(sm, prm);
@@ -810,23 +798,25 @@ public class SimpleScanStateMachine {
             @Override
             public State getNextState(final SimpleScanStateMachine sm, final ScanEvent event, final Object prm) {
                 switch (event) {
-                    case REBOOT_COMPLETED:
+                    case REBOOT_COMPLETED :
                         return IDLE;
                     default:
                         return super.getNextState(sm, event, prm);
                 }
             }
-
             @Override
             public void entry(final SimpleScanStateMachine sm, final Object prm) {
                 super.entry(sm, prm);
-                actCloseScanningDialog(sm, prm);
+                actCloseScanningDialog(sm,prm);
                 actCloseJobStoppedDialog(sm, prm);
-                actCloseWaitForNextOriginal(sm, prm);
-                actClosePreview(sm, prm);
+                actCloseWaitForNextOriginal(sm,prm);
+                actClosePreview(sm,prm);
                 actInitJobSetting(sm, prm);
+
+                sm.procScanEvent(ScanEvent.REQUEST_JOB_END);
             }
-        },;
+        },
+        ;
 
 
         /**
@@ -837,7 +827,7 @@ public class SimpleScanStateMachine {
          *
          * @param sm
          * @param event
-         * @param prm   Object for additional information
+         * @param prm Object for additional information
          * @return
          */
         public State getNextState(final SimpleScanStateMachine sm, final ScanEvent event, final Object prm) {
@@ -870,6 +860,7 @@ public class SimpleScanStateMachine {
          */
         public void exit(final SimpleScanStateMachine sm, final Object prm) {
         }
+
 
         // +++++++++++++++++++++++++++++++++++++++++
         // アクション関数
@@ -1050,7 +1041,6 @@ public class SimpleScanStateMachine {
             });
         }
 
-
         /**
          * Toastメッセージ表示
          * Displays toast message
@@ -1083,15 +1073,15 @@ public class SimpleScanStateMachine {
                     mApplication.unlockOffline();
 
                     /* システムリセット抑止状態を解除するための内部インテントを発行します */
-//                    Intent intent = new Intent(INTENT_ACTION_UNLOCK_SYSTEM_RESET);
-//                    intent.setPackage(mApplication.getPackageName());
-//                    mApplication.sendBroadcast(intent);
+                    Intent intent = new Intent(INTENT_ACTION_UNLOCK_SYSTEM_RESET);
+                    intent.setPackage(mApplication.getPackageName());
+                    mApplication.sendBroadcast(intent);
 
                     mApplication.initJobSetting();
                     sm.procScanEvent(ScanEvent.REBOOT_COMPLETED);
 
                     //Initialize job setting, reset flag to false
-//                    mApplication.setmIsWinShowing(false);
+                    mApplication.setmIsWinShowing(false);
                 }
             });
         }
@@ -1113,7 +1103,7 @@ public class SimpleScanStateMachine {
      * Changes states.
      *
      * @param event
-     * @param prm   Object for additional information
+     * @param prm  Object for additional information
      */
     public void procScanEvent(final ScanEvent event, final Object prm) {
         Log.i(Const.TAG, PREFIX + ">evtp :" + event);
@@ -1554,11 +1544,10 @@ public class SimpleScanStateMachine {
         return builder.create();
     }
 
-
-   /*=============================================================
-    * スキャンジョブ操作の非同期タスク
-    * The asynchronous task to start the scan job.
-    *=============================================================*/
+    /*=============================================================
+     * スキャンジョブ操作の非同期タスク
+     * The asynchronous task to start the scan job.
+     *=============================================================*/
 
     /**
      * ScanResponseExceptionのエラー情報を文字列化します。
@@ -1616,11 +1605,12 @@ public class SimpleScanStateMachine {
             // lock power mode
             if (!mApplication.lockPowerMode()) {
                 Log.d(Const.TAG, PREFIX + "lockPowerMode failed. start after lock");
-//                mAfterPowerModeLock = new AfterPowerModeLock(mApplication);
-//                mAfterPowerModeLock.start();
+                mAfterPowerModeLock = new SimpleAfterPowerModeLock(mApplication);
+                mAfterPowerModeLock.start();
             }
-//            // lock offline
+            // lock offline
             if (!mApplication.lockOffline()) {
+                Log.w(Const.TAG, PREFIX + "Error: cannot start scan job. lockOffline() failed.");
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -1629,19 +1619,22 @@ public class SimpleScanStateMachine {
                 });
                 return false;
             }
-//
-//            // ジョブ実行中はシステムリセット抑止状態とするための内部インテントを発行します
-//            Intent intent = new Intent(INTENT_ACTION_LOCK_SYSTEM_RESET);
-//            intent.setPackage(mApplication.getPackageName());
-//            mApplication.sendBroadcast(intent);
-//
-//            // Sets scan attributes.
+
+            // ジョブ実行中はシステムリセット抑止状態とするための内部インテントを発行します
+            Intent intent = new Intent(INTENT_ACTION_LOCK_SYSTEM_RESET);
+            intent.setPackage(mApplication.getPackageName());
+            mApplication.sendBroadcast(intent);
+
+            // Sets scan attributes.
             ScanSettingDataHolder scanSetDataHolder = mApplication.getScanSettingDataHolder();
             ScanRequestAttributeSet requestAttributes;
             requestAttributes = new HashScanRequestAttributeSet();
             requestAttributes.add(AutoCorrectJobSetting.AUTO_CORRECT_ON);
 
-            JobMode jobMode = scanSetDataHolder.getSelectedJobModeValue();
+//            JobMode jobMode = scanSetDataHolder.getSelectedJobModeValue();
+//            requestAttributes.add(jobMode);
+
+            JobMode jobMode = JobMode.SCAN_AND_STORE_TEMPORARY;
             requestAttributes.add(jobMode);
 
             switch (jobMode) {
@@ -1658,7 +1651,12 @@ public class SimpleScanStateMachine {
 
                 case SCAN_AND_STORE_TEMPORARY:
                     Log.e(Const.TAG, PREFIX + "unsupported mode: " + jobMode);
-                    return false;
+
+                    setFileSetting(requestAttributes);
+                    setScanSetting(requestAttributes);
+                    setStoreTemporarySetting(requestAttributes);
+
+                    break;
 
                 case SEND_STORED_FILE:
                     setFileSetting(requestAttributes);
@@ -1676,6 +1674,7 @@ public class SimpleScanStateMachine {
             boolean result = false;
             try {
                 Log.i(Const.TAG, PREFIX + "scan requesting...");
+                Log.i(Const.TAG, PREFIX + "job mode: "+jobMode);
                 result = mApplication.getScanJob().scan(requestAttributes);
                 Log.d(Const.TAG, PREFIX + "scan requested. result=" + result);
             } catch (ScanException e) {
@@ -1761,6 +1760,32 @@ public class SimpleScanStateMachine {
                 storeLocalSetting.setFolderPassword(storeData.getFolderPass());
             }
             requestAttributes.add(storeLocalSetting);
+        }
+
+        private void setStoreTemporarySetting(ScanRequestAttributeSet requestAttributes) {
+
+//            ScanRequestAttributeSet requestAttributes;
+//            requestAttributes = new HashScanRequestAttributeSet();
+//            requestAttributes.add(AutoCorrectJobSetting.AUTO_CORRECT_ON);
+//
+//
+//            JobMode jobMode = JobMode.SCAN_AND_STORE_TEMPORARY;
+//            requestAttributes.add(jobMode);
+//
+//            FileSetting fileSetting = new FileSetting();
+//            fileSetting.setFileFormat(FileSetting.FileFormat.PDF);
+//            fileSetting.setMultiPageFormat(true);
+//            requestAttributes.add(fileSetting);
+//
+//            StorageSettingDataHolder storageSetDataHolder = mApplication.getStorageSettingDataHolder();
+//
+//
+//            StoreTemporarySetting storeTemporarySetting = new StoreTemporarySetting();
+//            StorageStoreData storeData = storageSetDataHolder.getStorageStoreData();
+//            if (storeData.getFileName()!=null && !storeData.getFileName().equals("")) {
+//                storeTemporarySetting.setFileName(storeData.getFileName());
+//            }
+//            requestAttributes.add(storeTemporarySetting);
         }
 
         /**
@@ -1923,4 +1948,5 @@ public class SimpleScanStateMachine {
             }
         }
     }
+
 }

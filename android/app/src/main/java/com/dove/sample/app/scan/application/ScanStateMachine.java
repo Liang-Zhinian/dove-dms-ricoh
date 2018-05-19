@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.dove.sample.app.scan.Const;
 import com.dove.R;
-//import com.dove.PrintMainActivity;
 import com.dove.sample.app.scan.activity.ScanMainActivity;
 import com.dove.sample.app.scan.activity.PreviewActivity;
 import com.dove.sample.app.scan.application.StorageSettingDataHolder.StorageSendData;
@@ -143,7 +142,7 @@ public class ScanStateMachine {
 
     private AfterPowerModeLock mAfterPowerModeLock;
 
-    public ScanStateMachine(ScanSampleApplication app, Handler handler) {
+    ScanStateMachine(ScanSampleApplication app, Handler handler) {
         mApplication = app;
         mHandler = handler;
         mAfterPowerModeLock = null;
@@ -151,9 +150,9 @@ public class ScanStateMachine {
 
     /**
      * メインアクティビティを登録します。
-     * Registers the PrintMainActivity.
+     * Registers the MainActivity.
      *
-     * @param act PrintMainActivity
+     * @param act MainActivity
      */
     public void registActivity(Activity act) {
         mActivity = act;
@@ -253,13 +252,13 @@ public class ScanStateMachine {
 
         /**
          * アクティビティ生成イベント
-         * PrintMainActivity created event
+         * MainActivity created event
          */
         ACTIVITY_CREATED,
 
         /**
          * アクティビティ終了イベント
-         * PrintMainActivity destroyed event
+         * MainActivity destroyed event
          */
         ACTIVITY_DESTROYED,
 

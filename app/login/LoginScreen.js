@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { login, logout } from '../actions/auth';
 import Toast from '../components/ToastModule';
-import TextBox from '../components/TextBox';
+import TextBox, { Password } from '../components/TextInputs';
 import CommonStyles from '../styles/CommonStyles';
 import ComponentStyles from '../styles/ComponentStyles';
 import StyleConfig from '../styles/StyleConfig';
@@ -94,10 +94,8 @@ class LoginScreen extends Component {
                             autoCapitalize='none'
                         />
                         <View style={{ margin: 7 }} />
-                        <TextBox
-                            placeholder={'Password'}
+                        <Password
                             onChangeText={(password) => this.setState({ password })}
-                            secureTextEntry={true}
                         />
                     </View>
                     <View style={{ margin: 7 }} />
@@ -118,10 +116,10 @@ class LoginScreen extends Component {
                         justifyContent: 'space-between',
                     }}>
                         <TouchableOpacity onPress={() => { this.props.navigation.navigate('RegistrationScreen') }}>
-                            <Text style={{backgroundColor: 'transparent'}}>Register</Text>
+                            <Text style={{ backgroundColor: 'transparent' }}>Register</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => { this.props.navigation.navigate('ForgetPasswordScreen') }}>
-                            <Text style={{backgroundColor: 'transparent'}}>Forget password?</Text>
+                            <Text style={{ backgroundColor: 'transparent' }}>Forget password?</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>

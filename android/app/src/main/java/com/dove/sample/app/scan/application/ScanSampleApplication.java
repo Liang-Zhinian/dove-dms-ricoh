@@ -4,29 +4,11 @@
  */
 package com.dove.sample.app.scan.application;
 
-
-import com.dove.BuildConfig;
-import com.dove.RCTFileViewerReactPackage;
-import com.dove.RCTRicohScannerReactPackage;
-import com.dove.sample.app.scan.activity.ScanMainActivity;
-import com.facebook.react.ReactApplication;
-import com.microsoft.codepush.react.CodePush;
-import com.horcrux.svg.SvgPackage;
-import com.imagepicker.ImagePickerPackage;
-import com.rnfs.RNFSPackage;
-import com.RNFetchBlob.RNFetchBlobPackage;
-import com.reactlibrary.RNReactNativeDocViewerPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.facebook.react.ReactNativeHost;
-import com.facebook.react.ReactPackage;
-import com.facebook.react.shell.MainReactPackage;
-import com.facebook.soloader.SoLoader;
-
 import android.os.Handler;
 
 import com.dove.sample.app.scan.Const;
 import com.dove.R;
-//import com.dove.MainActivity;
+import com.dove.sample.app.scan.activity.ScanMainActivity;
 import com.dove.sample.app.scan.activity.PreviewActivity;
 import com.dove.sample.app.scan.application.ScanStateMachine.ScanEvent;
 import com.dove.sample.function.common.SmartSDKApplication;
@@ -44,9 +26,7 @@ import com.dove.sample.function.scan.event.ScanJobEvent;
 import com.dove.sample.function.scan.event.ScanJobListener;
 import com.dove.sample.wrapper.common.Utils;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -55,47 +35,7 @@ import java.util.Set;
  * Application class of Scan sample application.
  * Saves the setting information and manages scan service and job.
  */
-public class ScanSampleApplication extends SmartSDKApplication implements ReactApplication {
-
-    private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-
-        @Override
-        protected String getJSBundleFile() {
-            return CodePush.getJSBundleFile();
-        }
-
-        @Override
-        public boolean getUseDeveloperSupport() {
-            return BuildConfig.DEBUG;
-        }
-
-        @Override
-        protected List<ReactPackage> getPackages() {
-            return Arrays.<ReactPackage>asList(
-                    new MainReactPackage(),
-                    new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
-                    new SvgPackage(),
-                    new ImagePickerPackage(),
-                    new RNFSPackage(),
-                    new RNFetchBlobPackage(),
-                    new RNReactNativeDocViewerPackage(),
-                    new VectorIconsPackage(),
-                    new RCTFileViewerReactPackage(),
-                    new RCTRicohScannerReactPackage()
-            );
-        }
-
-        @Override
-        protected String getJSMainModuleName() {
-            return "index";
-        }
-    };
-
-    @Override
-    public ReactNativeHost getReactNativeHost() {
-        return mReactNativeHost;
-    }
-
+public class ScanSampleApplication extends SmartSDKApplication {
 
     /**
      * 宛先設定
@@ -202,7 +142,6 @@ public class ScanSampleApplication extends SmartSDKApplication implements ReactA
 	    Utils.setTagName();
 
 		super.onCreate();
-        SoLoader.init(this, /* native exopackage */ false);
 		mSystemStateMonitor = new SystemStateMonitor(this);
 		mSystemStateMonitor.start();
 		init();

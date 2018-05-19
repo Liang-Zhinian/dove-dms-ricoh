@@ -47,6 +47,7 @@ import com.facebook.react.uimanager.annotations.ReactProp;
 
 import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +61,10 @@ import javax.annotation.Nullable;
  */
 
 public class RCTRicohPrinterModule extends ReactContextBaseJavaModule {
+    private static final String E_PRINTER_MODULE_ERROR = "E_PRINTER_MODULE_ERROR";
+
     private Context mContext;
+
 
     public RCTRicohPrinterModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -85,7 +89,7 @@ public class RCTRicohPrinterModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void openActivity(Promise promise) throws JSONException {
+    public void openActivity(Promise promise) throws Exception {
 
         try {
             Activity currentActivity = getCurrentActivity();
@@ -96,7 +100,7 @@ public class RCTRicohPrinterModule extends ReactContextBaseJavaModule {
 
             promise.resolve("Start activity success!!");
         } catch (android.content.ActivityNotFoundException e) {
-            promise.reject("Start activity error!!" + e.getMessage());
+            promise.reject(E_PRINTER_MODULE_ERROR, "Start activity error!!" + e.getMessage());
             throw e;
         }
     }
@@ -114,101 +118,114 @@ public class RCTRicohPrinterModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void onCreate(Promise promise) throws JSONException {
+    public void onCreate(Promise promise) throws Exception {
 
         try {
             registerReceiver();
             initializeListener();
             promise.resolve("Create module success!!");
-        } catch (android.content.ActivityNotFoundException e) {
-            promise.reject("Create module error!!" + e.getMessage());
+        } catch (Exception e) {
+            promise.reject(E_PRINTER_MODULE_ERROR, "Create module error!!" + e.getMessage());
             throw e;
         }
     }
 
     @ReactMethod
-    public void onResume(Promise promise) throws JSONException {
+    public void onResume(Promise promise) throws Exception {
 
         try {
             resume();
             promise.resolve("Resume module success!!");
-        } catch (android.content.ActivityNotFoundException e) {
-            promise.reject("Resume module error!!" + e.getMessage());
+        } catch (Exception e) {
+            promise.reject(E_PRINTER_MODULE_ERROR, "Resume module error!!" + e.getMessage());
             throw e;
         }
     }
 
     @ReactMethod
-    public void onPause(Promise promise) throws JSONException {
+    public void onPause(Promise promise) throws Exception {
 
         try {
             pause();
             promise.resolve("Pause module success!!");
-        } catch (android.content.ActivityNotFoundException e) {
-            promise.reject("Pause module error!!" + e.getMessage());
+        } catch (Exception e) {
+            promise.reject(E_PRINTER_MODULE_ERROR, "Pause module error!!" + e.getMessage());
             throw e;
         }
     }
 
     @ReactMethod
-    public void onDestroy(Promise promise) throws JSONException {
+    public void onDestroy(Promise promise) throws Exception {
 
         try {
             destroy();
             promise.resolve("Destroy module success!!");
-        } catch (android.content.ActivityNotFoundException e) {
-            promise.reject("Destroy module error!!" + e.getMessage());
+        } catch (Exception e) {
+            promise.reject(E_PRINTER_MODULE_ERROR, "Destroy module error!!" + e.getMessage());
             throw e;
         }
     }
 
     @ReactMethod
-    public void onStartPrint(Promise promise) throws JSONException {
+    public void onStartPrint(Promise promise) throws Exception {
 
         try {
             startPrint();
             promise.resolve("Start print success!!");
-        } catch (android.content.ActivityNotFoundException e) {
-            promise.reject("Start print error!!" + e.getMessage());
+        } catch (Exception e) {
+            promise.reject(E_PRINTER_MODULE_ERROR, "Start print error!!" + e.getMessage());
             throw e;
         }
     }
 
     @ReactMethod
-    public void setPrintFilePath(String path, Promise promise) throws JSONException {
+    public void testPrint(Promise promise) throws Exception {
+
+        try {
+            mHolder.setSelectedPrintAssetFileName(mContext.getString(R.string.assets_file_sample_01));
+            startPrint();
+            promise.resolve("Start print success!!");
+        } catch (Exception e) {
+            promise.reject(E_PRINTER_MODULE_ERROR, "Start print error!!" + e.getMessage());
+            throw e;
+        }
+    }
+
+    @ReactMethod
+    public void setPrintFilePath(String path, Promise promise) throws Exception {
 
         try {
             mHolder.setSelectedPrintAssetFileName(path);
 
             promise.resolve("Set print file path success!!");
-        } catch (android.content.ActivityNotFoundException e) {
-            promise.reject("Set print file path error!!" + e.getMessage());
+        } catch (Exception e) {
+            promise.reject(E_PRINTER_MODULE_ERROR, "Set print file path error!!" + e.getMessage());
             throw e;
         }
     }
 
     @ReactMethod
-    public void setPrintColor(String printColor, Promise promise) throws JSONException {
+    public void setPrintColor(String printColor, Promise promise) throws Exception {
 
         try {
             mHolder.setSelectedPrintColorValue(PrintColor.fromString(printColor));
 
             promise.resolve("Set print color success!!");
-        } catch (android.content.ActivityNotFoundException e) {
-            promise.reject("Set print color error!!" + e.getMessage());
+        } catch (Exception e) {
+            promise.reject(E_PRINTER_MODULE_ERROR, "Set print color error!!" + e.getMessage());
             throw e;
         }
     }
 
     @ReactMethod
-    public void setPrintCopies(String copies, Promise promise) throws JSONException {
+    public void setPrintCopies(String copies, Promise promise) throws Exception {
 
         try {
             mHolder.setSelectedCopiesValue(new Copies(Integer.parseInt(copies)));
 
             promise.resolve("Set print copies success!!");
-        } catch (android.content.ActivityNotFoundException e) {
-            promise.reject("Set print copies error!!" + e.getMessage());
+        } catch (Exception e) {
+            promise.reject(E_PRINTER_MODULE_ERROR, "Set print copies error!!" + e.getMessage());
             throw e;
         }
     }

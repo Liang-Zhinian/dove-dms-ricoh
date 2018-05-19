@@ -67,7 +67,6 @@ import java.util.Set;
  */
 public class ScanMainActivity extends Activity {
 
-    public static final int REQUEST_CODE_TOP_ACTIVITY = 4000;
 
     /**
      * アプリケーションの種別
@@ -231,7 +230,7 @@ public class ScanMainActivity extends Activity {
     /**
      * メインアクティビティ起動済みフラグ
      * trueであれば、すでにMainActivityが起動済みです。
-     * ScanMainActivity running flag
+     * MainActivity running flag
      * If true, another Mainactivity instance is running.
      */
     private boolean mMultipleRunning = false;
@@ -239,7 +238,7 @@ public class ScanMainActivity extends Activity {
     /**
      * メインアクティビティの最前面表示状態を保持します。
      * onResume - onPause の間はtrueになります。
-     * ScanMainActivity foreground flag
+     * MainActivity foreground flag
      * During onResume and onPause, it should be true.
      */
     private boolean mIsForeground = false;
@@ -297,11 +296,10 @@ public class ScanMainActivity extends Activity {
 		
 		Logger.setRecorder(mLogRecoder);
 		Log.d(Const.TAG, PREFIX + "onCreate");
-
 		setContentView(R.layout.activity_main);
 
 		if (getNumActivities(getPackageName()) > 1) {
-		    Log.i(Const.TAG, PREFIX + "Another ScanMainActivity instance is already running.");
+		    Log.i(Const.TAG, PREFIX + "Another MainActivity instance is already running.");
 		    mMultipleRunning = true;
 		    finish();
 		    return;
@@ -554,7 +552,6 @@ public class ScanMainActivity extends Activity {
         });
 
 		//(11)
-        // start scanning
 		mButtonStart = (RelativeLayout)findViewById(R.id.btn_start);
 		mButtonStart.setOnClickListener(new View.OnClickListener(){
 			@Override
@@ -702,7 +699,7 @@ public class ScanMainActivity extends Activity {
      *
      * Called when the activity is destroyed.
      * [Processes]
-     *   (1) Send ScanMainActivity destoyed event to the state machine.
+     *   (1) Send MainActivity destoyed event to the state machine.
      *       If scanning is in process, scanning is cancelled.
      *   (2) Removes the event listener and the broadcast receiver from the service.
      *   (3) If asynchronous task is in process, the task is cancelled.
@@ -714,7 +711,7 @@ public class ScanMainActivity extends Activity {
         Log.d(Const.TAG, PREFIX + "onDestroy");
         super.onDestroy();
 
-        // if ScanMainActivity another instance is already running, then exit without doing anything
+        // if MainActivity another instance is already running, then exit without doing anything
         if (mMultipleRunning) {
             return;
         }

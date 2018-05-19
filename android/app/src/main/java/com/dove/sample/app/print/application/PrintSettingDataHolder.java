@@ -16,6 +16,8 @@ import com.dove.sample.function.print.attribute.standard.Copies;
 import com.dove.sample.function.print.attribute.standard.PrintColor;
 import com.dove.sample.function.print.attribute.standard.Staple;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -24,7 +26,7 @@ import java.io.InputStream;
  * Print setting data class.
  */
 public class PrintSettingDataHolder {
-    
+
     /**
      * Define the prefix for log information with abbreviation package and class name
      */
@@ -81,7 +83,13 @@ public class PrintSettingDataHolder {
             is = resources.getAssets().open(mSelectedPrintAssetFileName);
         } catch (IOException e) {
             Log.w(Const.TAG, PREFIX + e.toString());
-            return null;
+            try {
+                is = new FileInputStream(mSelectedPrintAssetFileName);
+            } catch (FileNotFoundException ex) {
+                Log.w(Const.TAG, PREFIX + ex.toString());
+
+                return null;
+            }
         }
 
         printfile = (new PrintFile.Builder()).localFileInputStream(is).pdl(mSelectedPDL).build();
@@ -90,7 +98,7 @@ public class PrintSettingDataHolder {
 
     public PrintFile getPrintFile() throws PrintException {
         PrintFile printfile = null;
-
+        Log.i(Const.TAG, PREFIX + "printer file path: " + mSelectedPrintAssetFileName);
         printfile = (new PrintFile.Builder()).printerFilePath(mSelectedPrintAssetFileName).pdl(mSelectedPDL).build();
         return printfile;
     }
@@ -98,14 +106,15 @@ public class PrintSettingDataHolder {
     /**
      * 現在の設定値からプリント要求用の属性セットを生成します。
      * Create Print request attribute set from current print settings.
+     *
      * @return
      */
     public PrintRequestAttributeSet getPrintRequestAttributeSet() {
         PrintRequestAttributeSet attributeSet = new HashPrintRequestAttributeSet();
 
-        if(mSelectedStapleValue != null) attributeSet.add(mSelectedStapleValue);
-        if(mSelectedCopiesValue != null) attributeSet.add(mSelectedCopiesValue);
-        if(mSelectedPrintColorValue != null) attributeSet.add(mSelectedPrintColorValue);
+        if (mSelectedStapleValue != null) attributeSet.add(mSelectedStapleValue);
+        if (mSelectedCopiesValue != null) attributeSet.add(mSelectedCopiesValue);
+        if (mSelectedPrintColorValue != null) attributeSet.add(mSelectedPrintColorValue);
 
         return attributeSet;
     }
@@ -118,6 +127,7 @@ public class PrintSettingDataHolder {
     /**
      * ステープル設定値に指定された値をセットします。
      * Set the staple setting to the specified value.
+     *
      * @param value
      */
     public void setSelectedStaple(Staple value) {
@@ -127,6 +137,7 @@ public class PrintSettingDataHolder {
     /**
      * 印刷部数設定値に指定された値をセットします。
      * Set the number of copies to the specified value.
+     *
      * @param selectedCopiesValue
      */
     public void setSelectedCopiesValue(Copies selectedCopiesValue) {
@@ -136,6 +147,7 @@ public class PrintSettingDataHolder {
     /**
      * 印刷ファイルの名称に指定された値をセットします。
      * Set the print file name to the specified value.
+     *
      * @param selectedPrintAssetFileName
      */
     public void setSelectedPrintAssetFileName(String selectedPrintAssetFileName) {
@@ -145,6 +157,7 @@ public class PrintSettingDataHolder {
     /**
      * PDL設定に指定された値をセットします。
      * Set the PDL to the specified value.
+     *
      * @param pdl
      */
     public void setSelectedPDL(PrintFile.PDL pdl) {
@@ -154,6 +167,7 @@ public class PrintSettingDataHolder {
     /**
      * 印刷カラー設定に指定された値をセットします。
      * Set the print color setting to the specified value
+     *
      * @param printColor
      */
     public void setSelectedPrintColorValue(PrintColor printColor) {
@@ -168,6 +182,7 @@ public class PrintSettingDataHolder {
     /**
      * 現在のステープルの設定値を取得します。
      * Obtains the current staple setting value.
+     *
      * @return
      */
     public Staple getSelectedStaple() {
@@ -177,6 +192,7 @@ public class PrintSettingDataHolder {
     /**
      * 現在の印刷部数の設定値を取得します。
      * Get the current number of pages.
+     *
      * @return
      */
     public Copies getSelectedCopiesValue() {
@@ -186,6 +202,7 @@ public class PrintSettingDataHolder {
     /**
      * 現在の印刷ファイル名を取得します。
      * Get the current print file name.
+     *
      * @return
      */
     public String getSelectedPrintAssetFileName() {
@@ -195,6 +212,7 @@ public class PrintSettingDataHolder {
     /**
      * 現在のPDL設定値を取得します。
      * Get the current PDL setting value.
+     *
      * @return
      */
     public PrintFile.PDL getSelectedPDL() {
@@ -204,6 +222,7 @@ public class PrintSettingDataHolder {
     /**
      * 現在の印刷カラー設定値を取得します。
      * Get the current print color setting value.
+     *
      * @return
      */
     public PrintColor getSelectedPrintColorValue() {
