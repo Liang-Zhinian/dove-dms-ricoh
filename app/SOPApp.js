@@ -40,8 +40,8 @@ class SOPApp extends Component {
             hasSkippedLogin: false,
         }
         this._isMounted = false;
-        this.sopEnabled = false;
-        this.setSavedUser();
+        this.sopEnabled = true;
+        // this.setSavedUser();
     }
 
     componentWillMount() {
