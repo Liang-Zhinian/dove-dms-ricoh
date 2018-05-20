@@ -40,7 +40,7 @@ buck-out/
 \.buckd/
 # android/app/libs
 android/keystores/debug.keystore
-android/gradle.properties
+# android/gradle.properties
 source/config/index.bak.js
 
 # yarn
