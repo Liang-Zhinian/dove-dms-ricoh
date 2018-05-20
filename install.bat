@@ -1,1 +1,0 @@
-adb uninstall com.dove && yarn adb-install-android

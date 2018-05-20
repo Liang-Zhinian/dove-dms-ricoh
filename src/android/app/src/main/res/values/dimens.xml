@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="Indent_1">10dp</dimen>
+    <dimen name="category_brank">20dp</dimen>
+    <dimen name="category_Indent_1">30dp</dimen>
+</resources>

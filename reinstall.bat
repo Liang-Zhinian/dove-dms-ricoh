@@ -1,1 +1,0 @@
-yarn android-build-release && adb uninstall com.dove && yarn adb-install-android

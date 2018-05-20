@@ -1,0 +1,258 @@
+<resources>
+    <string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">DQbM4NgIcO56xClXPg8v7Rw_ow02b302a67f-34cf-4374-aec4-161cfe0113f5</string>
+    <string name="app_name">ISDforSmartDocumentApplication</string>
+
+
+    <string name="action_settings">Settings</string>
+
+    <!-- Common Button Message -->
+    <string name="txid_cmn_t_title">Scan Sample Application</string>
+    <string name="txid_cmn_b_start">Start</string>
+    <string name="txid_cmn_b_cancel">Cancel</string>
+    <string name="txid_cmn_b_close">Close</string>
+    <string name="txid_cmn_b_error">Error</string>
+    <string name="txid_cmn_b_ok">OK</string>
+    <string name="txid_cmn_b_stop">Stop</string>
+    <string name="txid_cmn_b_continue">Continue</string>
+    <string name="txid_cmn_b_end">End</string>
+    <string name="txid_cmn_b_exit">Exit</string>
+    <string name="txid_cmn_b_back">Back</string>
+    <string name="txid_cmn_b_next">Next</string>
+
+    <!-- Scanner Status -->
+    <string name="txid_scan_t_state_please_wait">Please Wait</string>
+    <string name="txid_scan_t_state_ready">Ready</string>
+    <string name="txid_scan_t_state_maintenance">Maintenance</string>
+    <string name="txid_scan_t_state_scanning">Scanning&#8230;</string>
+    <string name="txid_scan_t_state_stopped">Stopped</string>
+    <string name="txid_scan_t_state_unknown">Unknown</string>
+    <string name="txid_scan_t_state_reason_cover_open">Cover Open</string>
+    <string name="txid_scan_t_state_reason_media_jam">Media Jam</string>
+    <string name="txid_scan_t_state_reason_paused">Paused</string>
+    <string name="txid_scan_t_state_reason_other">Other</string>
+    <string name="txid_scan_t_state_severity_error">Error</string>
+    <string name="txid_scan_t_state_severity_warning">Warning</string>
+
+    <!-- Please Wait Dialog -->
+    <string name="txid_cmn_d_wait">Please wait.</string>
+
+    <!-- Boot Failed Dialog -->
+    <string name="txid_cmn_d_cannot_connect">Cannot connect to the service.</string>
+
+    <!-- Scanning Dialog -->
+    <string name="txid_scan_d_scanning">Scanning&#8230;</string>
+    <string name="txid_scan_d_canceling">Canceling&#8230;</string>
+    <string name="txid_scan_d_sending">Sending&#8230;</string>
+    <string name="txid_scan_d_count">%d pages</string>
+
+    <!-- Destination Type  -->
+    <string name="txid_scan_t_kind_title">Specify Destination</string>
+    <string name="txid_scan_b_kind_folder">Folder</string>
+    <string name="txid_scan_b_kind_to">Email (To)</string>
+    <string name="txid_scan_b_address_address_book">Address Book</string>
+    <string name="txid_scan_b_address_direct">Manual Entry</string>
+    <string name="txid_scan_t_address_title_to">Specify Destination: Email (To)</string>
+    <string name="txid_scan_t_address_title_cc">Specify Destination: Email (Cc)</string>
+    <string name="txid_scan_t_address_title_bcc">Specify Destination: Email (Bcc)</string>
+    <string name="txid_scan_t_address_title_folder">Specify Destination: Folder</string>
+
+    <!-- Main Activity -->
+    <string name="txid_main_b_jobmode">Job Mode</string>
+    <string name="txid_main_b_destination">Destination</string>
+    <string name="txid_main_b_storedfile">Stored File</string>
+    <string name="txid_main_b_storefile">Store File</string>
+
+    <!-- Job Mode -->
+    <string name="txid_scan_t_jobmode_title">Job Mode</string>
+    <string name="txid_scan_b_jobmode_scan_and_send">Scan and Send</string>
+    <string name="txid_scan_b_jobmode_scan_and_store_local">Scan and Store Local</string>
+    <string name="txid_scan_b_jobmode_send_stored_file">Send Stored File</string>
+    <string name="txid_scan_b_jobmode_scan_and_store_temporary">Send Stored File</string>
+
+    <!-- Store File -->
+    <string name="txid_storage_t_store_title">Store file setting</string>
+    <string name="txid_storage_t_folder_title">Select Folder</string>
+    <string name="txid_storage_t_file_title">Select Stored File</string>
+    <string name="txid_storage_t_file_name">File name</string>
+    <string name="txid_storage_t_file_pass">File password\n (4 to 8 digits)</string>
+    <string name="txid_storage_t_target_folder">Target folder to store</string>
+    <string name="txid_storage_m_pass_enter">Enter the password.</string>
+    <string name="txid_storage_m_pass_re_enter">Re-enter the password for confirmation.</string>
+    <string name="txid_storage_m_pass_folder_error">Folder password entered is not correct. Please re-enter.</string>
+    <string name="txid_storage_m_pass_file_error">File password entered is not correct. Please re-enter.</string>
+    <string name="txid_storage_m_pass_file_not_match">Passwords do not match. Please re-enter.</string>
+
+    <!-- Destination -->
+    <string name="txid_dest_t_folder_manual_ftp">Folder (FTP)</string>
+    <string name="txid_dest_t_folder_manual_smb">Folder (SMB)</string>
+    <string name="txid_dest_t_folder_manual_ncp">Folder (NCP)</string>
+
+    <!-- Addressbook -->
+    <string name="txid_addressbook_t_title">Select from addressbook</string>
+    <string name="txid_addressbook_b_switch_title">Switch Title</string>
+    <string name="txid_addressbook_b_freqent">Freqent</string>
+
+    <!-- Scan Color -->
+    <string name="txid_scan_t_top_color_title">Scan Color</string>
+    <string name="txid_scan_b_top_mono_text">B &amp; W (Text)</string>
+    <string name="txid_scan_b_top_mono_text_photo">B &amp; W (Text/Photo)</string>
+    <string name="txid_scan_b_top_mono_text_lineart">B &amp; W (Text/Line Art)</string>
+    <string name="txid_scan_b_top_mono_photo">B &amp; W (Photo)</string>
+    <string name="txid_scan_b_top_gray_scale">Gray Scale</string>
+    <string name="txid_scan_b_top_full_color_text_photo">Full Color(Text/Photo)</string>
+    <string name="txid_scan_b_top_full_color_glossy_photo">Full Color(Glossy Photo)</string>
+    <string name="txid_scan_b_top_auto_color_select">Auto Color</string>
+
+    <!-- File Type -->
+    <string name="txid_scan_t_top_file_title">File Type</string>
+    <string name="txid_scan_b_top_file_stiff_jpg">TIFF / JPEG (Single Page)</string>
+    <string name="txid_scan_b_top_file_mtiff">TIFF (Multi-page)</string>
+    <string name="txid_scan_b_top_file_spdf">PDF (Single Page)</string>
+    <string name="txid_scan_b_top_file_mpdf">PDF (Multi-page)</string>
+
+    <!-- Paper Side -->
+    <string name="txid_scan_t_top_side_title">Original Side</string>
+    <string name="txid_scan_b_top_one_sided">1 Sided</string>
+    <string name="txid_scan_b_top_top_to_top">2 Sided: Tp to Tp</string>
+    <string name="txid_scan_b_top_top_to_bottom">2 Sided: Tp to Btm</string>
+    <string name="txid_scan_b_top_spread">Spread</string>
+
+    <!-- Other -->
+    <string name="txid_scan_t_top_other_title">Other Settings</string>
+    <string name="txid_scan_b_other_preview_title">Show Preview</string>
+    <string name="txid_scan_b_other_preview_on">On</string>
+    <string name="txid_scan_b_other_preview_off">Off</string>
+
+    <!-- CountDown -->
+    <string name="txid_scan_t_count_down_title">Scanning</string>
+    <string name="txid_scan_t_count_down_text">Set next original(s) within the %d sec., then press [Start]. If none, press [Finish].</string>
+    <string name="txid_scan_t_no_count_down_text">Set next original(s), then press [Start]. If none, press [Finish].</string>
+    <string name="txid_scan_b_count_down_start">Start</string>
+    <string name="txid_scan_b_count_down_finish">Finish</string>
+
+    <!--  Manual Input(Folder)  -->
+    <string name="txid_dest_t_manual_input_folder_title">Manual Input(Folder)</string>
+    <string name="txid_dest_b_manual_input_folder_ok">OK</string>
+    <string name="txid_dest_b_manual_input_folder_cancel">Cancel</string>
+    <string name="txid_dest_t_manual_input_folder_connect_protocol">Protocol</string>
+    <string name="txid_dest_br_manual_input_folder_smb">SMB</string>
+    <string name="txid_dest_br_manual_input_folder_ftp">FTP</string>
+    <string name="txid_dest_br_manual_input_folder_ncp">NCP</string>
+    <string name="txid_dest_t_manual_input_folder_server">Server</string>
+    <string name="txid_dest_t_manual_input_folder_path">Path</string>
+    <string name="txid_dest_t_manual_input_folder_user">User</string>
+    <string name="txid_dest_t_manual_input_folder_pass">Password</string>
+    <string name="txid_dest_t_manual_input_folder_port">Port</string>
+    <string name="txid_dest_t_manual_input_folder_connect_type">Connection Type</string>
+    <string name="txid_dest_t_manual_input_folder_connect_type_nds">NDS</string>
+    <string name="txid_dest_t_manual_input_folder_connect_type_bindery">Bindery</string>
+
+    <!--  Manual Input(Mail) -->
+    <string name="txid_dest_t_manual_input_mail_title">Manual Input(Mail)</string>
+    <string name="txid_dest_b_manual_input_mail_ok">OK</string>
+    <string name="txid_dest_b_manual_input_mail_cancel">Cancel</string>
+    <string name="txid_dest_t_manual_input_mail_address">Address</string>
+
+    <!-- error messages -->
+    <string name="err_msg_get_entry_list">Failed to getting User list.</string>
+    <string name="err_msg_user_name_search_over">Hits %s users. Please change conditions and search again. </string>
+
+
+    <!-- Dialog button -->
+    <string name="btn_ok">OK</string>
+    <string name="btn_cancel">cancel</string>
+    <string name="btn_close">close</string>
+
+    <!-- Main screen -->
+    <string name="main_label_app_name">Print Sample Application</string>
+    <string name="main_label_other_settings">Other Settings</string>
+    <string name="main_btn_select_file">Select File</string>
+    <string name="main_btn_print_pages">Copies</string>
+    <string name="main_btn_print_color">PrintColor</string>
+    <string name="main_btn_other_settings">Other Settings</string>
+    <string name="main_btn_start">Start</string>
+
+    <!-- Print file setting dialog -->
+    <string name="select_file_dlg_title">Select File</string>
+
+    <!-- Other setting dialog -->
+    <string name="other_settings_dlg_title">Other Settings</string>
+
+    <!-- Staple setting dialog-->
+    <string name="staple_dlg_title">Staple Settings</string>
+
+    <!-- Copies setting dialog -->
+    <string name="print_count_dlg_title">Copies</string>
+
+    <!-- Print color setting dialog -->
+    <string name="print_color_dlg_title">Print Color</string>
+
+    <!-- Staple setting -->
+    <string name="staple_dual_left">dual left</string>
+    <string name="staple_dual_right">dual right</string>
+    <string name="staple_dual_top">dual top</string>
+    <string name="staple_saddle_stitch">saddle stitch</string>
+    <string name="staple_top_left">top left</string>
+    <string name="staple_top_left_slant">top left slant</string>
+    <string name="staple_top_right">top right</string>
+    <string name="staple_top_right_slant">top right slant</string>
+    <string name="staple_bottom_left">bottom left</string>
+    <string name="staple_bottom_left_slant">bottom left slant</string>
+    <string name="staple_top_left_slant_stapleless">top left slant stapleless</string>
+    <string name="staple_top_right_slant_stapleless">top right slant stapleless</string>
+    <string name="staple_none">none</string>
+
+    <!-- Color setting -->
+    <string name="color_auto_color">Auto Color</string>
+    <string name="color_monochrome">Monochrome</string>
+    <string name="color_color">Color</string>
+    <string name="color_red_and_black">Red and Black</string>
+    <string name="color_two_color">Two Color</string>
+    <string name="color_single_color">Single Color</string>
+
+    <!-- Sample file name -->
+    <string name="assets_file_sample_01">test.pdf</string>
+    <string name="assets_file_sample_02">test.prn</string>
+    <string name="assets_file_sample_03">test.tif</string>
+
+    <!-- File extension -->
+    <string name="file_extension_PDF">pdf</string>
+    <string name="file_extension_PRN">prn</string>
+    <string name="file_extension_XPS">xps</string>
+    <string name="file_extension_TIF">tif</string>
+
+    <!-- Job state -->
+    <string name="job_status_aborted">Aborted</string>
+    <string name="job_status_canceled">Canceled</string>
+    <string name="job_status_completed">Completed</string>
+    <string name="job_status_pending">Pending</string>
+    <string name="job_status_processing">Processing</string>
+    <string name="job_status_processing_stopped">Stopped</string>
+
+    <!-- Printer state -->
+    <string name="printer_status_idle">Ready</string>
+    <string name="printer_status_maintenance">Maintenance</string>
+    <string name="printer_status_processing">Processing</string>
+    <string name="printer_status_stopped">Stopped</string>
+    <string name="printer_status_unknown">Unknown</string>
+
+    <!-- Error message-->
+    <string name="error_title">Error</string>
+    <string name="error_pdl_not_found">This format is not supported.</string>
+    <string name="error_settings_not_found">Print start failed.</string>
+    <string name="error_cannot_connect">Cannot connect to the service.</string>
+
+    <!--Please wait dialog-->
+    <string name="dlg_waiting_message">Please wait...</string>
+
+    <!-- Printing dialog -->
+    <string name="dlg_printing_title">Printing</string>
+    <string name="dlg_printing_message_send_file">Transfer</string>
+    <string name="dlg_printing_message_printing">%d page</string>
+    <string name="dlg_printing_button_cancel">cancel job</string>
+    <string name="dlg_printing_message_printing_stopped">printing stopped.</string>
+
+    <!-- Default value -->
+    <string name="default_copies">1</string>
+
+</resources>

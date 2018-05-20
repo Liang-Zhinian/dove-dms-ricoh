@@ -1,0 +1,128 @@
+{
+	"name": "dove",
+	"version": "1.0.4",
+	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/Liang-Zhinian/dmsapp.git"
+	},
+	"scripts": {
+		"eslint": "eslint .",
+		"flow": "flow",
+		"format": "prettier-standard 'app/**/*.js'",
+		"lint-staged": "lint-staged",
+		"log": "adb logcat *:S ReactNative:V ReactNativeJS:V",
+		"precommit": "lint-staged && yarn test",
+		"prepush": "yarn test",
+		"start": "node node_modules/react-native/local-cli/cli.js start",
+		"test": "flow && standard && jest",
+		"codepush-key": "code-push deployment ls dmsapp -k",
+		"adb-install-android": "adb install android/app/build/outputs/apk/app-release.apk",
+		"adb-reverse": "adb reverse tcp:8081 tcp:8081",
+		"adb-uninstall": "adb uninstall com.dove",
+		"ios-dev": "react-native run-ios --simulator='iPhone 6s'",
+		"ios-codepush-staging": "code-push release-react dmsapp ios",
+		"ios-codepush-production": "code-push release-react dmsapp ios -d Production",
+		"ios-bundle": "react-native bundle --dev false --entry-file index.ios.js --bundle-output ios/main.jsbundle --platform ios",
+		"ios-build": "react-native run-ios --configuration Release",
+		"android-reinstall": "adb uninstall com.dove && cd android && ./gradlew assembleRelease && adb install android/app/build/outputs/apk/app-release.apk",
+		"android-codepush-staging": "code-push release-react dmsapp android",
+		"android-codepush-production": "code-push release-react dmsapp android -d Production",
+		"android-clean": "cd android && ./gradlew clean",
+		"android-build-debug": "cd android/ && ./gradlew assembleDebug",
+		"android-build-release": "cd android && ./gradlew assembleRelease",
+		"android-build-install-release": "cd android && gradlew installRelease",
+		"android-signkey": "keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000",
+		"android-release": "cd android && ./gradlew assembleRelease",
+		"android-signer": "cd android/app/build/outputs/apk/ && jarsigner -verbose -keystore ~/.android/debug.keystore -storepass android -keypass android app-release-unsigned.apk androiddebugkey",
+		"android-dev": "adb uninstall com.dove && react-native run-android && adb reverse tcp:8081 tcp:8081 && react-native start",
+		"android-bundle": "react-native bundle --platform android --dev false --entry-file ./index.android.js --bundle-output ./android/app/src/main/assets/index.android.bundle --sourcemap-output ./android/app/src/main/assets/index.android.map --assets-dest ./android/app/src/main/res/"
+	},
+	"lint-staged": {
+		"linters": {
+			"app/**/*.js": [
+				"prettier-standard",
+				"git add"
+			]
+		}
+	},
+	"dependencies": {
+		"crypto-js": "^3.1.9-1",
+		"moment": "^2.19.1",
+		"prop-types": "^15.5.8",
+		"react": "16.0.0",
+		"react-native": "0.50.3",
+		"react-native-code-push": "^5.2.1",
+		"react-native-doc-viewer": "^2.6.3",
+		"react-native-fetch-blob": "^0.10.8",
+		"react-native-fs": "^2.8.1",
+		"react-native-image-picker": "^0.26.7",
+		"react-native-linear-gradient": "^2.3.0",
+		"react-native-modal-selector": "^0.0.25",
+		"react-native-parallax-scroll-view": "^0.20.1",
+		"react-native-pdf": "^2.0.1",
+		"react-native-push-notification": "^3.0.1",
+		"react-native-router-flux": "^4.0.0-beta.28",
+		"react-native-svg": "^6.0.1-rc.1",
+		"react-native-vector-icons": "^4.4.2",
+		"react-navigation": "^1.0.0-beta.30",
+		"react-navigation-redux-helpers": "^1.0.0",
+		"react-redux": "^5.0.6",
+		"redux": "^3.7.2",
+		"redux-actions": "^2.2.1",
+		"redux-logger": "^3.0.6",
+		"redux-persist": "^4.8.2",
+		"redux-thunk": "^2.2.0",
+		"victory-native": "^0.16.1"
+	},
+	"devDependencies": {
+		"babel-eslint": "^6.1.2",
+		"babel-jest": "17.0.0",
+		"babel-preset-react-native": "1.9.0",
+		"chai": "^3.5.0",
+		"eslint": "^3.5.0",
+		"eslint-config-airbnb": "^11.1.0",
+		"eslint-plugin-flowtype": "^2.41.0",
+		"eslint-plugin-import": "^1.14.0",
+		"eslint-plugin-jsx-a11y": "^2.2.1",
+		"eslint-plugin-react": "^6.2.0",
+		"eslint-plugin-react-native": "^2.0.0",
+		"flow-bin": "0.42.0",
+		"jest": "17.0.0",
+		"jest-react-native": "17.0.0",
+		"lint-staged": "6.0.0",
+		"mocha": "^2.5.3",
+		"prettier-standard": "^8.0.0",
+		"react-test-renderer": "15.3.2",
+		"redux-immutable-state-invariant": "^2.1.0",
+		"standard": "^10.0.3"
+	},
+	"jest": {
+		"preset": "react-native",
+		"setupFiles": [
+			"<rootDir>/jest-setup.js"
+		],
+		"transformIgnorePatterns": [
+			"node_modules/(?!react-native|react-navigation)/"
+		]
+	},
+	"standard": {
+		"plugins": [
+			"flowtype"
+		],
+		"parser": "babel-eslint",
+		"globals": [
+			"describe",
+			"it",
+			"expect",
+			"beforeEach",
+			"afterEach",
+			"jest",
+			"jasmine",
+			"fetch"
+		],
+		"ignore": [
+			"/js/__generated__/"
+		]
+	}
+}
