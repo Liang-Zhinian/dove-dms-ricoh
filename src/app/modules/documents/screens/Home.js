@@ -179,47 +179,11 @@ class Home extends Component {
 
 	// Fetch the token from storage then navigate to our appropriate place
 	_bootstrapAsync = async () => {
-		// const { saveAccount, login, valid, auth, isLoggedIn } = this.props;
-		// const { isLoggedIn, user } = auth;
-
-		// if (isLoggedIn) {
-		// 	Toast.show('signed in dms', Toast.SHORT);
-		// 	this.setState({ isLoading: false });
-		// } else {
-		// 	Toast.show('not signed in dms', Toast.SHORT);
-		// 	let isValid = await valid(user.token.sid);
-
-		// 	if (!isValid) await login(user.username, user.password);
-		// 	else saveAccount(user.username, user.password)
-
-		// 	this.setState({ isLoading: false });
-		// }
-
-		// console.log('Home page', auth);
-		// if (!user) {
-		// 	this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Login' }));
-		// 	return;
-		// }
-
-		// if (user.token.sid) {
-		// 	let isValid = await valid(user.token.sid);
-		// 	console.log(`isValid: ${isValid}`);
-		// 	if (!isValid) {
-		// 		console.log(`login again`);
-		// 		Toast.show('invalid sid: ' + user.token.sid, Toast.SHORT);
-		// 		// await login(user.username, user.password);
-		// 	}
-		// }
 	};
 
 	_signOutAsync = async () => {
 		const { navigation, auth } = this.props;
 		const { user } = auth;
-
-		// if (!user) {
-		// 	this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Login' }));
-		// 	return;
-		// }
 
 		const sid = user.token.sid;
 		await logout(sid);
@@ -234,54 +198,9 @@ class Home extends Component {
 				that._signOutAsync();
 			}
 		});
-		/*
-				DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
-					let entryInfo = JSON.parse(e.entryInfo);
-		
-					that.setState({ user: entryInfo });
-		
-					AsyncStorage
-						.getItem(entryInfo.loginUserName)
-						.then(data => {
-							if (!!data) {
-								//alert('User data from AsyncStorage: ' + data);
-								return JSON.parse(data);
-							}
-		
-							return null;
-						})
-						.then(user => {
-							if (user != null) {
-								that.props.saveAccount(user.username, user.password);
-								that.props.login(user.username, user.password);
-								// navigate to Explorer screen
-								//that.props.navigation.navigate('Explorer');
-		
-								Toast.show(`Welcome, ${user.username}`, Toast.SHORT)
-		
-							} else {
-								//alert('Please register your account!');
-								// navigate to Registration screen
-								that.props.navigation.navigate('Registration', { key: entryInfo.loginUserName });
-							}
-						});
-		
-					// alert(entryInfo);
-				});
-		
-				RicohAuthAndroid.getAuthState()
-					.then((msg) => {
-						console.log('success!!')
-					}, (error) => {
-						console.log('error!!')
-					});
-		*/
-		
-		// this._bootstrapAsync();
 	}
 
 	componentWillReceiveProps(nextProps) {
-		// if (!nextProps.authenticated) this.props.navigation.navigate('Login')
 	}
 
 	componentWillUpdate(nextProps, nextState) {
@@ -490,7 +409,6 @@ const mapDispatchToProps = (dispatch) => {
 			dispatch(actions.logout(sid, navigation));
 			dispatch(logout(sid));
 		},
-		saveAccount: (username, password) => dispatch(actions.saveAccount(username, password)),
 	}
 };
 

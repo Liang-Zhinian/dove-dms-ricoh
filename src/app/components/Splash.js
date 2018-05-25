@@ -62,7 +62,6 @@ class Splash extends Component {
                 .getItem(entryInfo.loginUserName)
                 .then(data => {
                     if (!!data) {
-                        //alert('User data from AsyncStorage: ' + data);
                         return JSON.parse(data);
                     }
 
@@ -70,21 +69,13 @@ class Splash extends Component {
                 })
                 .then(user => {
                     if (user != null) {
-                        // that.props.saveAccount(user.username, user.password);
-                        // that.props.login(user.username, user.password);
-                        // // navigate to Explorer screen
-                        // that.props.navigation.navigate('Explorer');
                         that._signInAsync(user.username, user.password);
 
                     } else {
-                        //alert('Please register your account!');
-                        // navigate to Registration screen
-                        // that.props.navigation.navigate('Registration', {key: entryInfo.loginUserName});
                         that.setState({ newUser: true });
                     }
                 });
 
-            // alert(entryInfo);
         });
 
         RicohAuthAndroid.getAuthState()

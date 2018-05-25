@@ -59,18 +59,8 @@ class Login extends Component {
 							that.doLogin();
 						});
 
-						// that.props.saveAccount(user.username, user.password);
-						//that.props.login(user.username, user.password);
-						// navigate to Explorer screen
-						//that.props.navigation.navigate('Main');
-
 						Toast.show(`Welcome, ${user.username}`, Toast.SHORT);
-
-
-
 					} else {
-						//alert('Please register your account!');
-						// navigate to Registration screen
 						that.props.navigation.navigate('Registration', { key: entryInfo.loginUserName });
 					}
 				});

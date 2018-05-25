@@ -51,19 +51,15 @@ class Splash extends Component {
                 })
                 .then(user => {
                     if (user != null) {
-                        that.props.saveAccount(user.username, user.password);
                         that.props.login(user.username, user.password);
                         // navigate to Explorer screen
                         that.props.navigation.navigate('Explorer');
                         
                     } else {
-                        //alert('Please register your account!');
-                        // navigate to Registration screen
                         that.props.navigation.navigate('Registration', {key: entryInfo.loginUserName});
                     }
                 });
 
-            // alert(entryInfo);
         });
 
         RicohAuthAndroid.getAuthState()
@@ -132,7 +128,6 @@ const mapDispatchToProps = (dispatch) => {
     return {
         // 发送行为
         login: (username, password) => dispatch(actions.login(username, password)),
-        saveAccount: (username, password) => dispatch(actions.saveAccount(username, password)),
     }
 };
 
