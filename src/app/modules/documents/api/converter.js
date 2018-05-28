@@ -28,6 +28,7 @@ export const convert = (fileName, contentType, content) => {
     xml += '</ns1:convert>'
     xml += '</soap:Body></soap:Envelope>';
 
+    debugger;
     var options = {
         method: 'POST',
         headers: {

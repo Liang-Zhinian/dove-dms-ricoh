@@ -1,10 +1,6 @@
 'use strict';
 
 import React, { Component } from 'react';
-import {
-    Alert,
-    Platform
-} from 'react-native';
 import RNFS from 'react-native-fs';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {
@@ -16,7 +12,6 @@ import {
 } from '../api';
 import XMLParser from '../lib/XMLParser';
 import Base64 from '../lib/Base64';
-import { default as Toast } from '../../../components/RCTToastModuleAndroid';
 
 
 const toJson = (xmlString) => {
@@ -48,7 +43,6 @@ const downloadToDocumentDirectory = (sid, docs) => {
 
     return Promise.all(promises)
         .then(responses => {
-            console.log(responses);
             return responses.map(resp => {
                 let { id, content } = resp;
                 let item = docs.filter(o => o.id === id)[0];
@@ -56,24 +50,17 @@ const downloadToDocumentDirectory = (sid, docs) => {
                 return item;
             });
         }, reason => {
-            console.log(reason)
         })
         .then(items => {
-            console.log('will save:')
-            console.log(items);
             return items.map(item => {
                 let { title, content } = item;
                 let fileName = title;
-                console.log('saving ' + fileName);
                 let path = `${RNFS.DocumentDirectoryPath}/${fileName}`;
                 // write the file
-                RNFS.writeFile(path, content /*Base64.btoa(content)*/, 'base64')
+                RNFS.writeFile(path, content/*Base64.atob(content)*/, 'base64')
                     .then((success) => {
-                        console.log(success)
-                        console.log('FILE WRITTEN!');
                     })
                     .catch((err) => {
-                        console.log(err.message);
                     });
 
                 return item;
@@ -81,40 +68,25 @@ const downloadToDocumentDirectory = (sid, docs) => {
 
         })
         .catch(reason => {
-            console.log(reason)
         });
 }
 
 const downloadToCacheDirectory = (sid, doc, onProgress, onCanceled) => {
     const that = this;
     var downloadManager = new DownloadManager();
-    // downloadManager.onProgress = (received, total) => {
-    //     onProgress && onProgress(received, doc.fileSize);
-    // };
-    // downloadManager.onCanceled = onCanceled;
-
     return createDownloadTicketWithProgressSOAP(sid, doc.id)
         .then(ticket => {
-            // Alert.alert('Download Ticket', ticket, [{ text: 'OK', onPress: () => console.log('OK Pressed') },], { cancelable: false });
-
             const SHA1 = require('crypto-js/sha1');
-            const path = RNFetchBlob.fs.dirs.CacheDir + '/' + SHA1(ticket) + '.' + doc.type;
-            // Alert.alert('Temp file path', path, [{ text: 'OK', onPress: () => console.log('OK Pressed') },], { cancelable: false });
+            const path = RNFetchBlob.fs.dirs.CacheDir + '_immutable_images/' + SHA1(ticket) + '.' + doc.type;
 
             return downloadManager.start(ticket, {
                 // add this option that makes response data to be stored as a file,
                 // this is much more performant.
                 fileCache: true,
-                path,
-                //appendExt: doc.type
+                //path,
+                appendExt: doc.type,
             });
         })
-        .catch(error => {
-            Toast.show(error, Toast.SHORT);
-            throw new Error(error);
-        })
-    //.then(man => { return man.task })
-    //.then(task => { return task.path() });
 }
 
 const upload = () => { }
@@ -129,9 +101,7 @@ const removeDocuments = (username, password, docs) => {
     })
     return deleteDocuments(username, password, docIds)
         .then(values => {
-            console.log(values);
             if (values.length === docs.length)
-                console.log('All selected items were deleted.');
             return values.length === docs.length;
         })
 }
@@ -147,7 +117,6 @@ export class DownloadManager {
     constructor(singleTask = true) {
         this.task = null;
         this.onProgress = (received, total) => {
-            console.log(`progress: ${received} / ${total}`);
         };
         this.onCanceled = () => { };
     }
@@ -164,7 +133,6 @@ export class DownloadManager {
         // listen to download progress event
         that.task.progress((received, total) => {
             that.onProgress(received, total);
-            // Toast.show('progress: ' + received + '/' + total, Toast.SHORT);
         });
 
         return that;
@@ -175,8 +143,6 @@ export class DownloadManager {
         debugger;
         if (that.task)
             that.task.cancel((err, taskId) => {
-                // task successfully canceled
-                console.log('user canceled the previous download task');
 
                 that.onCanceled();
             });

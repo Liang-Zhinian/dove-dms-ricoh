@@ -3,7 +3,7 @@ import { handleActions } from 'redux-actions'
 import {
   CHANGING_DOCUMENT,
   DONE_CHANGING_DOCUMENT,
-  
+
   FETCHING_LIST,
   DONE_FETCHING_LIST,
 
@@ -15,6 +15,8 @@ import {
 
   IS_DOWNLOADING,
 
+  UPDATE_DOCUMENT,
+  DONE_UPDATING_DOCUMENT
 } from '../constants'
 
 type State = {}
@@ -30,6 +32,31 @@ const initialState: State = {}
 
 export default handleActions(
   {
+
+    [UPDATE_DOCUMENT]: (state: State = initialState, action) => {
+      const { payload: { isLoading } } = action
+
+      //because payload contains the id and we already know that we are about
+      //to increment the value of that id, we modify only that value by one
+
+      return {
+        ...state,
+        isLoading,
+      }
+    },
+
+    [DONE_UPDATING_DOCUMENT]: (state: State = initialState, action) => {
+      const { payload: { isLoading } } = action
+
+      //because payload contains the id and we already know that we are about
+      //to increment the value of that id, we modify only that value by one
+
+      return {
+        ...state,
+        isLoading,
+      }
+    },
+
     [FETCHING_LIST]: (state: State = initialState, action) => {
       const { payload: { isLoading, needReload } } = action
 

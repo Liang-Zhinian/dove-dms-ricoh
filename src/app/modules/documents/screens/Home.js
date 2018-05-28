@@ -8,25 +8,21 @@ import {
 	Dimensions,
 	Image,
 	TouchableOpacity,
-	AsyncStorage,
 	DeviceEventEmitter,
+	AsyncStorage,
+	ScrollView
 } from 'react-native';
-// import { DrawerNavigator } from 'react-navigation'
+import { connect } from 'react-redux';
+import { DrawerNavigator, NavigationActions } from 'react-navigation'
 import { default as Icon } from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { default as Ionicons } from 'react-native-vector-icons/Ionicons';
-import { connect } from 'react-redux';
-
-import Spinner from '../../../components/Spinner';
-import * as actions from '../actions';
-import { NAME } from '../constants';
-import RicohAuthAndroid from '../../../components/RCTRicohAuthAndroid';
-import { default as Toast } from '../../../components/RCTToastModuleAndroid';
-import { login, logout, valid } from '../../../actions/auth';
 import { HeaderButton } from './components/HeaderButtons';
+import { login, logout, valid } from '../../../actions/auth';
 import requireAuth from '../../../HOC/require_auth';
+import { translate } from '../../../i18n/i18n';
 
 import {
 	ComponentStyles,
@@ -35,79 +31,77 @@ import {
 	StyleConfig,
 } from '../styles';
 
-const firstLineItems = [{
-	title: 'My Documents',
-	color: StyleConfig.color_white,
-	// icon: 'cloud',
-	icon: (<Octicons name='file-submodule'
-		size={36}
-		color={StyleConfig.color_white}
-		style={[CommonStyles.m_b_1, CommonStyles.background_transparent]} />),
-	route: 'ExplorerTab',
-},
-{
-	title: 'Search',
-	color: StyleConfig.color_white,
-	icon: 'search',
-	route: 'SearchTab',
-}];
-
-const secondLineItems = [{
-	title: 'Downloads',
-	color: StyleConfig.color_white,
-	icon: 'cloud-download',
-	route: 'Downloads',
-}, {
-	title: 'My Storage',
+var MainRoutes = [
+	{
+		title: translate('Documents'),
+		color: StyleConfig.color_white,
+		// icon: 'cloud',
+		icon: (<Octicons name='file-submodule'
+			size={36}
+			color={StyleConfig.color_white}
+			style={[CommonStyles.m_b_1, CommonStyles.background_transparent]} />),
+		id: 'ExplorerTab',
+	}, {
+		title: translate('Search'),
+		color: StyleConfig.color_white,
+		icon: 'search',
+		id: 'SearchTab',
+	}, {
+		title: translate('Downloads'),
+		color: StyleConfig.color_white,
+		icon: 'cloud-download',
+		id: 'Downloads',
+	}, {
+		title: translate('Settings'),
+		color: StyleConfig.color_white,
+		icon: 'settings',
+		id: 'MoreTab',
+	},/* {
+	title: translate('Storage'),
 	color: StyleConfig.color_white,
 	icon: (<FontAwesome name='pie-chart'
 		size={36}
 		color={StyleConfig.color_white}
 		style={[CommonStyles.m_b_1, CommonStyles.background_transparent]} />),
-	route: 'RepositoryUsage',
-},];
-
-const thirdLineItems = [
-	{
-		title: 'Documents Checked Out',
+	id: 'RepositoryUsage',
+}, {
+		title: translate('CheckedOutDocuments'),
 		color: StyleConfig.color_white,
 		// icon: 'ios-cash',
 		icon: (<FontAwesome name='briefcase'
 			size={36}
 			color={StyleConfig.color_white}
 			style={[CommonStyles.m_b_1, CommonStyles.background_transparent]} />),
-		route: 'CheckedoutReport',
-	},
-	{
-		title: 'Documents Locked',
+		id: 'CheckedoutReport',
+	}, {
+		title: translate('LockedDocuments'),
 		color: StyleConfig.color_white,
 		// icon: 'delete',
 		icon: (<MaterialCommunityIcons name='file-lock'
 			size={36}
 			color={StyleConfig.color_white}
 			style={[CommonStyles.m_b_1, CommonStyles.background_transparent]} />),
-		route: 'LockedReport',
-	}];
-
-const fourthLineItems = [
-	{
-		title: 'Account',
+		id: 'LockedReport',
+	}, {
+		title: translate('Profile'),
 		color: StyleConfig.color_white,
 		icon: 'account-circle',
-		route: 'Account',
+		id: 'Profile',
 	}, {
-		title: 'Settings',
+		title: translate('Settings'),
 		color: StyleConfig.color_white,
 		icon: 'settings',
-		route: 'Settings',
-	},];
+		id: 'Settings',
+	},*/
+];
 
 class Home extends Component {
 	static navigationOptions = ({ navigation }) => {
 		const { params = {} } = navigation.state;
 
 		return {
-			headerTitle: 'Home',
+			headerTitle: translate('Home'),
+			/*
 			headerLeft: (
 				<TouchableOpacity
 					style={{ marginLeft: 14 }}
@@ -119,14 +113,12 @@ class Home extends Component {
 						style={{ color: colors.textOnPrimary }}
 					/>
 				</TouchableOpacity>
-			),
+			),*/
 			headerRight: (
 				<View style={[
-					// CommonStyles.headerRight,
 					CommonStyles.flexRow,
-					// CommonStyles.flexItemsMiddle, 
-					// CommonStyles.flexItemsBetween,
 				]}>
+					{/*
 					<TouchableOpacity
 						style={{ marginRight: 14 }}
 						accessibilityLabel='info'
@@ -146,11 +138,11 @@ class Home extends Component {
 							size={24}
 							style={{ color: colors.textOnPrimary }}
 						/>
-					</TouchableOpacity>
-					{params.isLoggedIn &&
+					</TouchableOpacity>*/}
+					{params.isAuthenticated &&
 						<HeaderButton
 							onPress={params.onLogoutButtonPressed}
-							text='Log Out!'
+							text={translate('SignOut')}
 						/>}
 				</View>
 			),
@@ -158,109 +150,91 @@ class Home extends Component {
 	};
 
 	constructor(props) {
-		console.log('constructor');
 		super(props);
 		this.state = {
-			isLoading: true,
-			screenDismissed: false,
-			loginStatus: null,
-			user: null,
-			hasFocus: false,
 			layout: {
 				width: Dimensions.get('window').width,
 				height: Dimensions.get('window').height,
 			}
 		};
 
-		this.onLayout = this.onLayout.bind(this);
 		this._bootstrapAsync();
 	}
 
-
 	// Fetch the token from storage then navigate to our appropriate place
 	_bootstrapAsync = async () => {
+		const { login, valid, isLoggedIn, token, username, password } = this.props;
+
+		// if (username == 'admin') {
+		// 	MainRoutes.push({
+		// 		title: translate('Log'),
+		// 		color: StyleConfig.color_white,
+		// 		icon: (<FontAwesome name='exclamation-triangle'
+		// 			size={36}
+		// 			color={StyleConfig.color_white}
+		// 			style={[CommonStyles.m_b_1, CommonStyles.background_transparent]} />),
+
+		// 		id: 'Log',
+		// 	})
+		// }
+
+		let isValid = await valid(token.sid);
+		if (!isValid) {
+			await login(username, password);
+		}
 	};
 
 	_signOutAsync = async () => {
-		const { navigation, auth } = this.props;
-		const { user } = auth;
+		debugger;
+		const { logout, isLoggedIn, token, username, password } = this.props;
 
-		const sid = user.token.sid;
-		await logout(sid);
+		await logout(token.sid);
+
 	}
 
 	componentWillMount() {
-		var that = this;
-
-		DeviceEventEmitter.addListener('onLoginStatusReceived', function (e) {
-			that.setState({ loginStatus: e.loginStatus, screenDismissed: true });
-			if (e.loginStatus == 'LOGOUT') {
-				that._signOutAsync();
-			}
-		});
-	}
-
-	componentWillReceiveProps(nextProps) {
-	}
-
-	componentWillUpdate(nextProps, nextState) {
-		// if (nextState.loginStatus == 'LOGOUT') this.props.navigation.navigate('Account')
-	}
-
-	componentDidFocus() {
-		this.setState({
-			hasFocus: true
-		});
-	}
-
-	componentWillUnmount(nextProps) {
-		Toast.show(`componentWillUnmount`, Toast.SHORT);
-		this.props.sid && this.logout();
 	}
 
 	componentDidMount() {
-		console.log('componentDidMount');
 		const { navigation } = this.props;
 		// We can only set the function after the component has been initialized
 		navigation.setParams({
 			onLogoutButtonPressed: this._signOutAsync.bind(this),
-			isLoggedIn: this.props.auth.isLoggedIn,
+			isAuthenticated: this.props.isLoggedIn,
 		});
 	}
 
-	render() {
-		
-        // if (this.state.isLoading) {
-        //     return (
-        //         <View style={styles.container}>
-        //             <Spinner
-        //                 style={[styles.gray, { height: 80 }]}
-        //                 color='red'
-        //                 size="large"
-        //             />
-        //         </View>
-        //     );
-		// }
-		
-		const { router, user } = this.props;
-		return (
-			<View
-				onLayout={this.onLayout}
-				style={[styles.container, { flexDirection: 'column' }]}
-			>
-				{/*this.renderContent()*/}
-				{this.renderLogo()}
-				{this.renderNavContent()}
-			</View>
-		)
+	componentWillReceiveProps(nextProps) {
+		const { navigation } = nextProps;
+		if (nextProps.isLoggedIn != this.props.isLoggedIn)
+			navigation.setParams({
+				isAuthenticated: nextProps.isLoggedIn,
+			});
 	}
 
-	onNavItemPress(item) {
-		if (item && item.route) {
-			const { navigate } = this.props.navigation;
-			navigate(item.route);
+	componentWillUnmount() {
+	}
 
-		}
+	render() {
+		return (
+			<View
+				style={[
+					CommonStyles.flex_1,
+					styles.root
+				]}>
+				{this.renderLogo()}
+				<ScrollView
+					style={[
+						styles.root,
+						CommonStyles.flex_4,
+					]}
+					contentContainerStyle={styles.rootContainer}
+					onLayout={this.onLayout.bind(this)}
+				>
+					{this.renderGrid()}
+				</ScrollView>
+			</View>
+		)
 	}
 
 	onLayout(e) {
@@ -272,52 +246,13 @@ class Home extends Component {
 		})
 	}
 
-	renderSpacer() {
-		return (
-			<View style={styles.spacer}></View>
-		)
-	}
-
-	renderNavItem(item, index) {
-		let icon;
-		if (typeof item.icon === 'string')
-			icon = <Icon name={item.icon}
-				size={36}
-				color={item.color}
-				style={[CommonStyles.m_b_1, CommonStyles.background_transparent]} />;
-		else
-			icon = item.icon;
-		return (
-			<TouchableHighlight
-				key={index}
-				onPress={() => this.onNavItemPress(item)}
-				style={[CommonStyles.flex_1,
-				CommonStyles.p_a_2,
-				CommonStyles.border_t,
-				CommonStyles.border_r,
-				CommonStyles.border_b,
-				CommonStyles.border_l,
-				CommonStyles.flexItemsCenter,
-				styles.cell]}
-				underlayColor={StyleConfig.touchable_press_color}>
-				<View style={[CommonStyles.flexColumn,
-				CommonStyles.flexItemsMiddle,
-				CommonStyles.flexItemsCenter,]}>
-					{icon}
-					<Text style={[CommonStyles.font_xs, CommonStyles.text_white]}>
-						{item.title}
-					</Text>
-				</View>
-			</TouchableHighlight>
-		)
-	}
-
 	renderLogo() {
 		return (
 			<View style={[
-				CommonStyles.flex_1,
+				// CommonStyles.flex_1,
 				CommonStyles.flexItemsCenter,
 				CommonStyles.flexItemsMiddle,
+				{ height: 100 }
 			]}>
 				<Image
 					style={[styles.image, { width: this.state.layout.width - 50, }]}
@@ -329,171 +264,117 @@ class Home extends Component {
 		)
 	}
 
-	renderNavContent() {
-		return (
-			<View style={[CommonStyles.flex_4, CommonStyles.flexColumn]}>
-				<View style={[CommonStyles.flex_1, CommonStyles.flexRow, styles.row]}>
-					{
-						firstLineItems && firstLineItems.map((nav, index) => {
-							return this.renderNavItem(nav, index)
-						})
-					}
-				</View>
-				{/*this.renderSpacer()*/}
-				<View style={[CommonStyles.flex_1, CommonStyles.flexRow, styles.row]}>
-					{
-						secondLineItems && secondLineItems.map((nav, index) => {
-							return this.renderNavItem(nav, index)
-						})
-					}
-				</View>
-				{/*this.renderSpacer()*/}
-				<View style={[CommonStyles.flex_1, CommonStyles.flexRow, styles.row, styles.lastRow]}>
-					{
-						thirdLineItems && thirdLineItems.map((nav, index) => {
-							return this.renderNavItem(nav, index)
-						})
-					}
-				</View>
-				{/*this.renderSpacer()*/}
-				{/* <View style={[CommonStyles.flex_1, CommonStyles.flexRow, styles.row, styles.lastRow]}>
-					{
-						fourthLineItems && fourthLineItems.map((nav, index) => {
-							return this.renderNavItem(nav, index)
-						})
-					}
-				</View>
+	isLandscape() {
+		return this.state.layout.width > this.state.layout.height;
+	}
 
-				{this.renderSpacer()} */}
-			</View>
+	renderSpacer() {
+		return (
+			<View style={styles.spacer}></View>
 		)
 	}
 
-	renderContent() {
+	getEmptyCount(size) {
+		let rowCount = Math.ceil((this.state.layout.height - 20) / size);
+		return rowCount * 2 - MainRoutes.length;
+	}
+
+	renderRoute(route, index) {
+		const size = this.state.layout.width / 2;
+		let { icon, title, color } = route;
+		let ic = icon;
+		if (typeof icon === 'string')
+			ic = <Icon name={icon}
+				size={36}
+				color={color}
+				style={[
+					CommonStyles.m_b_1,
+					CommonStyles.background_transparent
+				]} />;
+
+
 		return (
-			<View style={[/*CommonStyles.flex_1, CommonStyles.flexSelfTop,*/ { borderColor: 'grey', borderWidth: 2 }]}>
-				{/*this.renderLogo()*/}
-				{this.renderNavContent()}
-				{/*<Text>Hello World</Text>*/}
-			</View>
+			<TouchableHighlight
+				key={index}
+				onPress={() => {
+					this.props.navigation.navigate(route.id);
+				}}
+				style={[{
+					width: size,
+					height: size,
+				},
+				CommonStyles.flexItemsMiddle,
+				CommonStyles.flexItemsCenter,
+				styles.cell
+				]}
+				underlayColor={StyleConfig.touchable_press_color}>
+				<View style={[
+					CommonStyles.flexColumn,
+					CommonStyles.flexItemsMiddle,
+					CommonStyles.flexItemsCenter,
+				]}>
+					{ic}
+					<Text style={[CommonStyles.font_xs, CommonStyles.text_white]}>
+						{title}
+					</Text>
+				</View>
+			</TouchableHighlight>
 		)
 	}
 
-	logout() {
-		Toast.show(`Goodbye, ${this.props.username}`, Toast.SHORT);
-		this._signOutAsync(this.props.sid);
+	renderGrid() {
+		let items = <View />;
+		let size = this.state.layout.width / 2;
+		let emptyCount = this.getEmptyCount(size);
+
+		items = MainRoutes.map((route, index) => {
+			return this.renderRoute(route, index)
+		});
+
+
+		for (let i = 0; i < emptyCount; i++) {
+			items.push(<View key={'empty' + i} style={[{ height: size, width: size }, styles.empty]} />)
+		}
+
+		return items;
 	}
 }
 
-// 获取 state 变化
-const mapStateToProps = (state) => {
-	// const auth = state.auth;
-
-	return {
-		// 获取 state 变化
-		// isLoggedIn: auth.isLoggedIn,
-		// username: dmsAccount ? dmsAccount.username : null,
-		// password: dmsAccount ? dmsAccount.password : null,
-		// sid: dmsAccount ? dmsAccount.token.sid : null,
-		auth: state.auth
-	}
-};
-
-// 发送行为
-const mapDispatchToProps = (dispatch) => {
-	return {
-		// 发送行为
-		valid: (sid) => dispatch(valid(sid)),
-		login: (username, password) => dispatch(actions.login(username, password)),
-		logout: (sid, navigation) => {
-			dispatch(actions.logout(sid, navigation));
-			dispatch(logout(sid));
-		},
-	}
-};
-
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps,
-	null,
-	{
-		withRef: true
-	}
-)(Home);
-
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		//alignItems: 'center',
-		//justifyContent: 'center',
-		//width: null,
-		//height: null,
+	root: {
 		backgroundColor: colors.primary,
 	},
-	row: {
-		//flex: 1,
-		//width: StyleConfig.screen_width,
-
-		"borderTopColor": colors.borderOnPrimary,
-		"borderTopWidth": 1,
-		"borderRightColor": colors.borderOnPrimary,
-		"borderRightWidth": 1,
-		"borderBottomColor": colors.borderOnPrimary,
-		"borderBottomWidth": 0,
-		"borderLeftColor": colors.borderOnPrimary,
-		"borderLeftWidth": 0,
-	},
-	lastRow: {
-		"borderTopColor": colors.borderOnPrimary,
-		"borderTopWidth": 1,
-		"borderRightWidth": 1,
-		"borderRightColor": colors.borderOnPrimary,
-		"borderBottomWidth": 1,
-		"borderBottomColor": colors.borderOnPrimary,
-		"borderLeftColor": colors.borderOnPrimary,
-		"borderLeftWidth": 0,
+	rootContainer: {
+		flexDirection: 'row',
+		flexWrap: 'wrap',
 	},
 	cell: {
-		// height: 100,
-		"borderTopColor": colors.borderOnPrimary,
-		"borderTopWidth": 0,
-		"borderRightColor": colors.borderOnPrimary,
-		"borderRightWidth": 0,
-		"borderBottomColor": colors.borderOnPrimary,
-		"borderBottomWidth": 0,
-		"borderLeftColor": colors.borderOnPrimary,
-		"borderLeftWidth": 1,
-		backgroundColor: '#0d7cd1'
-	},
-	list_icon: {
-		width: StyleConfig.icon_size
+		borderWidth: StyleSheet.hairlineWidth,
+		borderColor: colors.borderOnPrimary
 	},
 	spacer: {
 		height: 10,
-		backgroundColor: StyleConfig.background_transparent
+		backgroundColor: StyleConfig.panel_bg_color
 	},
-	hamburgerButton: {
-		marginLeft: 14
-	},
-	image: {
-		//flex: 1,
-		//marginLeft: 30,
-		//marginRight: 30,
-		// marginTop: 0,
-		// marginBottom: 0,
-		// width: Dimensions.get("window").width - 50,
-		// height: 365 * (Dimensions.get("window").width - 150) / 651,
-	},
-	welcome: {
-		fontSize: 20,
-		textAlign: 'center',
-		color: '#fff',
-		margin: 5,
-	},
-	instructions: {
-		fontSize: 12,
-		textAlign: 'center',
-		color: '#fff',
-		marginBottom: 5,
+	empty: {
+		borderWidth: StyleSheet.hairlineWidth,
+		borderColor: colors.borderOnPrimary
 	},
 });
+
+const mapStateToProps = (state) => {
+	return {
+		username: state.auth.username,
+		password: state.auth.password,
+		token: state.auth.token || {},
+		isLoggedIn: state.auth.isLoggedIn,
+	};
+}
+const mapDispatchToProps = (dispatch) => {
+	return {
+		valid: (sid) => dispatch(valid(sid)),
+		logout: (user) => dispatch(logout(user)),
+		login: (username, password) => dispatch(login(username, password)),
+	}
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

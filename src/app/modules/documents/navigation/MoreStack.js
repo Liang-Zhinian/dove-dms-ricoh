@@ -15,7 +15,8 @@ const {
     Downloads,
     Account,
     Settings,
-    More
+    More,
+    Profile
 } = Routes; 
 
 export default MoreStack = StackNavigator({
@@ -26,6 +27,7 @@ export default MoreStack = StackNavigator({
     Update:{
         screen: UpdateScreen,
     },
+    Profile
 }, {
         headerMode: 'screen',
         initialRouteName: 'More',

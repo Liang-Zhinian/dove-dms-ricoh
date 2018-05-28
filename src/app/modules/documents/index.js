@@ -16,5 +16,5 @@ export default {
   actions,
   Navigation,
   // Screens,
-  Routes,
+  Routes
 }

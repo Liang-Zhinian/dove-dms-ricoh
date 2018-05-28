@@ -21,19 +21,17 @@ import { NAME } from '../constants'
 import RNQuickLook from "../../../components/RNQuickLook";
 import Base64 from '../lib/Base64';
 import * as actions from '../actions';
-import { translate, coordToAddress } from '../api/geolocation';
+import { translate as translateLocation, coordToAddress } from '../api/geolocation';
+import { translate } from '../../../i18n/i18n';
 
 class Upload extends Component {
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
 
-        let headerTitle = 'Upload Photo';
+        let headerTitle = translate('UploadMedia')
         let headerRight = (
             <View style={[
-                // CommonStyles.headerRight,
                 CommonStyles.flexRow,
-                // CommonStyles.flexItemsMiddle, 
-                // CommonStyles.flexItemsBetween,
             ]}>
                 <TouchableOpacity
                     style={{ marginRight: 14, justifyContent: 'center' }}
@@ -41,20 +39,13 @@ class Upload extends Component {
                     onPress={params.upload ? params.upload : () => null}
                     disabled={params.uploadButtonDisabled}
                 >
-                    <Text style={{ color: params.uploadButtonDisabled ? 'gray' : '#ffffff', fontSize: 20 }}>Upload</Text>
+                    <Text style={{ color: params.uploadButtonDisabled ? 'gray' : '#ffffff', fontSize: 20 }}>{translate('Upload')}</Text>
                 </TouchableOpacity>
             </View>
         );
 
         return { headerTitle, headerRight };
     };
-
-    // static propTypes = {
-    //     watchID: ? number
-    // };
-    // static defaultProps = {
-    //     watchID: null
-    // };
 
     constructor(props) {
         super(props);
@@ -161,8 +152,6 @@ class Upload extends Component {
     }
 
     updateUploadButton() {
-        //Alert.alert('Upload', 'name = ' + this.state.name, [{ text: 'OK', onPress: () => console.log('OK Pressed') },], { cancelable: false });
-
         this.props.navigation.setParams({ uploadButtonDisabled: '' === this.state.name });
     }
 
@@ -171,19 +160,17 @@ class Upload extends Component {
 
         // We can only set the function after the component has been initialized
         that.props.navigation.setParams({ upload: that.upload.bind(that) });
+    }
 
+    getCurrentPosition() {
         // get geolocation
         navigator.geolocation.getCurrentPosition(pos => {
             var crd = pos.coords;
-            console.log('Your current position is:');
-            console.log(`Latitude: ${crd.latitude}`);
-            console.log(`Longitude: ${crd.longitude}`);
-            console.log(`More or less ${crd.accuracy} meters`);
             that.setState({ location: `${crd.latitude},${crd.longitude}` });
             var initialPosition = JSON.stringify(pos);
             that.setState({ initialPosition });
 
-            translate(crd)
+            translateLocation(crd)
                 .then(coord => {
                     coordToAddress(coord)
                         .then(address => {
@@ -207,7 +194,7 @@ class Upload extends Component {
                 that.setState({ lastPosition });
 
                 var crd = pos.coords;
-                translate(crd)
+                translateLocation(crd)
                     .then(coord => {
                         coordToAddress(coord)
                             .then(address => {
@@ -217,10 +204,8 @@ class Upload extends Component {
                     })
                     .catch(error => console.warn(error))
             }, error => {
-                console.log(error);
             })
         } catch (error) {
-            console.log(error);
         }
     }
 
@@ -288,20 +273,29 @@ class Upload extends Component {
                 //flexDirection: 'column',
                 display: isLoading ? 'flex' : 'none'
             }]}>
-                <View style={{
-                    flex: 1,
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    //alignItems: 'center'
-                    height: 40
-                }}>
-                    <Text style={{
-                        textAlign: 'center',
-                        fontSize: 30,
-                        color: 'orange'
-                    }}>{Math.floor((progress / 100) * 10000)}%</Text>
-                    <ProgressViewIOS style={styles.progressView} progress={progress} progressTintColor="orange" />
-                </View>
+                {Platform.OS === 'android' && <ActivityIndicator
+                    animating={true}
+                    style={[styles.gray, { flex: 1, marginTop: 20 }]}
+                    color='red'
+                    size="large"
+                />}
+                {Platform.OS === 'ios' &&
+                    <View style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        //alignItems: 'center'
+                        height: 40
+                    }}>
+                        <Text style={{
+                            textAlign: 'center',
+                            fontSize: 30,
+                            color: 'orange'
+                        }}>{Math.floor((progress / 100) * 10000)}%</Text>
+
+                        <ProgressViewIOS style={styles.progressView} progress={progress} progressTintColor="orange" />
+                    </View>
+                }
             </View>);
     }
 
@@ -321,11 +315,11 @@ class Upload extends Component {
             }}>
                 <View style={[styles.section]}>
                     <View style={[{ flex: 1 }, styles.row]}>
-                        <Text style={[styles.title]}>Name</Text>
+                        <Text style={[styles.title]}>{translate('FileName')}</Text>
                         <TextInput
                             style={{ flex: 1 }}
                             ref="txtName"
-                            placeholder={'Enter a name'}
+                            placeholder={translate('FileName')}
                             blurOnSubmit={true}
                             underlineColorAndroid={'transparent'}
                             onChangeText={(val) => { this.setState({ name: val }, this.updateUploadButton) }}
@@ -334,19 +328,20 @@ class Upload extends Component {
                     </View>
                     {this.renderSpacer()}
                     <View style={[{ flex: 5 }, styles.row]}>
-                        <Text style={[styles.title]}>Media</Text>
+                        <Text style={[styles.title]}>{translate('Media')}</Text>
                         {Platform.OS === 'ios' && <RNQuickLook
                             style={{ flex: 1, width: viewWidth, height: viewHeight }}
                             url={uri} />}
-                        {Platform.OS === 'android' && <Text>{fileName||uri}</Text>}
+                        {Platform.OS === 'android' && <Text>{fileName || uri}</Text>}
                     </View>
+                    {/*
                     {this.renderSpacer()}
                     <View style={[{ flex: 1 }, styles.row]}>
-                        <Text style={[styles.title]}>Location</Text>
+                        <Text style={[styles.title]}>{translate('Location')}</Text>
                         <TextInput
                             style={{ flex: 1 }}
                             ref="txtLocation"
-                            placeholder={'Location'}
+                            placeholder={translate('Location')}
                             blurOnSubmit={true}
                             underlineColorAndroid={'transparent'}
                             onChangeText={(val) => { this.setState({ location: val }) }}
@@ -356,18 +351,18 @@ class Upload extends Component {
                     </View>
                     {this.renderSpacer()}
                     <View style={[{ flex: 1 }, styles.row]}>
-                        <Text style={[styles.title]}>Address</Text>
+                        <Text style={[styles.title]}>{translate('Address')}</Text>
                         <TextInput
                             style={{ flex: 1 }}
                             ref="txtAddress"
-                            placeholder={'Address'}
+                            placeholder={translate('Address')}
                             blurOnSubmit={true}
                             underlineColorAndroid={'transparent'}
                             onChangeText={(val) => { this.setState({ address: val }) }}
                             value={this.state.address}
                         // setState is asynchronous and use the second argument to setState which is a callback
                         />
-                    </View>
+                    </View>*/}
                 </View>
                 {this.renderProgressBar()}
             </ScrollView>
@@ -378,14 +373,12 @@ class Upload extends Component {
 // export default UploadContainer;
 function select(store) {
     return {
+        sid: store[NAME].account.token.sid,
+        username: store[NAME].account.username,
+        password: store[NAME].account.password,
         uploaded: store[NAME].document.uploaded,
         progress: store[NAME].document.progress,
         isLoading: store[NAME].document.isLoading,
-
-        isLoggedIn: store.auth.isLoggedIn,
-        username: store.auth.user.username,
-        password: store.auth.user.password,
-        sid: store.auth.user.token.sid
     };
 }
 

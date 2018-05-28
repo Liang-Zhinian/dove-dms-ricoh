@@ -4,76 +4,96 @@ import {
     Text,
     StyleSheet,
     TouchableHighlight,
-    Platform
+    Platform,
+    Dimensions,
+    ScrollView
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { 
-    ComponentStyles, 
-    CommonStyles, 
-    colors, 
-    StyleConfig, 
+import {
+    ComponentStyles,
+    CommonStyles,
+    colors,
+    StyleConfig,
 } from '../styles';
+import { translate } from '../../../i18n/i18n';
 
-const firstLineItems = [
+const MainRoutes = [
     {
-        title: 'Downloads',
+        title: translate('Downloads'),
         color: StyleConfig.color_white,
         icon: 'ios-cloud-download-outline',
-        route: 'Downloads',
+        id: 'Downloads',
     }, {
-        title: 'Account',
+        title: translate('Account'),
         color: StyleConfig.color_white,
         icon: 'ios-contact-outline',
-        route: 'Account',
-    }];
-
-const secondLineItems = [{
-    title: 'Settings',
-    color: StyleConfig.color_white,
-    icon: 'ios-settings-outline',
-    route: 'Settings',
-}, {
-    title: 'About',
-    color: StyleConfig.color_white,
-    icon: 'ios-information-circle-outline',
-    route: 'About',
-}];
-
-const thirdLineItems = [{
-    title: 'Check for Update',
-    color: StyleConfig.color_white,
-    icon: 'ios-settings-outline',
-    route: 'Update',
-},];
+        id: 'Account',
+    }, /*{
+        title: translate('Settings'),
+        color: StyleConfig.color_white,
+        icon: 'ios-settings-outline',
+        id: 'Settings',
+    }, {
+        title: translate('About'),
+        color: StyleConfig.color_white,
+        icon: 'ios-information-circle-outline',
+        id: 'About',
+    },*/
+    {
+        title: translate('Profile'),
+        color: StyleConfig.color_white,
+        icon: 'ios-person-outline',
+        id: 'Profile',
+    },/* {
+        title: translate('CheckForUpdate'),
+        color: StyleConfig.color_white,
+        icon: 'ios-settings-outline',
+        id: 'Update',
+    },*/
+];
 
 class More extends Component {
     static navigationOptions = {
-        // headerStyle: { backgroundColor: StyleConfig.color_primary },
-        // headerTintColor: StyleConfig.textOnPrimary,
-        headerTitle: 'More',
+        headerTitle: translate('More'),
     };
 
     constructor(props) {
-        console.log('constructor');
         super(props);
         this.state = {
-            hasFocus: false
+            screen: {
+                width: StyleConfig.screen_width,
+                height: StyleConfig.screen_height
+            }
         };
-        // this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
-    }
 
-    componentDidFocus() {
-        this.setState({
-            hasFocus: true
+        Dimensions.addEventListener('change', (dimensions) => {
+            // you get:
+            //  dimensions.window.width
+            //  dimensions.window.height
+            //  dimensions.screen.width
+            //  dimensions.screen.height
+            this.setState({
+                screen: {
+                    width: dimensions.window.width,
+                    height: dimensions.window.height
+                }
+            })
         });
     }
 
-    onNavItemPress(item) {
-        if (item && item.route) {
-            const { navigate } = this.props.navigation;
-            navigate(item.route);
+    render() {
+        const { router, user } = this.props;
+        return (
+            <ScrollView
+                style={styles.root}
+                contentContainerStyle={styles.rootContainer}>
+                {this.renderGrid()}
+            </ScrollView>
+        )
+    }
 
-        }
+    isLandscape() {
+        return this.state.screen.width > this.state.screen.height;
     }
 
     renderSpacer() {
@@ -82,125 +102,85 @@ class More extends Component {
         )
     }
 
-    renderNavItem(item, index) {
+    getEmptyCount(size) {
+        let rowCount = Math.ceil((this.state.screen.height - 20) / size);
+        return rowCount * 2 - MainRoutes.length;
+    }
+
+    renderRoute(route, index) {
+
+        const size = this.state.screen.width / 2;
+        // const height = width;
         return (
             <TouchableHighlight
                 key={index}
-                onPress={() => this.onNavItemPress(item)}
-                style={[CommonStyles.flex_1/*, CommonStyles.p_a_3*/]}
+				onPress={() => {
+					this.props.navigation.navigate(route.id);
+				}}
+                style={[{
+                    width: size,
+                    height: size,
+                },
+                CommonStyles.flexItemsMiddle,
+                CommonStyles.flexItemsCenter,
+                styles.cell
+                ]}
                 underlayColor={StyleConfig.touchable_press_color}>
-                <View style={[CommonStyles.flexColumn, CommonStyles.flexItemsMiddle, CommonStyles.flexItemsCenter, CommonStyles.border_t, CommonStyles.border_r, CommonStyles.border_b, CommonStyles.border_l, styles.cell]}>
-                    <Icon name={item.icon}
+                <View style={[
+                    CommonStyles.flexColumn,
+                    CommonStyles.flexItemsMiddle,
+                    CommonStyles.flexItemsCenter,
+                ]}>
+                    <Icon name={route.icon}
                         size={40}
-                        color={item.color}
+                        color={route.color}
                         style={[CommonStyles.m_b_2, CommonStyles.background_transparent]} />
                     <Text style={[CommonStyles.font_xs, CommonStyles.text_white]}>
-                        {item.title}
+                        {route.title}
                     </Text>
                 </View>
             </TouchableHighlight>
         )
     }
 
-    renderNavContent() {
-        return (
-            <View style={[styles.container]}>
-                <View style={[CommonStyles.flexRow, styles.row]}>
-                    {
-                        firstLineItems && firstLineItems.map((nav, index) => {
-                            return this.renderNavItem(nav, index)
-                        })
-                    }
-                </View>
-                {/*this.renderSpacer()*/}
-                <View style={[CommonStyles.flexRow, styles.row]}>
-                    {
-                        secondLineItems && secondLineItems.map((nav, index) => {
-                            return this.renderNavItem(nav, index)
-                        })
-                    }
-                </View>
-                {/*this.renderSpacer()*/}
-                <View style={[CommonStyles.flexRow, styles.row]}>
-                    {
-                        thirdLineItems && thirdLineItems.map((nav, index) => {
-                            return this.renderNavItem(nav, index)
-                        })
-                    }
-                </View>
-                {/*this.renderSpacer()*/}
-            </View>
-        )
-    }
+    renderGrid() {
+        let items = <View />;
+        let size = this.state.screen.width / 2;
+        let emptyCount = this.getEmptyCount(size);
 
-    renderContent() {
-        return (
-            <View>
-                {this.renderNavContent()}
-            </View>
-        )
-    }
+        items = MainRoutes.map((route, index) => {
+            return this.renderRoute(route, index)
+        });
 
-    render() {
-        const { router, user } = this.props;
-        return (
-            <View style={[ComponentStyles.container, styles.container]}>
-                {this.renderContent()}
-            </View >
-        )
+
+        for (let i = 0; i < emptyCount; i++) {
+            items.push(<View key={'empty' + i} style={[{ height: size, width: size }, styles.empty]} />)
+        }
+
+        return items;
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: null,
-        height: null,
+    root: {
         backgroundColor: colors.primary,
-        // color: 'rgba(60, 177, 158, 1)'
     },
-    row: {
-        width: StyleConfig.screen_width,
-
-        "borderTopColor": colors.borderOnPrimary,
-        "borderTopWidth": 1,
-        "borderRightColor": colors.borderOnPrimary,
-        "borderRightWidth": 1,
-        "borderBottomColor": colors.borderOnPrimary,
-        "borderBottomWidth": 0,
-        "borderLeftColor": colors.borderOnPrimary,
-        "borderLeftWidth": 0,
-    },
-    lastRow: {
-        "borderTopColor": colors.borderOnPrimary,
-        "borderTopWidth": 1,
-        "borderRightWidth": 1,
-        "borderRightColor": colors.borderOnPrimary,
-        "borderBottomWidth": 1,
-        "borderBottomColor": colors.borderOnPrimary,
-        "borderLeftColor": colors.borderOnPrimary,
-        "borderLeftWidth": 0,
+    rootContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
     },
     cell: {
-        height: 100,
-        "borderTopColor": colors.borderOnPrimary,
-        "borderTopWidth": 0,
-        "borderRightColor": colors.borderOnPrimary,
-        "borderRightWidth": 0,
-        "borderBottomColor": colors.borderOnPrimary,
-        "borderBottomWidth": 0,
-        "borderLeftColor": colors.borderOnPrimary,
-        "borderLeftWidth": 1,
-    },
-    list_icon: {
-        width: StyleConfig.icon_size
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: colors.borderOnPrimary
     },
     spacer: {
         height: 10,
         backgroundColor: StyleConfig.panel_bg_color
-    }
+    },
+    empty: {
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: colors.borderOnPrimary
+    },
 });
 
 export default More;

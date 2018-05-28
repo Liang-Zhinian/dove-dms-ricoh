@@ -4,6 +4,7 @@ const HOST = 'apis.map.qq.com';
 const Api = `${PROTOCOL}//${HOST}/ws`;
 const ApiTranslate = `${Api}/coord/v1/translate?type=1&key=${ApiKey}`;
 const ApiCoordToAddress = `${Api}/geocoder/v1/?key=${ApiKey}`;
+import handle from '../../../ExceptionHandler';
 
 export const translate = (location) => {
     let url = `${ApiTranslate}&locations=${location.latitude},${location.longitude}`;
@@ -42,14 +43,19 @@ export const coordToAddress = (location) => {
         .then(responseJson => {
             if (responseJson.status === 0) {
                 var { nation, province, city, district } = responseJson.result.address_component;
-                var {recommend} = responseJson.result.formatted_addresses;
+                var { recommend } = responseJson.result.formatted_addresses;
                 var address = `${nation} ${province} ${city} ${district} ${recommend || ''}`
                 return address;
             }
 
-            throw new Error(`Error${responseJson.status}: ${responseJson.message}`);
+            var error = new Error(`Error${responseJson.status}: ${responseJson.message}`);
+            handle(error);
+            // throw error
         })
-        .catch(error => console.error(error))
+        .catch(error => {
+            handle(error);
+            // console.error(error)
+        })
     /*
     {
     "status": 0,

@@ -1,8 +1,10 @@
 import { createAction } from 'redux-actions';
 import moment from 'moment';
-import { SAVE_ACCOUNT, LOGIN, LOGOUT, RENEW, VALID, ERROR } from '../constants'
-import { loginSOAP, logoutSOAP, validSOAP, renewSOAP } from '../api'
-
+import { SAVE_ACCOUNT, LOGIN, LOGOUT, RENEW, VALID, ERROR, NEED_RELOADING } from '../constants';
+import { loginSOAP, logoutSOAP, validSOAP, renewSOAP } from '../api';
+import { setItem } from '../../../services/storageService';
+import { storageKey } from '../env';
+import handle from '../../../ExceptionHandler';
 
 export type Action = {
   type: string,
@@ -33,7 +35,6 @@ export const login = (username: string, password: string): ActionAsync => {
 
     loginSOAP(username, password)
       .then(sid => {
-        console.log('loginSOAP');
         let expires_date = moment();
         expires_date.add(25, 'minutes');
         expires_date = expires_date.format('YYYY-MM-DD HH:mm:ss')
@@ -42,7 +43,6 @@ export const login = (username: string, password: string): ActionAsync => {
           payload: {
             // username,
             // password,
-            isAuthenticated: true,
             token: {
               sid,
               expires_date,
@@ -50,9 +50,10 @@ export const login = (username: string, password: string): ActionAsync => {
           }
         });
 
-        dispatch(saveAccount(username, password))
+        dispatch(saveAccount(username, password));
       })
       .catch((error) => {
+        handle(error);
         dispatch({
           type: ERROR,
           payload: { error }
@@ -66,13 +67,7 @@ export const logout = (sid: string, navigation: any): ActionAsync => {
 
     logoutSOAP(sid)
       .then(result => {
-
-        // navigation.dispatch({
-        //   type: 'Navigation/RESET',
-        //   index: 0,
-        //   actions: [{ type: 'Navigate', routeName: 'Login' }]
-        // })
-        // dispatch({ type: 'Logout' });
+        dispatch({ type: 'Logout' });
 
         dispatch({
           type: LOGOUT,
@@ -80,11 +75,11 @@ export const logout = (sid: string, navigation: any): ActionAsync => {
             token: { sid: null, expires_date: null },
             username: null,
             password: null,
-            isAuthenticated: false,
           }
         });
       })
       .catch((error) => {
+        handle(error);
         dispatch({
           type: ERROR,
           payload: { error }
@@ -98,7 +93,6 @@ export const renew = (sid: string) => async (dispatch, getState) => {
 
   const response = await renewSOAP(sid)
     .then(response => {
-      // console.log('renew => reponse:' + response);
 
       let expires_date = moment();
       expires_date.add(25, 'minutes');
@@ -114,6 +108,7 @@ export const renew = (sid: string) => async (dispatch, getState) => {
       })
     })
     .catch((error) => {
+      handle(error);
       dispatch({
         type: ERROR,
         payload: { error }
@@ -134,6 +129,7 @@ export const valid = (sid: string) => async (dispatch, getState) => {
       });
     })
     .catch((error) => {
+      handle(error);
       dispatch({
         type: ERROR,
         payload: { error }
@@ -142,7 +138,11 @@ export const valid = (sid: string) => async (dispatch, getState) => {
 
 }
 
-export const saveAccount = (username: string, password: string): Action => {
+export const saveAccount = (username: string, password: string, server: string, https: boolean, port: int): Action => {
+
+  setItem(storageKey.DOCUMENT_SERVER, { server, https, port });
+  setNeedReloading(true);
+
   return {
     type: SAVE_ACCOUNT,
     payload: {
@@ -151,3 +151,15 @@ export const saveAccount = (username: string, password: string): Action => {
     }
   };
 }
+
+export const setNeedReloading = (needReloading: boolean): ActionAsync => {
+  return (dispatch, getState) => {
+    dispatch({
+      type: NEED_RELOADING,
+      payload: {
+        needReloading,
+      }
+    });
+  }
+}
+

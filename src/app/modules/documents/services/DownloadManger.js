@@ -19,7 +19,6 @@ class DownloadManager {
     cancel(onCanceled) {
         this.task && this.task.cancel((err, taskId) => {
             // task successfully canceled
-            console.log('user canceled the previous download task');
             onCanceled && onCanceled();
         });
         this.task = null;
@@ -33,7 +32,6 @@ class DownloadManager {
             .then((response) => {
                 let json = toJson(response.response);
                 let ticket = json.Body.createDownloadTicketResponse.ticket;
-                console.log(ticket);
 
                 const SHA1 = require('crypto-js/sha1');
                 const path = RNFetchBlob.fs.dirs.CacheDir + '_immutable_images/' + SHA1(ticket) + '.' + doc.type;

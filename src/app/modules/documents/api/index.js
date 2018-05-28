@@ -6,11 +6,13 @@ import {
     getContentSOAP,
     createDocumentWithProgressSOAP,
     search,
+    updateDocument
 } from './document';
 import {
     getRootFolder,
     listChildrenFolders,
     createFolderSOAP,
+    updateFolder
 } from './folder';
 import {
     loginSOAP,
@@ -19,6 +21,10 @@ import {
     validSOAP,
     ensureLogin
 } from './auth';
+
+import {
+    getUserByUsernameSOAP
+} from './security';
 
 
 const _listChildren = async (username: string, password: string, folderId: int, callback: (folderId, children) => {}) => {
@@ -67,13 +73,10 @@ const deleteDocuments = (username: string, password: string, docIds: number[]) =
 
     return Promise.all(promises)
         .then(values => {
-            console.log(values);
             return values;
         }, reason => {
-            console.log(reason)
         })
         .catch(reason => {
-            console.log(reason)
         });
 }
 
@@ -92,10 +95,15 @@ export {
     createDocumentWithProgressSOAP,
     createFolderSOAP,
     searchDocuments,
+    updateDocument,
 
     loginSOAP,
     logoutSOAP,
     renewSOAP,
     validSOAP,
-    ensureLogin
+    ensureLogin,
+
+    getUserByUsernameSOAP,
+
+    updateFolder
 };

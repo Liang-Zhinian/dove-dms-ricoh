@@ -8,9 +8,11 @@ import React, { Component } from 'react';
 import { View, Platform, StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 
-import configureStore from './store';
+import configureStore from './store/index';
 
 import App from './App';
+import { getItem, setItem } from './services/storageService';
+import env, { storageKey } from './modules/documents/env';
 
 
 export default setup = () => {
@@ -23,11 +25,16 @@ export default setup = () => {
       this.state = {
         isLoading: true,
         store: configureStore(() => this.setState({ isLoading: false })),
+        EnvChecked: false,
       };
     }
 
+    componentDidMount() {
+      this.checkEnv();
+    }
+
     render() {
-      if (this.state.isLoading) {
+      if (this.state.isLoading || !this.state.EnvChecked) {
         return null;
       }
 
@@ -40,6 +47,20 @@ export default setup = () => {
           {/*</View>*/}
         </Provider>
       );
+    }
+
+    checkEnv() {
+      getItem(storageKey.DOCUMENT_SERVER)
+        .then(server => {
+          if (!server) {
+            setItem(storageKey.DOCUMENT_SERVER, { server: env.host, https: env.https, port: env.port })
+              .then(() => {
+                this.setState({ EnvChecked: true });
+              })
+          } else {
+            this.setState({ EnvChecked: true });
+          }
+        });
     }
   }
 

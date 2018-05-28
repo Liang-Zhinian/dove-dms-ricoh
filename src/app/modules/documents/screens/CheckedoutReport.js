@@ -19,6 +19,7 @@ import DocumentList from './components/DocumentList';
 import ListItem from './components/ListItem';
 import getIcon from '../lib/icon';
 import { CommonStyles } from '../styles';
+import {translate} from '../../../i18n/i18n';
 
 const dataSource = [{
     id: '1',
@@ -79,7 +80,7 @@ const dataSource = [{
 
 export default class CheckedoutReport extends Component {
     static navigationOptions = {
-        headerTitle: 'Checked Out Documents',
+        headerTitle: translate('CheckedOutDocuments'),
     };
 
     render() {

@@ -1,11 +1,13 @@
 import {
-    AuthSoapAPI,
+    getAuthSoapAPI,
     convertToJson,
     filterFault
 } from './util';
 
+import handle from '../../../ExceptionHandler';
 
-export const loginSOAP = (username: string, password: string): Promise<string> => {
+
+export const loginSOAP = async (username: string, password: string): Promise<string> => {
     let xml = '<?xml version="1.0" encoding="utf-8"?>'
     xml += '<soap:Envelope '
     xml += 'xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" '
@@ -30,17 +32,22 @@ export const loginSOAP = (username: string, password: string): Promise<string> =
         body: xml
     };
 
+    const AuthSoapAPI = await getAuthSoapAPI();
+
     return new Promise((resolve, reject) => {
         fetch(AuthSoapAPI, options)
             .then(response => response.text())
             .then(xml => convertToJson(xml))
             .then(filterFault)
             .then(responseJson => resolve(responseJson.Body.loginResponse.return))
-            .catch(reason => {reject(reason)})
+            .catch(reason => {
+                handle(reason);
+                reject(reason);
+            })
     });
 }
 
-export const logoutSOAP = (sid: string): Promise<string> => {
+export const logoutSOAP = async (sid: string): Promise<string> => {
     let xml = '<?xml version="1.0" encoding="utf-8"?>'
     xml += '<soap:Envelope '
     xml += 'xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" '
@@ -64,17 +71,22 @@ export const logoutSOAP = (sid: string): Promise<string> => {
         body: xml
     };
 
+    const AuthSoapAPI = await getAuthSoapAPI();
+
     return new Promise((resolve, reject) => {
         fetch(AuthSoapAPI, options)
             .then(response => response.text())
             .then(xml => convertToJson(xml))
             .then(filterFault)
-            .then(responseJson => resolve(responseJson.Body.logoutResponse.return))
-            .catch(reason => reject(reason))
+            .then(responseJson => resolve(responseJson.Body.logoutResponse))
+            .catch(reason => {
+                handle(reason);
+                reject(reason);
+            })
     });
 }
 
-export const renewSOAP = (sid: string): Promise => {
+export const renewSOAP = async (sid: string): Promise => {
     let xml = '<?xml version="1.0" encoding="utf-8"?>'
     xml += '<soap:Envelope '
     xml += 'xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" '
@@ -98,11 +110,13 @@ export const renewSOAP = (sid: string): Promise => {
         body: xml
     };
 
+    const AuthSoapAPI = await getAuthSoapAPI();
+
     return fetch(AuthSoapAPI, options);
 
 }
 
-export const validSOAP = (sid: string): Promise<boolean> => {
+export const validSOAP = async (sid: string): Promise<boolean> => {
     let xml = '<?xml version="1.0" encoding="utf-8"?>'
     xml += '<soap:Envelope '
     xml += 'xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" '
@@ -126,6 +140,8 @@ export const validSOAP = (sid: string): Promise<boolean> => {
         body: xml
     };
 
+    const AuthSoapAPI = await getAuthSoapAPI();
+
     return new Promise((resolve, reject) => {
         fetch(AuthSoapAPI, options)
             .then(response => response.text())
@@ -138,19 +154,25 @@ export const validSOAP = (sid: string): Promise<boolean> => {
                     resolve(body.validResponse.return === 'true')
                 }
             })
-            .catch(reason => reject(reason))
+            .catch(reason => {
+                handle(reason);
+                reject(reason);
+            })
     });
 }
 
-export const ensureLogin = (username: string, password: string, sid: string) => {
+export const ensureLogin = async (username: string, password: string, sid: string) => {
+
     return new Promise((resolve, reject) => {
         if (!sid) {
             loginSOAP(username, password)
                 .then(sid => {
-                    console.log('login and return new sid');
                     resolve(sid)
                 })
-                .catch(reason => reject(reason))
+                .catch(reason => {
+                    handle(reason);
+                    reject(reason);
+                })
         }
         else {
             validSOAP(sid)
@@ -158,15 +180,20 @@ export const ensureLogin = (username: string, password: string, sid: string) => 
                     if (!valid) {
                         loginSOAP(username, password)
                             .then(sid => {
-                                console.log('login and return new sid');
                                 resolve(sid)
                             })
-                            .catch(reason => reject(reason))
+                            .catch(reason => {
+                                handle(reason);
+                                reject(reason);
+                            })
                     } else {
                         resolve(sid)
                     }
                 })
-                .catch(reason => reject(reason))
+                .catch(reason => {
+                    handle(reason);
+                    reject(reason);
+                })
         }
     })
 }

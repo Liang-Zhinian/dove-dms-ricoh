@@ -11,6 +11,7 @@ import {
     Dimensions,
 } from 'react-native';
 import FadeInView from './fade_in_view';
+import { translate } from '../../../../i18n/i18n';
 
 const { width, height } = Dimensions.get('window');
 
@@ -26,7 +27,7 @@ class Dialog extends Component {
                 }]}
                 onPress={this.props.onCancel}>
                 <Text style={styles.buttonText}>
-                    Cancel
+                    {translate('Cancel')}
                 </Text>
             </TouchableOpacity>
         )
@@ -40,7 +41,7 @@ class Dialog extends Component {
                 }]}
                 onPress={this.props.onOK}>
                 <Text style={styles.buttonText}>
-                    OK
+                    {translate('OK')}
                 </Text>
             </TouchableOpacity>
         )

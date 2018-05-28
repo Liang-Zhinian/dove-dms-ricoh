@@ -8,14 +8,17 @@ import {
     FlatList,
     ActivityIndicator,
 } from 'react-native';
+import PropTypes from 'prop-types';
+import Swipeout from 'react-native-swipeout';
 import RNFS from 'react-native-fs';
 import moment from 'moment';
 import ListItem from './components/ListItem';
-import FileViewerAndroid from '../../../components/RCTFileViewerAndroid';
+import { translate } from '../../../i18n/i18n';
 
 class Downloads extends Component {
+
     static navigationOptions = {
-        headerTitle: 'Downloads',
+        headerTitle: translate('Downloads'),
     }
 
     constructor(props) {
@@ -26,6 +29,7 @@ class Downloads extends Component {
             error: false,
             errorInfo: "",
             files: [],
+            activeRow: null
         };
     }
 
@@ -34,18 +38,16 @@ class Downloads extends Component {
         // get a list of files and directories in the main bundle
         RNFS.readDir(RNFS.DocumentDirectoryPath) // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
             .then((result) => {
-                console.log('GOT RESULT', result);
                 var files = [];
-                result.map((item) => {
+                result.map((item, index) => {
                     RNFS.stat(item.path)
                         .then((stat) => {
                             if (stat.isFile()) {
+                                item.id = index;
                                 files.push(item);
                             }
                         })
                         .catch((err) => {
-                            console.log(err.message, err.code);
-
                             _that.setState({
                                 isFetching: false,
                                 error: true,
@@ -62,8 +64,6 @@ class Downloads extends Component {
                 return files;
             })
             .catch((err) => {
-                console.log(err.message, err.code);
-
                 _that.setState({
                     isFetching: false,
                     error: true,
@@ -73,8 +73,25 @@ class Downloads extends Component {
             });
     }
 
-    //返回itemView
-    renderItem(item) {
+    renderItem(info, activeRow) {
+        const swipeSettings = {
+            autoClose: true,
+            close: info.item.id !== this.state.activeRow,
+            onClose: (secId, rowId, direction) => this.onSwipeClose(info.item, rowId, direction),
+            onOpen: (secId, rowId, direction) => this.onSwipeOpen(info.item, rowId, direction),
+            right: [
+                {
+                    onPress: () => this.onDeleteItem(info.item),
+                    text: translate('Delete'),
+                    type: 'delete'
+                }
+            ],
+            rowId: info.index,
+            sectionId: 1
+        };
+
+        const item = info.item;
+
         let filetype = item.name.split('.').pop();
 
         const lastModified = moment(item.ctime, 'YYYY-MM-DD HH:mm:ss.sss ZZ').format('YYYY-MM-DD HH:mm:ss')
@@ -97,14 +114,37 @@ class Downloads extends Component {
             type: filetype,
         };
         return (
-            <ListItem
-                data={data}
-                onPress={() => this._onPressItem(item)}
-                onPressInfo={() => { }}
-                infoIconVisible={false}
-            />
+            <Swipeout {...swipeSettings}>
+                <ListItem
+                    data={data}
+                    onPress={() => this.onSelectItem(item)}
+                    onPressInfo={() => { }}
+                    infoIconVisible={false}
+                />
+            </Swipeout>
         );
     }
+
+
+    onDeleteItem = (item) => {
+        RNFS.unlink(item.path);
+        var files = this.state.files;
+        files = files.filter(o => o.id !== item.id);
+
+        this.setState({ files });
+    }
+
+    onRefreshItems = () => {  }
+
+    onSelectItem = (item) => {
+        
+        if (this.state.activeRow !== null) return;
+
+        this._onPressItem(item);
+    }
+
+    refreshing = false;
+
 
     //加载等待的view
     renderLoadingView() {
@@ -132,6 +172,16 @@ class Downloads extends Component {
     }
 
     render() {
+
+        const listSettings = {
+            data: this.state.files,
+            extraData: this.state.activeRow,
+            keyExtractor: (item, index) => item.id,
+            onRefreshItems: this.onRefreshItems,
+            refreshing: this.refreshing,
+            renderItem: (info) => this.renderItem(info, this.state.activeRow)
+        };
+
         if (this.state.isFetching && !this.state.error) {
             return this.renderLoadingView();
         } else if (this.state.error) {
@@ -140,9 +190,7 @@ class Downloads extends Component {
         }
         return (
             <FlatList
-                data={this.state.files}
-                renderItem={({ item }) => this.renderItem(item) /*<Text>{item.name}</Text>*/}
-                keyExtractor={(item, index) => index}
+                {...listSettings}
             />
         )
     }
@@ -156,6 +204,7 @@ class Downloads extends Component {
     previewDocument = (item: any) => {
         const that = this;
         const { path, name, size } = item;
+        
         const type = name.split('.').pop();
 
         that.openLocalUrl(path, name, type);
@@ -168,10 +217,18 @@ class Downloads extends Component {
         Platform.OS == 'android' &&
             FileViewerAndroid.open(url)
                 .then((msg) => {
-                    console.log('success!!')
                 }, (error) => {
-                    console.log('error!!')
                 });
+    }
+
+    onSwipeOpen(item, rowId, direction) {
+        this.setState({ activeRow: item.id });
+    }
+
+    onSwipeClose(item, rowId, direction) {
+        if (item.id === this.state.activeRow && typeof direction !== 'undefined') {
+            this.setState({ activeRow: null });
+        }
     }
 }
 

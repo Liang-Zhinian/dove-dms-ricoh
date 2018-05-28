@@ -7,7 +7,7 @@ import moment from 'moment';
 import { loginSOAP, logoutSOAP, validSOAP, renewSOAP } from '../modules/documents/api';
 import { Documents } from '../modules';
 
-export type ActionAsync = (dispatch: Function, getState: Function) => void;
+export type ActionAsync = (dispatch: Function, getState: Function) => void
 
 //each action should have the following signiture.
 //  {
@@ -23,100 +23,114 @@ export type ActionAsync = (dispatch: Function, getState: Function) => void;
  */
 export const login = (username: string, password: string): ActionAsync => {
     return async (dispatch, getState) => {
-        try {
-            if (!username) throw new Error('Please enter username.');
+        if (username && password) {
+            await loginSOAP(username, password)
+                .then(sid => {
+                    let expires_date = moment();
+                    expires_date.add(25, 'minutes');
+                    expires_date = expires_date.format('YYYY-MM-DD HH:mm:ss')
 
-            let sid = await loginSOAP(username, password);
+                    const user = {
+                        username,
+                        password,
+                        token: {
+                            sid,
+                            expires_date,
+                        }
+                    };
 
-            console.log('loginSOAP returns ' + sid);
-            let expires_date = moment();
-            expires_date.add(25, 'minutes');
-            expires_date = expires_date.format('YYYY-MM-DD HH:mm:ss')
+                    dispatch({
+                        type: 'Login',
+                        payload: user
+                    })
 
-            const user = {
-                username,
-                password,
-                token: {
-                    sid,
-                    expires_date,
-                }
-            };
+                    dispatch({
+                        type: `${Documents.NAME}/LOGIN`,
+                        payload: user
+                    })
 
-            AsyncStorage.setItem(username, JSON.stringify(user));
+                    dispatch({
+                        type: `${Documents.NAME}/SAVE_ACCOUNT`,
+                        payload: user
+                    })
 
-            // dispatch({
-            //     type: `${Documents.NAME}/LOGIN`,
-            //     payload: user
-            // })
-
-            // dispatch({
-            //     type: `${Documents.NAME}/SAVE_ACCOUNT`,
-            //     payload: user
-            // })
+                })
+                .catch((error) => {
+                    dispatch({
+                        type: 'ERROR',
+                        payload: error
+                    })
+                })
+        } else {
 
             dispatch({
-                type: 'Login',
-                payload: user
+                type: 'ERROR',
+                payload: new Error('Invalid username or password! ' + username + '>>' + password)
             })
-
-            return sid;
-        } catch (error) {
-            dispatch({
-                type: 'AUTH_ERROR',
-                payload: error
-            })
-            return error;
         }
     }
 }
 
 export const logout = (sid: string): ActionAsync => {
     return async (dispatch, getState) => {
-        try {
-            var result = '';
 
-            if (sid) {
-                result = await logoutSOAP(sid);
-                console.log(`logoutSOAP.result.${result}`);
+        dispatch({ type: 'Logout' });
+        debugger;
 
-                // dispatch({
-                //     type: `${Documents.NAME}/LOGOUT`,
-                //     payload: {
-                //         token: { sid: null, expires_date: null },
-                //         username: null,
-                //         password: null,
-                //     }
-                // });
-            }
+        sid && await logoutSOAP(sid)
+            .then(result => {
 
-            // AsyncStorage.removeItem(getState().auth.username);
+                dispatch({
+                    type: `${Documents.NAME}/LOGOUT`,
+                    payload: {
+                        token: { sid: null, expires_date: null },
+                        username: null,
+                        password: null,
+                    }
+                });
 
-            dispatch({ type: 'Logout' });
-            return result;
-        }
-        catch (error) {
-            dispatch({
-                type: 'AUTH_ERROR',
-                payload: error
             })
-            return error;
-        }
+            .catch((error) => {
+                dispatch({
+                    type: 'ERROR',
+                    payload: error
+                })
+            })
     }
 }
 
 export const valid = (sid: string): ActionAsync => {
     return async (dispatch, getState) => {
-        try {
-            let valid = await validSOAP(sid);
-            console.log('validSOAP returns', valid);
-            return valid;
-        }
-        catch (error) {
-            dispatch({
-                type: 'AUTH_ERROR',
-                payload: error
-            });
-            return error;
-        }
+        let valid = sid && await validSOAP(sid)
+            .then(valid => {
+                return valid == true;
+            })
+            .catch((error) => {
+                dispatch({
+                    type: 'ERROR',
+                    payload: error
+                });
+            })
+        return valid;
+    }
+}
+
+export const initializeApp = (sid: string) => {
+    return async (dispatch) => {
+        dispatch({ type: 'INITIALIZE_APP' })
+
+        const isValid = await validSOAP(sid)
+            .then(valid => {
+                return valid == true;
+            })
+            .catch((error) => {
+                dispatch({
+                    type: 'ERROR',
+                    payload: error
+                });
+            })
+
+        if (!isValid) return dispatch({ type: 'ERROR', payload: 'Sesion has expired!' })
+
     }
 }

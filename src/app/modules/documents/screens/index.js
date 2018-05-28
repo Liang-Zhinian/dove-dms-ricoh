@@ -13,19 +13,15 @@ import CheckedoutReport from './CheckedoutReport';
 import LockedReport from './LockedReport';
 import Scan from './Scan';
 import Print from './Print';
-import Splash from './Splash';
-import Registration from './Registration';
 import Login from './Login';
 import Logout from './Logout';
-
-
-
+import Registration from './Registration';
+import Profile from './Profile';
 
 
 export default {
     Login,
     Logout,
-    Splash,
     Registration,
     Home,
     Explorer,
@@ -42,4 +38,5 @@ export default {
     LockedReport,
     Scan,
     Print,
+    Profile,
 };

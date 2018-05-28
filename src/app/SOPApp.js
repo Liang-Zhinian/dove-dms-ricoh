@@ -19,6 +19,7 @@ import { login, logout } from './actions/auth';
 import RicohAuthAndroid from './components/RCTRicohAuthAndroid';
 import Spinner from './components/Spinner';
 import DoveButton from './components/DoveButton';
+import { translate } from './i18n/i18n';
 
 const styles = StyleSheet.create({
     container: {
@@ -28,6 +29,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#F5FCFF',
     },
+    p: {fontSize: 20, marginBottom: 10},
+    button: {}
 });
 
 class SOPApp extends Component {
@@ -94,11 +97,11 @@ class SOPApp extends Component {
         if (!this.isSOPLoggedIn() && !this.state.hasSkippedLogin) {
             return (
                 <View style={styles.container}>
-                    <Text style={styles.text}>Please login the SOP or </Text>
+                    <Text style={styles.p}>{translate('PleaseLoginTheSopOr')}</Text>
 
                     <DoveButton style={[styles.button]}
                         onPress={() => this.setState({ hasSkippedLogin: true })}
-                        caption="Skip login"
+                        caption={translate("Skip")}
                     />
                 </View>
             );

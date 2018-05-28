@@ -12,6 +12,9 @@ import {
 } from "react-native";
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+
+import {translate} from '../../../../i18n/i18n';
+
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 const { width, height } = Dimensions.get('window');
 const containerHeight = 40;
@@ -114,7 +117,7 @@ class SearchBox extends Component<{}> {
                     editable={this.props.editable}
                     value={this.state.keyword}
                     onChangeText={this.onChangeText}
-                    placeholder='Search'
+                    placeholder={this.props.placeholder || translate('Search')}
                     placeholderTextColor={
                         this.props.placeholderTextColor || styles.placeholderColor
                     }

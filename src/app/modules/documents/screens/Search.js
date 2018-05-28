@@ -28,6 +28,7 @@ import DocumentService, { DownloadManager } from '../services/DocumentService';
 import SearchBox from './components/SearchBox';
 import DocumentList from './components/DocumentList';
 import FileViewerAndroid from '../../../components/RCTFileViewerAndroid';
+import { translate } from '../../../i18n/i18n';
 
 class Search extends Component {
     static defaultProps = {
@@ -38,7 +39,7 @@ class Search extends Component {
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
 
-        let headerTitle = 'Search Results';
+        let headerTitle = translate('SearchResults');
         return { headerTitle };
     };
 
@@ -81,16 +82,14 @@ class Search extends Component {
                     </View>
                 </View>
                 <SearchBox
+                    placeholder={translate('Search')}
                     onSearch={this.filter.bind(this)}
                 />
                 <DocumentList
                     navigation={this.props.navigation}
                     dataSource={this.state.dataSource}
                     onRefresh={this._onRefresh}
-                    //onPressCheckbox={this._onPressCheckbox}
                     onPressItem={this._onPressItem}
-                    //onPressInfo={this._onPressItemInfo}
-                    //onPressCross={this._onPressItemCross}
                     downloadManger={this.downloadManger}
                     infoIconVisible={false}
                 />
@@ -108,7 +107,7 @@ class Search extends Component {
     async filter(text) {
         this.setState({ isLoading: true });
         const {
-          username,
+            username,
             password,
         } = this.props;
 
@@ -142,22 +141,16 @@ class Search extends Component {
             .then((path) => {
                 if (!path) return;
                 // the temp file path
-                console.log('The file saved to ', path)
                 that.openLocalUrl(path, fileName, type);
                 that.resetDownloadTask();
             })
             .catch((err) => {
                 if (err.message === 'cancelled') return;
-                console.log(err);
             });
     }
 
 
     updateProgress = (received, total) => {
-
-        // if (total > 3 * 1000 * 1000 && Date.now() - this.state.lastTick < 1000)
-        //   return
-        // console.log(`progress: ${received} / ${total}`)
 
         this.setState({
             progress: received / total,
@@ -173,9 +166,7 @@ class Search extends Component {
         Platform.OS == 'android' &&
             FileViewerAndroid.open(url)
                 .then((msg) => {
-                    console.log('success!!')
                 }, (error) => {
-                    console.log('error!!')
                 });
 
         _that.props.chooseDocument(null);
@@ -183,7 +174,6 @@ class Search extends Component {
     }
 
     resetDownloadTask = () => {
-        console.log('resetDownloadTask');
         const that = this;
         that.setState({
             progress: 0, //total,
@@ -211,9 +201,9 @@ const styles = StyleSheet.create({
 
 function select(store) {
     return {
-        username: store.auth.user.username,
-        password: store.auth.user.password,
-        sid: store.auth.user.token.sid,
+        username: store[NAME].account.username,
+        password: store[NAME].account.password,
+        sid: store[NAME].account.token.sid,
     };
 }
 

@@ -28,9 +28,7 @@ export class DocumentList extends Component {
 
     render() {
         return (
-            <ScrollView style={{
-                flex: 1,
-            }}
+            <ScrollView style={{ flex: 1, ...this.props.style }}
                 refreshControl={
                     <RefreshControl
                         refreshing={this.state.refreshing}

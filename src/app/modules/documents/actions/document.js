@@ -14,11 +14,15 @@ import {
   DONE_UPLOADING_DOCUMENT,
 
   IS_DOWNLOADING,
+
+  UPDATE_DOCUMENT,
+  DONE_UPDATING_DOCUMENT
 } from '../constants'
 import OpenFile from 'react-native-doc-viewer';
-import { createDocumentWithProgressSOAP } from '../api'
+import { createDocumentWithProgressSOAP, updateDocument } from '../api'
 import Base64 from '../lib/Base64'
 import { alert } from '../lib/alert';
+import handle from '../../../ExceptionHandler';
 
 export type Action = {
   type: string,
@@ -26,6 +30,31 @@ export type Action = {
 }
 
 export type ActionAsync = (dispatch: Function, getState: Function) => void
+
+export const update = (username, password, document): ActionAsync => {
+  return (dispatch, getState) => {
+
+    dispatch({
+      type: UPDATE_DOCUMENT,
+      payload: {
+        isLoading: true,
+      }
+    });
+
+    updateDocument(username, password, document)
+      .then(res => {
+        dispatch({
+          type: DONE_UPDATING_DOCUMENT,
+          payload: {
+            isLoading: false,
+          }
+        });
+      })
+      .catch(error => {
+        handle(error);
+      })
+  }
+}
 
 export const chooseDocument = (document): ActionAsync => {
   return (dispatch, getState) => {
@@ -65,14 +94,11 @@ export const upload = (sid: string, document: any, content: string): ActionAsync
         // if (percent === 1)
         //   dispatch(doneUploading());
       })
-      .then(newDoc => {
-        // debugger;
-        console.log(newDoc);
-        alert('Upload document', 'New document was uploaded at ' + newDoc.creation);
-
+      .then((response) => {
         dispatch(doneUploading());
       })
       .catch(error => {
+        handle(error);
         // console.error(error);
         alert('Upload document', error.message);
         dispatch({

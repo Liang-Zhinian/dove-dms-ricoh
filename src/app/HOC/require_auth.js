@@ -21,7 +21,7 @@ export default function (ComposedComponent) {
 
     const mapStateToProps = ({ auth }) => {
         return {
-            authenticated: false //auth.isLoggedIn
+            authenticated: auth.isAuthenticated
         }
     }
 

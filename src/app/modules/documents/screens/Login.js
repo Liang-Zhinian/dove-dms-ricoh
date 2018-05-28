@@ -1,135 +1,86 @@
 import React, { Component } from 'react';
 import {
-	ScrollView,
-	Text,
-	TextInput,
-	View,
-	Button,
-	DeviceEventEmitter,
+    ScrollView,
+    Text,
+    TextInput,
+    View,
+    Button,
+    AsyncStorage,
 } from 'react-native';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import { NAME } from '../constants';
-import RicohAuthAndroid from '../../../components/RCTRicohAuthAndroid';
-import { default as Toast } from '../../../components/RCTToastModuleAndroid';
+
+
+const AsyncStorageKey = "AS_";
 
 class Login extends Component {
 
-	constructor(props) {
-		super(props);
-		this.state = {
-            loginStatus: null,
-			username: '',
-			password: '',
-			// user: null,
-		};
-	}
+    constructor(props) {
+        super(props);
+        this.state = {
+            username: '',
+            password: '',
+        };
+    }
 
-	componentWillMount() {
-		var that = this;
-		const { username, password, sid } = that.props;
-		if (username && password)
-			that.setState({ username, password })
+    componentWillMount() {
+        const { username, password, sid } = this.props;
+        // if (username && password && sid)
+        //     this.props.navigation.navigate('Main');
+    }
 
-		DeviceEventEmitter.addListener('onLoginStatusReceived', function (e) {
-			that.setState({ loginStatus: e.loginStatus, screenDismissed: true });
-			if (e.loginStatus == 'LOGOUT') {
-				that.doLogout();
-			}
-		});
+    componentDidMount() {
+        const { username, password, sid } = this.props;
+        if (username && password)
+            this.setState({ username, password })
+    }
 
-		DeviceEventEmitter.addListener('onEntryInfoReceived', function (e) {
-			let entryInfo = JSON.parse(e.entryInfo);
-
-			that.setState({ user: entryInfo });
-
-			AsyncStorage
-				.getItem(entryInfo.loginUserName)
-				.then(data => {
-					if (!!data) {
-						//alert('User data from AsyncStorage: ' + data);
-						return JSON.parse(data);
-					}
-
-					return null;
-				})
-				.then(user => {
-					if (user != null) {
-						that.setState({ username: user.username, password: user.password }, () => {
-							that.doLogin();
-						});
-
-						Toast.show(`Welcome, ${user.username}`, Toast.SHORT);
-					} else {
-						that.props.navigation.navigate('Registration', { key: entryInfo.loginUserName });
-					}
-				});
-
-			// alert(entryInfo);
-		});
-
-		RicohAuthAndroid.getAuthState()
-			.then((msg) => {
-				console.log('success!!')
-			}, (error) => {
-				console.log('error!!')
-			});
-
-	}
-
-	render() {
-		return (
-			<ScrollView style={{ padding: 20 }}>
-				<Text
-					style={{ fontSize: 27 }}>
-					Login
+    render() {
+        return (
+            <ScrollView style={{ padding: 20 }}>
+                <Text
+                    style={{ fontSize: 27 }}>
+                    Login
                 </Text>
-				<TextInput placeholder='Username'
-					onChangeText={(username) => this.setState({ username })}
-					returnKeyType='next' />
-				<TextInput placeholder='Password'
-					onChangeText={(password) => this.setState({ password })}
-					secureTextEntry={true} />
-				<View style={{ margin: 7 }} />
-				<Button
-					onPress={this.onLoginPress.bind(this)}
-					title="Submit"
-				/>
-			</ScrollView>
-		)
-	}
+                <TextInput placeholder='Username'
+                    onChangeText={(username) => this.setState({ username })}
+                    returnKeyType='next' />
+                <TextInput placeholder='Password'
+                    onChangeText={(password) => this.setState({ password })}
+                    secureTextEntry={true} />
+                <View style={{ margin: 7 }} />
+                <Button
+                    onPress={this.submit.bind(this)}
+                    title="Submit"
+                />
+            </ScrollView>
+        )
+    }
 
-	onLoginPress() {
-		this.props.navigation.navigate('Main');
-	}
-
-	doLogin() {
-		const { login, navigation } = this.props;
-		login(this.state.username, this.state.password);
-		navigation.dispatch({ type: 'Login' });
-		navigation.navigate('Main');
-	}
-
-	doLogout = () => {
-		const { sid, logout, navigation } = this.props;
-		logout(sid, navigation);
-	}
+    submit() {
+        const { login, navigation } = this.props;
+        login(this.state.username, this.state.password);
+        navigation.dispatch({ type: 'Login' });
+        navigation.navigate('Main');
+    }
 }
 
+
+
 function select(store) {
-	return {
-		username: store.auth.user.username,
-		password: store.auth.user.password,
-		sid: store.auth.user.token.sid,
-	};
+    return {
+        username: store[NAME].account.username,
+        password: store[NAME].account.password,
+        sid: store[NAME].account.token.sid,
+    };
 }
 
 function dispatch(dispatch) {
-	return {
-		// 发送行为
-		login: (username, password) => dispatch(actions.login(username, password)),
-		logout: (sid, navigation) => dispatch(actions.logout(sid, navigation)),
-	}
+    return {
+        // 发送行为
+        login: (username, password) => dispatch(actions.login(username, password)),
+    }
 };
 
 export default connect(select, dispatch)(Login);

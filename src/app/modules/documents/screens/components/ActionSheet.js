@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Button from './button';
 import FadeInView from './fade_in_view';
+import {translate} from '../../../../i18n/i18n';
 
 class ActionModal extends Component {
     render() {
@@ -22,7 +23,7 @@ class ActionModal extends Component {
                     <View style={styles.modalContainer}>
                         <TouchableOpacity style={styles.container} onPress={this.props.onCancel}></TouchableOpacity>
                         {this.props.children}
-                        <Button onPress={this.props.onCancel} text={this.props.buttonText || "Cancel"} />
+                        <Button style={{height: 40}} onPress={this.props.onCancel} text={this.props.buttonText || translate('Cancel')} />
                     </View>
                 </Modal>
             </FadeInView>

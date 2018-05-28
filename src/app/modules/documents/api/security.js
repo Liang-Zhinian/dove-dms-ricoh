@@ -1,11 +1,12 @@
 import {
-    SecuritySoapAPI,
+    getSecuritySoapAPI,
     convertToJson,
     filterFault
 } from './util';
 
+import handle from '../../../ExceptionHandler';
 
-export const getUserByUsernameSOAP = (sid: string, username: string): Promise<string> => {
+export const getUserByUsernameSOAP = async (sid: string, username: string): Promise<string> => {
     let xml = '<?xml version="1.0" encoding="utf-8"?>'
     xml += '<soap:Envelope '
     xml += 'xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" '
@@ -30,12 +31,17 @@ export const getUserByUsernameSOAP = (sid: string, username: string): Promise<st
         body: xml
     };
 
+    const SecuritySoapAPI = await getSecuritySoapAPI();
+
     return new Promise((resolve, reject) => {
         fetch(SecuritySoapAPI, options)
             .then(response => response.text())
             .then(xml => convertToJson(xml))
             .then(filterFault)
             .then(responseJson => resolve(responseJson.Body.getUserByUsernameResponse.user))
-            .catch(reason => reject(reason))
+            .catch(reason => {
+                handle(reason);
+                reject(reason)
+            })
     });
 }

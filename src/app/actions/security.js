@@ -26,7 +26,6 @@ export const getUserByUsername = (sid: string, username: string): ActionAsync =>
 
         await getUserByUsernameSOAP(sid, username)
             .then(user => {
-                console.log(user);
                 dispatch({
                     type: `USER_PROFILE`,
                     payload: user
@@ -40,7 +39,7 @@ export const getUserByUsername = (sid: string, username: string): ActionAsync =>
             })
             .catch((error) => {
                 dispatch({
-                    type: 'SECURITY_ERROR',
+                    type: 'ERROR',
                     payload: error
                 })
             })

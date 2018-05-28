@@ -41,7 +41,9 @@ import DocumentList from './components/DocumentList';
 import FileViewerAndroid from '../../../components/RCTFileViewerAndroid';
 import Spinner from '../../../components/Spinner';
 import { alert } from '../lib/alert';
-import { default as Toast } from '../../../components/RCTToastModuleAndroid';
+import { convert } from '../api/converter';
+import RNFS from 'react-native-fs';
+import { translate } from '../../../i18n/i18n';
 
 function isExpired(expires_date) {
   let currentTime = new Date();
@@ -54,7 +56,7 @@ class Explorer extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
 
-    let headerTitle = `${params.node ? params.node.name : 'Documents'}`;
+    let headerTitle = `${params.node ? params.node.name : translate('Documents')}`;
     let headerRight = (
       <View style={[
         CommonStyles.flexRow,
@@ -66,10 +68,12 @@ class Explorer extends Component {
         />
         <HeaderButton
           onPress={params.toggleEdit ? params.toggleEdit : () => null}
-          text={!params.isEditMode ? 'Edit' : 'Done'}
+          text={translate(!params.isEditMode ? 'Edit' : 'Done')}
         />
       </View>
     );
+
+    if (!params.node) headerRight = null;
 
     const withHeaderLeft = { headerTitle, headerRight };
     const withoutHeaderLeft = { headerTitle, headerRight, headerLeft: false };
@@ -106,59 +110,26 @@ class Explorer extends Component {
     this.downloadTask = null;
 
     this.downloadManger = new DownloadManager();
-
-    // const { params = {} } = this.props.navigation.state;
-    // console.log('constructor: ' + (params.node ? params.node.name : 'Documents'));
-  }
-
-  resetState() {
-    this.setState({
-      refreshing: false,
-      folderCreationModalVisible: false,
-      modalVisible: false,
-      isEditMode: false,
-      lastTick: Date.now(),
-      isLoading: false,
-      dataSource: [],
-      mainListVisible: true,
-      username: '',
-      password: '',
-      sid: '',
-      folderId: null,
-      docId: null,
-      progressBarVisible: false,
-      progress: 0,
-      selectedList: [],
-      folderName: '',
-      isLoginLoading: false,
-      searchListDataSource: [],
-      searchListVisible: false,
-      isConnected: null,
-    });
   }
 
   componentWillMount() {
-    // console.log('componentWillMount');
-
     const { username, password, sid, expires_date, login } = this.props;
-    // console.log(`${username} | ${password} | ${sid} | ${expires_date}`)
 
     // check if sid is expired
-    // if (isExpired(expires_date)) {
-    //   login(username, password);
-    // }
-    // else {
-    this.setState({
-      username,
-      password,
-      sid,
-    }, this.fetchData.bind(this));
-    // }
+    if (!username) {
+      this.fetchData();
+    }
+    else {
+      this.setState({
+        username,
+        password,
+        sid,
+      }, this.fetchData.bind(this));
+    }
   }
 
   componentDidMount() {
 
-    // console.log('componentDidMount');
     const that = this;
 
     const { navigation, isEditMode } = that.props;
@@ -180,7 +151,6 @@ class Explorer extends Component {
 
   // Start changing images with timer on first initial load
   componentWillReceiveProps(nextProps) {
-    //console.log('componentWillReceiveProps');
     const that = this;
 
     const { needReload } = nextProps;
@@ -188,7 +158,6 @@ class Explorer extends Component {
     const { username, password, sid, expires_date, valid, login, renewSid } = nextProps;
 
     if (username && username !== that.state.username) {
-      // console.log('Account has been changed')
       that.setState({
         username,
         password,
@@ -198,31 +167,22 @@ class Explorer extends Component {
     }
 
     if (username && sid && sid !== that.state.sid) {
-      // console.log('Sid has been changed and the data source will be refreshed.')
       that.setState({
         sid,
       }, () => {
-        //that.fetchData();
       });
     }
 
     needReload && setTimeout(that.fetchData, 1000);
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return nextState.progressBarVisible || nextProps.needReload || !nextState.isLoading && this.state.dataSource != nextState.dataSource;
-  // }
-
   componentWillUpdate(nextProps, nextState) {
-    // console.log('componentWillUpdate');
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // console.log('componentDidUpdate');
   }
 
   componentWillUnmount() {
-    // console.log('componentWillUnmount');
     const that = this;
 
     that.resetDownloadTask();
@@ -231,8 +191,6 @@ class Explorer extends Component {
       'connectionChange',
       that._handleConnectivityChange.bind(that)
     )
-
-    that.resetState();
   }
 
   _handleConnectivityChange(isConnected) {
@@ -240,11 +198,6 @@ class Explorer extends Component {
   }
 
   render() {
-    console.log('render');
-
-    // if (this.state.isConnected ==null || !this.state.isConnected){
-    //   return null;
-    // }
 
     const { username } = this.state;
     if (!username) {
@@ -257,11 +210,9 @@ class Explorer extends Component {
 
     //加载数据
     return this.renderData();
-    //return null;
   }
 
   toggleActionSheet() {
-    console.log('toggleActionSheet');
     const modalVisible = this.state.modalVisible;
     this.setState({
       modalVisible: !modalVisible,
@@ -274,9 +225,12 @@ class Explorer extends Component {
 
     // More info on all the options is below in the README...just some common use cases shown here
     var options = {
-      title: 'Select Avatar',
+      title: null,
+      cancelButtonTitle: translate('Cancel'),
+      takePhotoButtonTitle: translate('TakePhoto'),
+      chooseFromLibraryButtonTitle: translate('ChooseFromLibrary'),
       customButtons: [
-        { name: 'create-folder', title: 'Create Folder' },
+        { name: 'create-folder', title: translate('CreateFolder') },
         { name: 'scan', title: 'Scan' },
       ],
       storageOptions: {
@@ -291,19 +245,15 @@ class Explorer extends Component {
     // The second arg is the callback which sends object: response (more info below in README)
     //
     ImagePicker.showImagePicker(options, (response) => {
-      // console.log('Response = ', response);
 
       if (response.didCancel) {
-        // console.log('User cancelled image picker');
         _that.setFetchingState(false);
       }
       else if (response.error) {
-        // console.log('ImagePicker Error: ', response.error);
         _that.setFetchingState(false);
       }
       else if (response.customButton) {
         const { customButton } = response;
-        console.log('User tapped custom button: ', customButton);
         switch (customButton) {
           case 'create-folder':
             this.setState({ folderCreationModalVisible: true, isLoading: false })
@@ -319,7 +269,6 @@ class Explorer extends Component {
 
       }
       else {
-        debugger;
         let source = response;
 
         // You can also display the image using data:
@@ -329,7 +278,7 @@ class Explorer extends Component {
         //     avatarSource: source
         // });
         const { navigate, state } = this.props.navigation;
-        //const folderId = state.params.node.id;
+
         _that.setFetchingState(false);
         navigate('Upload', { source, folderId: _that.state.folderId });
 
@@ -338,16 +287,26 @@ class Explorer extends Component {
 
   }
 
+  clearSeletedList = () => {
+    this.setState({
+      selectedList: []
+    });
+
+  }
+
+  clearSeletedList = () => {
+    this.setState({
+      selectedList: []
+    });
+  }
+
   // edit
   toggleEdit = () => {
     const { navigation, toggleEditMode, isEditMode } = this.props;
-    // const isEditMode = this.state.isEditMode;
-    // this.setState({
-    //   isEditMode: !isEditMode
-    // });
     navigation.setParams({
-      isEditMode: !isEditMode
+      isEditMode: !isEditMode,
     });
+    this.clearSeletedList();
 
     toggleEditMode(!isEditMode);
   }
@@ -361,7 +320,6 @@ class Explorer extends Component {
   //网络请求
   fetchData = () => {
     var that = this;
-    // if (that.state.isLoading) return;
 
     that.setState({
       //复制数据源
@@ -415,7 +373,6 @@ class Explorer extends Component {
       let folderId = !!folder ? folder.id : null;
       username && ensureLogin(username, password, sid)
         .then(sid => {
-          // console.log('new sid: ' + sid);
           that.setState({
             sid: sid,
           });
@@ -506,10 +463,6 @@ class Explorer extends Component {
 
   updateProgress = (received, total) => {
 
-    // if (total > 3 * 1000 * 1000 && Date.now() - this.state.lastTick < 1000)
-    //   return
-    // console.log(`progress: ${received} / ${total}`)
-
     this.setState({
       progress: received / total,
       lastTick: Date.now()
@@ -522,23 +475,9 @@ class Explorer extends Component {
     const { navigate } = _that.props.navigation;
     Platform.OS == 'ios' && navigate('FileViewer', { file: { uri: `file://${url}`, fileName, fileType } });
     Platform.OS == 'android' &&
-      // OpenFile.openDoc([{
-      //   url: `file://${url}`,
-      //   fileName,
-      //   fileType,
-      //   cache:true,
-      // }], (error, url) => {
-      //   if (error) {
-      //     console.error(error);
-      //   } else {
-      //     console.log(url)
-      //   }
-      // })
       FileViewerAndroid.open(url)
         .then((msg) => {
-          console.log('success!!')
         }, (error) => {
-          console.log('error!!')
         });
 
     _that.props.chooseDocument(null);
@@ -546,10 +485,9 @@ class Explorer extends Component {
   }
 
   resetDownloadTask = () => {
-    console.log('resetDownloadTask');
     const that = this;
     that.setState({
-      progress: 0, //total,
+      progress: 0,
       lastTick: Date.now()
     });
     that.props.chooseDocument(null);
@@ -561,14 +499,11 @@ class Explorer extends Component {
     const that = this;
     that.props.updateDownloadStatus(true);
     that.setState({
-      //progressBarVisible: true,
       progress: 0,
       docId: item.id,
     });
     const { sid } = that.state;
     const { fileName, type, fileSize } = item;
-
-    // Toast.show('Explorer: previewDocument', Toast.SHORT);
 
     DocumentService.downloadToCacheDirectory(sid, item, that.updateProgress, that.resetDownloadTask)
       .then(man => {
@@ -582,36 +517,14 @@ class Explorer extends Component {
       .then((path) => {
         if (!path) return;
         // the temp file path
-        console.log('The file saved to ', path);
-        // alert('Explorer', 'The file saved to ', path);
         that.openLocalUrl(path, fileName, type);
         that.resetDownloadTask();
       })
       .catch((err) => {
         that.resetDownloadTask();
         if (err.message === 'cancelled') return;
-        console.log(err);
-        // Toast.show(err.message, Toast.SHORT);
-
         alert('Preview', err.message);
       });
-
-    // that.downloadManger.onReset = that.resetDownloadTask;
-    // that.downloadManger.downloadToCacheDirectory(
-    //   sid,
-    //   item,
-    //   that.updateProgress)
-    //   .then((path) => {
-    //     if (!path) return;
-    //     // the temp file path
-    //     console.log('The file saved to ', path)
-    //     that.openLocalUrl(path, fileName, type);
-    //     // that.resetDownloadTask();
-    //   })
-    //   .catch((err) => {
-    //     if (err.message === 'cancelled') return;
-    //     console.log(err);
-    //   });
 
   }
 
@@ -621,7 +534,6 @@ class Explorer extends Component {
       if (!!this.downloadTask) {
         // cancel the HTTP request
         this.downloadTask.cancel((err, taskId) => {
-          console.log('user canceled the previous download task');
           this.resetDownloadTask();
         });
       }
@@ -644,9 +556,6 @@ class Explorer extends Component {
   }
 
   _onPressCheckbox = (item: any, checked: boolean) => {
-    console.log('_onPressCheckbox');
-    console.log(item);
-    console.log(checked);
 
     let selectedList = this.state.selectedList;
     if (checked) {
@@ -655,7 +564,6 @@ class Explorer extends Component {
       selectedList = selectedList.filter((o) => o.id !== item.id);
     }
 
-    console.log(selectedList);
     this.setState({
       selectedList
     })
@@ -672,10 +580,6 @@ class Explorer extends Component {
     const selectedList = that.state.selectedList;
     DocumentService.removeDocuments(username, password, selectedList)
       .then(resp => {
-        if (resp)
-          console.log('All selected items were deleted.');
-        else
-          console.log('Some of selected items were not deleted.');
         that.fetchData();
         that.toggleEdit();
       })
@@ -719,20 +623,19 @@ class Explorer extends Component {
         console.log('The file saved to ', path);
 
         that.resetDownloadTask();
+        that.toggleEdit();
 
         navigate('Print', { filePath: path, fileType: type, fileName });
       })
       .catch((err) => {
         that.resetDownloadTask();
+        that.toggleEdit();
         if (err.message === 'cancelled') return;
         console.log(err);
         // Toast.show(err.message, Toast.SHORT);
 
         alert('Print', err.message);
       });
-
-
-
   }
 
   onFolderCreationOK = () => {
@@ -740,11 +643,9 @@ class Explorer extends Component {
       { folderName, folderId } = that.state,
       { sid } = that.props;
 
-    console.log('Folder Name:', folderName)
 
     DocumentService.createFolder(sid, folderId, folderName)
       .then(resp => {
-        console.log(resp)
         that.setState({ folderCreationModalVisible: false });
         that.fetchData();
       })
@@ -766,7 +667,6 @@ class Explorer extends Component {
       .catch(reason => {
         debugger;
         if (reason.message === 'token expired') {
-          //that.props.login(username, password);
           loginSOAP(username, password)
             .then(sid => {
               that.setState({ sid }, that._onRefresh())
@@ -776,13 +676,13 @@ class Explorer extends Component {
   }
 
   renderData() {
-    // this.setState({ dataList: this.props.dataList });
     return (
       <View style={{
         flex: 1,
         backgroundColor: 'white'
       }}>
         <SearchBox
+          autoCapitalize='none'
           onFocus={() => {
             this.setState({
               mainListVisible: false,
@@ -807,25 +707,12 @@ class Explorer extends Component {
           onPressItemInfo={this._onPressItemInfo}
           onPressCross={this._onPressItemCross}
           downloadManger={this.downloadManger}
+          style={{
+            flex: 1,
+            display: this.state.mainListVisible ? 'flex' : 'none'
+          }}
         />
-        {/*
-        <ScrollView style={{
-          flex: 1,
-          display: this.state.mainListVisible ? 'flex' : 'none'
-        }}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this._onRefresh.bind(this)}
-            />
-          }
-        >
-          <FlatList
-            data={this.state.dataSource}
-            renderItem={this.renderItem}
-            keyExtractor={(item, index) => index}
-          />
-        </ScrollView>*/}
+
         <ScrollView style={{
           flex: 1,
           display: this.state.searchListVisible ? 'flex' : 'none'
@@ -853,7 +740,7 @@ class Explorer extends Component {
             accessibilityLabel='download'
             onPress={this.selectionContainsFolders() ? null : this._onDownloadButtonPressed}
           >
-            <Text style={{ color: this.selectionContainsFolders() ? 'grey' : colors.primary, fontSize: 20 }}>{`Download${this.state.selectedList.length > 0 ? '(' + this.state.selectedList.length + ')' : ''}`}</Text>
+            <Text style={{ color: this.selectionContainsFolders() ? 'grey' : colors.primary, fontSize: 20 }}>{`${translate('Download')}${this.state.selectedList.length > 0 ? '(' + this.state.selectedList.length + ')' : ''}`}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -861,7 +748,7 @@ class Explorer extends Component {
             accessibilityLabel='delete'
             onPress={() => { this._onDeleteButtonPressed(); }}
           >
-            <Text style={{ color: 'red', fontSize: 20 }}>{`Delete${this.state.selectedList.length > 0 ? '(' + this.state.selectedList.length + ')' : ''}`}</Text>
+            <Text style={{ color: 'red', fontSize: 20 }}>{`${translate('Delete')}${this.state.selectedList.length > 0 ? '(' + this.state.selectedList.length + ')' : ''}`}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -869,19 +756,12 @@ class Explorer extends Component {
             accessibilityLabel='print'
             onPress={this.selectionContainsFolders() ? null : this._onPrintButtonPressed}
           >
-            <Text style={{ color: this.selectionContainsFolders() ? 'grey' : colors.primary, fontSize: 20 }}>{`Print${this.state.selectedList.length > 0 ? '(' + this.state.selectedList.length + ')' : ''}`}</Text>
+            <Text style={{ color: this.selectionContainsFolders() ? 'grey' : colors.primary, fontSize: 20 }}>{`${translate('Print')}${this.state.selectedList.length > 0 ? '(' + this.state.selectedList.length + ')' : ''}`}</Text>
           </TouchableOpacity>
-
+        
         </View>
-        <MainActionSheet
-          modalVisible={this.state.modalVisible}
-          toggleActionSheet={this.toggleActionSheet.bind(this)}
-          onCreateFolderButtonPressed={() => { this.setState({ folderCreationModalVisible: true, isLoading: false }) }}
-          onScanButtonPressed={() => { this.props.navigation.navigate('Scan', { folderId: this.state.folderId }) }} />
-
         <FolderCreationDialog
           onCancel={() => {
-            console.log('Canceled');
             this.setState({ folderName: '', folderCreationModalVisible: false });
           }}
           onOK={this.onFolderCreationOK.bind(this)}
@@ -897,9 +777,6 @@ class Explorer extends Component {
 
 
 function select(store) {
-  //console.log('select');
-  var account = parseAccount(store.auth.user);
-
   return {
     needReload: store[NAME].document.needReload,
     dataSource: store[NAME].document.dataSource,
@@ -907,17 +784,15 @@ function select(store) {
     isEditMode: store[NAME].document.isEditMode,
     isDownloading: store[NAME].document.isDownloading,
 
-    username: store.auth.user.username,
-    password: store.auth.user.password,
-    sid: store.auth.user.token.sid,
-    expires_date: store.auth.user.token.expires_date,
-
-
+    username: store[NAME].account.username,
+    password: store[NAME].account.password,
+    sid: store[NAME].account.token.sid,
+    expires_date: store[NAME].account.token.expires_date,
+    valid: store[NAME].account.valid,
   };
 }
 
 function dispatch(dispatch) {
-  //console.log('dispatch');
   return {
     // 发送行为
     updateDownloadStatus: (isDownloading) => dispatch(actions.updateDownloadStatus(isDownloading)),
@@ -935,15 +810,6 @@ function dispatch(dispatch) {
 
 export default connect(select, dispatch)(Explorer);
 
-function parseAccount(acc) {
-  var account = acc;
-  if (!acc.username) account.username = '';
-  if (!acc.password) account.password = '';
-  if (!acc.token) account.token = { sid: null, expires_date: null };
-  if (!acc.username) account.username = '';
-
-  return account;
-}
 
 const styles = StyleSheet.create({
   container: {

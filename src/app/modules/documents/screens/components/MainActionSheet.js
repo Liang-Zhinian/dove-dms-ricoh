@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import ActionSheet from './ActionSheet';
+import {translate} from '../../../../i18n/i18n';
 
 class MainActionSheet extends Component {
 
@@ -42,20 +43,15 @@ class MainActionSheet extends Component {
         // The second arg is the callback which sends object: response (more info below in README)
         //
         ImagePicker.showImagePicker(options, (response) => {
-            // console.log('Response = ', response);
 
             that.toggleActionSheet();
             if (response.didCancel) {
-                // console.log('User cancelled image picker');
             }
             else if (response.error) {
-                // console.log('ImagePicker Error: ', response.error);
             }
             else if (response.customButton) {
-                // console.log('User tapped custom button: ', response.customButton);
             }
             else {
-                // debugger;
                 let source = response;
 
                 // You can also display the image using data:
@@ -67,7 +63,6 @@ class MainActionSheet extends Component {
     }
 
     toggleActionSheet(callback) {
-        console.log('toggleActionSheet');
         const modalVisible = this.state.modalVisible;
         this.setState({
             modalVisible: !modalVisible,
@@ -88,19 +83,19 @@ class MainActionSheet extends Component {
                     <View style={styles.actionSheet}>
                         <TouchableOpacity style={styles.button} onPress={this.props.onCreateFolderButtonPressed}>
                             <Text style={styles.buttonText}>
-                                Create Folder
+                                {translate('CreateFolder')}
                                 </Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.button} onPress={() => { this.upload(); }}>
                             <Text style={styles.buttonText}>
-                                Upload
+                                {translate('Upload')}
                                 </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.button} onPress={this.props.onScanButtonPressed}>
-                            <Text style={styles.buttonText}>
-                                Scan
+                        {/* <TouchableOpacity style={styles.button} onPress={() => { }}>
+                        <Text style={styles.buttonText}>
+                            Take Photo or Video
                                 </Text>
-                        </TouchableOpacity>
+                    </TouchableOpacity> */}
                         <TouchableOpacity style={[styles.button, styles.lastButton]} onPress={() => { }}>
                             <Text style={styles.buttonText}>
                                 Record Audio

@@ -22,6 +22,7 @@ const PickerItemIOS = PickerIOS.Item;
 
 import fromBytes from '../lib/filesize';
 import CustomLabel from './components/CustomLabel';
+import {translate} from '../../../i18n/i18n';
 
 function getSum(array) {
     return array
@@ -35,7 +36,7 @@ function getSum(array) {
 
 export default class RepositoryUsage extends Component {
     static navigationOptions = {
-        headerTitle: 'My Storage',
+        headerTitle: translate('Storage'),
     };
 
     constructor(props) {

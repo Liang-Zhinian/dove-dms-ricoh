@@ -6,6 +6,7 @@ import android.app.Application;
 
 import com.dove.sample.function.common.SmartSDKApplication;
 import com.facebook.react.ReactApplication;
+import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.microsoft.codepush.react.CodePush;
 import com.horcrux.svg.SvgPackage;
@@ -40,6 +41,7 @@ public class MainApplication extends SmartSDKApplication implements ReactApplica
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+                    new RNI18nPackage(),
                     new LinearGradientPackage(),
                     new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
                     new SvgPackage(),

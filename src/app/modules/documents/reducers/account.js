@@ -1,12 +1,12 @@
 
 import { handleActions } from 'redux-actions'
-import { SAVE_ACCOUNT, LOGIN, LOGOUT, RENEW, VALID, ERROR } from '../constants'
+import { SAVE_ACCOUNT, LOGIN, LOGOUT, RENEW, VALID, ERROR, NEED_RELOADING } from '../constants'
 import * as types from '../middlewares/authenticationTypes';
 
 type State = {
-  isAuthenticated: boolean,
   username: ?string,
   password: ?string,
+  isAuthenticated: ?boolean,
   token: ?{
     sid: ?string,
     expires_date: ?string
@@ -14,9 +14,9 @@ type State = {
 }
 
 const initialState: State = {
-  isAuthenticated: false,
   username: null,
   password: null,
+  isAuthenticated: false,
   token: {
     sid: null,
     expires_date: null
@@ -32,8 +32,26 @@ const initialState: State = {
 
 export default handleActions(
   {
+    [NEED_RELOADING]: (state: State = initialState, action) => {
+      const {
+        payload: {
+          needReloading,
+        }
+      } = action
+
+      return {
+        ...state,
+        needReloading,
+      }
+    },
+
     [SAVE_ACCOUNT]: (state: State = initialState, action) => {
-      const { payload: { username, password } } = action
+      const {
+        payload: {
+          username,
+          password,
+        }
+      } = action
 
       //because payload contains the id and we already know that we are about
       //to increment the value of that id, we modify only that value by one
@@ -46,7 +64,7 @@ export default handleActions(
     },
 
     [LOGIN]: (state: State = initialState, action) => {
-      const { payload: { username, password, token, isAuthenticated } } = action
+      const { payload: { username, password, token } } = action
 
       //because payload contains the id and we already know that we are about
       //to increment the value of that id, we modify only that value by one
@@ -55,27 +73,29 @@ export default handleActions(
         ...state,
         // username,
         // password,
-        isAuthenticated,
+        isAuthenticated: true,
         token,
       }
     },
 
     [LOGOUT]: (state: State = initialState, action) => {
-      const { payload: { username, password, token } } = action
       return {
         ...state,
-        username,
-        password,
+        username: null,
+        password: null,
         isAuthenticated: false,
-        token,
+        token: {
+          sid: null,
+          expires_date: null
+        },
       }
     },
-
 
     [RENEW]: (state: State = initialState, action) => {
       const { payload: { token } } = action;
       return {
         ...state,
+        isAuthenticated: true,
         token,
       }
     },
@@ -84,8 +104,8 @@ export default handleActions(
       const { payload: { valid } } = action
       return {
         ...state,
-        isAuthenticated: valid,
         valid,
+        isAuthenticated: valid,
       }
     },
 
@@ -106,7 +126,7 @@ export default handleActions(
     },
 
     // Handle API request errors
-    [ERROR]: (state: State = initialState, action) => { return { ...state, }; },
+    [ERROR]: (state: State = initialState, action) => { return { ...state }; },
 
   },
   initialState

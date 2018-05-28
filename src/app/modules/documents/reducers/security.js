@@ -25,7 +25,7 @@ export default handleActions(
 
       return {
         ...state,
-        payload
+        user: payload
       }
     },
 

@@ -6,73 +6,21 @@
 
 import React, { Component } from 'react';
 import {
-    DeviceEventEmitter,
     StyleSheet,
-    View,
-    Text,
-    AsyncStorage,
 } from 'react-native';
 import { connect } from 'react-redux';
 
+import { createRootNavigator } from './navigators/index';
 import SOPApp from './SOPApp';
-import AppWithNavigationState, { AppBeforeLogin } from './navigators';
 
 class App extends Component<{}> {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-        };
-
-        console.log('App did constructed');
-    }
-
-    componentDidMount() {
-        console.log('App did mount');
-        DeviceEventEmitter.addListener('appStateChange', this.handleAppStateChange);
-    }
-
-    componentWillUnmount() {
-        console.log('App did unmount');
-        DeviceEventEmitter.removeListener('appStateChange', this.handleAppStateChange);
-    }
-
-    render = () => {
+    render() {
+        const Layout = createRootNavigator(this.props.isLoggedIn);
         return (
             <SOPApp>
-                {
-                    this.props.isLoggedIn ?
-                        <AppWithNavigationState />
-                        : <AppBeforeLogin />
-                }
+                <Layout />
             </SOPApp>
-        )
-    }
-
-    handleAppStateChange = (appState) => {
-        console.log(`current state: ${appState.currentAppState}`);
-
-        switch (appState.currentAppState) {
-            case 'active':
-                break;
-
-            case 'background':
-                break;
-
-            case 'stopped':
-                break;
-
-            case 'destroyed':
-
-                break;
-
-            case 'saveInstanceState':
-
-                break;
-
-            default:
-                break;
-        }
+        );
     }
 }
 

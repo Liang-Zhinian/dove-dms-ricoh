@@ -8,9 +8,6 @@ export default Routes = {
     Logout: {
         screen: Screens.Logout,
     },
-    Splash: {
-        screen: Screens.Splash,
-    },
     Registration: {
         screen: Screens.Registration,
     },
@@ -57,6 +54,9 @@ export default Routes = {
         screen: Screens.Scan,
     },
     Print: {
-        screen: Screens.Print,
+        screen: Screens.Print
     },
+    Profile: {
+        screen: Screens.Profile
+    }
 }

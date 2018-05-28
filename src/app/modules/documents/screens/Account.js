@@ -6,7 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Alert
+  Alert,
+  Switch,
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -14,12 +15,18 @@ import { CommonStyles } from '../styles';
 import * as actions from '../actions';
 import { NAME } from '../constants';
 import { HeaderButton } from './components/HeaderButtons';
+import { translate } from '../../../i18n/i18n';
+import { getItem } from '../../../services/storageService';
+import { storageKey } from '../env';
+import Form from './components/Form';
+import Section from './components/Section';
+import KeyValueRow from './components/KeyValueRow';
 
 class Account extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
 
-    let headerTitle = 'Manage Account';
+    let headerTitle = translate('ManageAccount');
     let headerLeft = (
       <View style={[
         CommonStyles.flexRow,
@@ -27,7 +34,7 @@ class Account extends Component {
       ]}>
         <HeaderButton
           onPress={params.cancel ? params.cancel : () => null}
-          text='Cancel'
+          text={translate('Cancel')}
         />
       </View>
     );
@@ -37,7 +44,7 @@ class Account extends Component {
       ]}>
         <HeaderButton
           onPress={params.toggleEdit ? params.toggleEdit : () => null}
-          text={!params.isEditMode ? 'Edit' : 'Save'}
+          text={translate(!params.isEditMode ? 'Edit' : 'Save')}
         />
       </View>
     );
@@ -53,15 +60,17 @@ class Account extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
-      password: '',
+      username: null,
+      password: null,
+      server: null,
+      port: null,
+      https: false,
       pending: false,
-      isEditMode: false
+      isEditMode: false,
     };
   }
 
-  componentDidMount() {
-    console.log('componentDidMount');
+  async componentDidMount() {
     var that = this;
     const { navigation } = that.props;
     // We can only set the function after the component has been initialized
@@ -72,35 +81,22 @@ class Account extends Component {
     });
 
     const { username, password, sid, valid } = that.props;
+
+    const doc_server = await getItem(storageKey.DOCUMENT_SERVER);
+
     that.setState({
       username,
-      password
+      password,
+      ...doc_server,
     })
   }
 
   render() {
     return (
-      //<View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={{
-          justifyContent: 'center',
-          //alignItems: 'flex-start',
-        }}
-        style={styles.container}
-        keyboardShouldPersistTaps={'always'}>
-        <View style={{
-          flex: 1,
-          marginTop: 20,
-          marginRight: 0,
-          marginBottom: 0,
-          //marginLeft: 10,
-        }}>
-          <Text style={{ marginLeft: 10, fontSize: 14, color: 'grey' }}>ACCOUNT AUTHENTICATION</Text>
-          {this.renderFormPanel()}
-        </View>
-        {this.renderPending()}
-      </ScrollView>
-      //</View>
+      <Form>
+        {this.renderAccountAuthenticationPanel()}
+        {this.renderAdvancedPanel()}
+      </Form>
 
     );
   }
@@ -115,8 +111,6 @@ class Account extends Component {
     } else {
       this.refs.txtUserName.focus();
       this.refs.txtUserName.selection = { start: 3, end: 3 };
-      //Alert.alert('UserName focused', 'Focused!', [{ text: 'OK', onPress: () => console.log('OK Pressed') },], { cancelable: false });
-      
     }
 
     this.setState({
@@ -153,7 +147,7 @@ class Account extends Component {
         ref="txtUserName"
         style={[ComponentStyles.input]}
         placeholderTextColor={StyleConfig.color_gray}
-        placeholder={'User name'}
+        placeholder={translate('UserName')}
         blurOnSubmit={true}
         underlineColorAndroid={'transparent'}
         onChangeText={(username) => this.setState({ username })}
@@ -171,7 +165,7 @@ class Account extends Component {
         ref="txtPassword"
         style={[ComponentStyles.input]}
         placeholderTextColor={StyleConfig.color_gray}
-        placeholder={'Password'}
+        placeholder={translate('Password')}
         blurOnSubmit={true}
         underlineColorAndroid={'transparent'}
         onChangeText={(password) => this.setState({ password })}
@@ -210,20 +204,115 @@ class Account extends Component {
       </TouchableOpacity>
     )
   }
-  renderFormPanel = () => {
+
+  renderLogoutButton = () => {
     return (
-      <View style={[styles.section]}>
-        <View style={[{ flex: 1 }, styles.row]}>
-          <Text style={[styles.title]}>Username</Text>
-          <View style={[styles.content]}>{this.renderUserName()}</View>
-        </View>
+      <TouchableOpacity
+        activeOpacity={StyleConfig.touchable_press_opacity}
+        style={[ComponentStyles.btn, { backgroundColor: '#8a8482' }]}
+        onPress={() => this.handleLogout()}>
+        <Text style={ComponentStyles.btn_text}>
+          {translate('SignOut')}
+        </Text>
+      </TouchableOpacity>
+    )
+  }
+
+  renderServerAddress = () => {
+    return (
+      <TextInput
+        ref="txtServerAddress"
+        style={[ComponentStyles.input]}
+        placeholderTextColor={StyleConfig.color_gray}
+        placeholder={translate('ServerAddress')}
+        blurOnSubmit={true}
+        underlineColorAndroid={'transparent'}
+        onChangeText={(server) => this.setState({ server })}
+        value={this.state.server}
+        autoCapitalize='none'
+        editable={this.state.isEditMode}
+        returnKeyType='next'
+      />
+    )
+  }
+
+  renderHTTPS = () => {
+    if (this.state.isEditMode)
+      return (
+        <Switch
+          ref="txtHTTPS"
+          value={this.state.https}
+          onValueChange={(value) => {
+            this.setState({
+              https: value
+            });
+          }} />
+      )
+    return (
+      <TextInput
+        ref="txtHTTPS"
+        style={[ComponentStyles.input]}
+        placeholderTextColor={StyleConfig.color_gray}
+        placeholder={translate('HTTPS')}
+        blurOnSubmit={true}
+        underlineColorAndroid={'transparent'}
+        onChangeText={(https) => this.setState({ https })}
+        value={translate(this.state.https ? 'On' : 'Off')}
+        autoCapitalize='none'
+        editable={false}
+        returnKeyType='next'
+      />
+
+    )
+  }
+
+  renderPort = () => {
+    return (
+      <TextInput
+        ref="txtPort"
+        style={[ComponentStyles.input]}
+        placeholderTextColor={StyleConfig.color_gray}
+        placeholder={translate('Port')}
+        blurOnSubmit={true}
+        underlineColorAndroid={'transparent'}
+        onChangeText={(port) => this.setState({ port })}
+        value={this.state.port}
+        autoCapitalize='none'
+        editable={this.state.isEditMode}
+        returnKeyType='next'
+      />
+    )
+  }
+
+  renderAccountAuthenticationPanel = () => {
+    return (
+      <Section title='ACCOUNT AUTHENTICATION'>
+        <KeyValueRow title={translate('UserName')}>
+          {this.renderUserName()}
+        </KeyValueRow>
         {this.renderSpacer()}
-        <View style={[{ flex: 1 }, styles.row]}>
-          <Text style={[styles.title]}>Password</Text>
-          <View style={[styles.content]}>{this.renderPassword()}</View>
-        </View>
-        {/*this.renderSpacer()*/}
-      </View>
+        <KeyValueRow title={translate('Password')}>
+          {this.renderPassword()}
+        </KeyValueRow>
+      </Section>
+    );
+  }
+
+  renderAdvancedPanel = () => {
+    return (
+      <Section title='ADVANCED'>
+        <KeyValueRow title={translate('ServerAddress')}>
+          {this.renderServerAddress()}
+        </KeyValueRow>
+        {this.renderSpacer()}
+        <KeyValueRow title={translate('HTTPS')}>
+          {this.renderHTTPS()}
+        </KeyValueRow>
+        {this.renderSpacer()}
+        <KeyValueRow title={translate('Port')}>
+          {this.renderPort()}
+        </KeyValueRow>
+      </Section>
     );
   }
 
@@ -244,11 +333,15 @@ class Account extends Component {
   accountValidator = () => {
     let username = this.state.username;
     let password = this.state.password;
-    //username = this.encryptData(username);
-    //password = this.encryptData(password);
+    let server = this.state.server;
+    let https = this.state.https;
+    let port = this.state.port;
     return {
       username,
-      password
+      password,
+      server,
+      https,
+      port
     };
   }
 
@@ -258,36 +351,27 @@ class Account extends Component {
     if (accountData) {
       _that.refs.txtUserName.blur();
       _that.refs.txtPassword.blur();
-      // _that.setState({ pending: true });
+      _that.refs.txtServerAddress.blur();
+      _that.refs.txtHTTPS.blur();
+      _that.refs.txtPort.blur();
 
       const { saveAccount, login } = _that.props;
-      login(
+      saveAccount(
         accountData.username,
-        accountData.password
+        accountData.password,
+        accountData.server,
+        accountData.https,
+        accountData.port,
       );
 
       this.setState({ pending: false });
       Alert.alert('Account setting', 'Saved!', [{ text: 'OK', onPress: () => console.log('OK Pressed') },], { cancelable: false });
-      // _that.setState({ sid: sid });
-
-      // _that.props.login({
-      //   username: accountData.username,
-      //   password: accountData.password,
-      //   resolved: (data)=>{
-      //       // this.handleLoginResolved(data);
-      //       _that.setState({ sid: data });
-      //   },
-      //   rejected: (data)=>{
-      //     _that.handleLoginRejected(data);
-      //   }
-      // });
-
-
-      // let data = {};
-      // data.username = accountData.username;
-      // data.password = accountData.password;
-      // _that.handleAccountResolved(data);
     }
+  }
+
+  handleLogout = () => {
+    const { sid, logout, navigation } = this.props;
+    logout(sid, navigation);
   }
 
   handleAccountResolved = (data) => {
@@ -319,11 +403,15 @@ class Account extends Component {
 // 获取 state 变化
 const mapStateToProps = (state) => {
   return {
-    // 获取 state 变化
-    isLoggedIn: state.auth.isLoggedIn,
-    username: state.auth.user.username,
-    password: state.auth.user.password,
-    sid: state.auth.user.token.sid
+    isLoggedIn: state[NAME].account.isLoggedIn,
+    username: state[NAME].account.username,
+    password: state[NAME].account.password,
+    sid: state[NAME].account.token.sid
+
+    // isLoggedIn: state.auth.isLoggedIn,
+    // username: state.auth.username,
+    // password: state.auth.password,
+    // sid: state.auth.token.sid
   }
 };
 
@@ -332,7 +420,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     // 发送行为
     login: (username, password) => dispatch(actions.login(username, password)),
-    saveAccount: (username, password) => dispatch(actions.saveAccount(username, password)),
+    logout: (sid, navigation) => dispatch(actions.logout(sid, navigation)),
+    saveAccount: (username, password, server, https, port) => dispatch(actions.saveAccount(username, password, server, https, port)),
   }
 };
 
@@ -346,51 +435,8 @@ export default connect(
 )(Account);
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    // justifyContent: 'center',
-    // alignItems: 'flex-start',
-    // width: null,
-    // height: null,
-    backgroundColor: '#F5FCFF',
-  },
-  section: {
-    flex: 1,
-    flexDirection: 'column',
-    marginTop: 10,
-    marginRight: 0,
-    marginBottom: 20,
-    marginLeft: 0,
-    borderTopWidth: 1,
-    borderTopColor: 'gray',
-    borderBottomWidth: 1,
-    borderBottomColor: 'gray',
-  },
-  row: {
-    flexDirection: 'row',
-    padding: 10,
-    // marginRight: 10,
-    // marginLeft: 10,
-    backgroundColor: '#ffffff',
-    // borderBottomWidth: 1,
-    // borderBottomColor: 'gray',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  title: {
-    flex: 1,
-    // marginRight: 10,
-    fontWeight: 'bold',
-    textAlign: 'right',
-    fontSize: 17,
-  },
-  content: {
-    flex: 1,
-    marginLeft: 10,
-  },
   spacer: {
-    height: 1,
+    height: StyleSheet.hairlineWidth,
     backgroundColor: 'gray',
     marginLeft: 10,
     marginRight: 10,

@@ -8,6 +8,7 @@ import {
     Dimensions,
 } from 'react-native';
 import Dialog from './Dialog';
+import { translate } from '../../../../i18n/i18n';
 
 const { width, height } = Dimensions.get('window');
 
@@ -29,18 +30,18 @@ export default class FolderCreationDialog extends Component {
                                 alignSelf: 'center',
                                 marginBottom: 20,
                                 // height: 50,
-                            }}>Folder Name:</Text>
+                            }}>{translate('FolderName')}</Text>
                         </View>
                         <View style={{ flex: 1, marginTop: 10, marginBottom: 10 }}>
                             <TextInput
                                 ref="txtFolderName"
                                 style={{
                                     borderWidth: 1,
-                                    // height: 50,
-                                    // fontSize: 16,
-                                    padding: 3
+                                    height: 40,
+                                    fontSize: 16,
+                                    paddingLeft: 5
                                 }}
-                                placeholder={'Folder Name'}
+                                placeholder={translate('FolderName')}
                                 blurOnSubmit={true}
                                 underlineColorAndroid={'transparent'}
                                 onChangeText={this.props.onChangeFolderName}
