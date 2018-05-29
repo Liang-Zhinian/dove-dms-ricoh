@@ -36,6 +36,7 @@ import {
 } from '../styles';
 import { convert } from '../api/converter';
 import { Numeric } from '../../../components/TextInputs';
+import { translate } from '../../../i18n/i18n';
 
 function alert(title, msg) {
     Alert.alert(title, msg, [{ text: 'OK', onPress: () => console.log('OK Pressed') },], { cancelable: false });
@@ -162,7 +163,7 @@ export default class Settings extends Component<{}> {
             <ScrollView style={{ padding: 20 }}>
                 {this.renderSpacer()}
                 <View style={[{ flex: 1 }, styles.row]}>
-                    <Text style={[styles.title]}>Copies</Text>
+                    <Text style={[styles.title]}>{translate('Copies')}</Text>
                     <Numeric
                         style={{ flex: 1 }}
                         ref="txtCopies"
@@ -177,7 +178,7 @@ export default class Settings extends Component<{}> {
                     />
                 </View>
                 <View style={[{ flex: 1 }, styles.row]}>
-                    <Text style={[styles.title]}>PrintColor</Text>
+                    <Text style={[styles.title]}>{translate('PrintColor')}</Text>
                     <ModalSelector
                         data={PrintColors}
                         initValue={PrintColors[1].label}
@@ -187,7 +188,7 @@ export default class Settings extends Component<{}> {
                         }} />
                 </View>
                 <View style={[{ flex: 1 }, styles.row]}>
-                    <Text style={[styles.title]}>Print Service Status</Text>
+                    <Text style={[styles.title]}>{translate('PrintServiceStatus')}</Text>
                     <Text style={styles.title}>{this.state.printServiceAttributeStatus}</Text>
                 </View>
                 {this.renderSpacer()}
@@ -197,11 +198,12 @@ export default class Settings extends Component<{}> {
                 </TouchableOpacity>
                 {this.renderSpacer()}
 
+{/*
                 <TouchableOpacity onPress={this.isPrintFileReady() ? this.printStaticPdf.bind(this) : null} style={styles.button}>
                     <Text style={styles.buttonFont}>Print static pdf</Text>
                 </TouchableOpacity>
-                {this.renderSpacer()}
-                <Text style={styles.title}>Print File Path: {this.state.filePath}</Text>
+                    {this.renderSpacer()}*/}
+                <Text style={styles.title}>{translate('FilePath')}: {this.state.filePath}</Text>
 
                 {this.renderSpinner()}
             </ScrollView>

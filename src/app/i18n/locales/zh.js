@@ -56,12 +56,18 @@ export default {
     OpenIn:'打开',
     EmailAsAttachment:'邮件',
 
-    // printng
+    // printing & scanning
     Printer: '打印机',
     Copy:'份',
     Copies:'份',
     SelectPrinter:'选择打印机',
     PrinterOptions:'打印机选项',
+    PrintColor: '颜色',
+    PrintServiceStatus: '打印服务',
+    FilePath: '文件',
+    Uploading: '上传中……',
+    Ready: '就绪',
+    Empty: '空白',
 
     // add doc & folder action sheet
     TakePhoto:'拍照',

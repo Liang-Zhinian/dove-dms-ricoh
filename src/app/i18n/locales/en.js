@@ -2,33 +2,33 @@ export default {
     // basic action buttons
     Submit: 'Submit',
     Search: 'Search',
-    Edit:'Edit',
-    Done:'Done',
+    Edit: 'Edit',
+    Done: 'Done',
     Save: 'Save',
     Cancel: 'Cancel',
     Delete: 'Delete',
-    Download:'Download',
+    Download: 'Download',
     Upload: 'Upload',
-    Print:'Print',
+    Print: 'Print',
     Scan: 'Scan',
     OK: 'OK',
 
     // auth
-    UserName:'User Name',
-    Password:'Password',
-    SignOut:'Sign Out',
-    SignIn:'Sign In',
+    UserName: 'User Name',
+    Password: 'Password',
+    SignOut: 'Sign Out',
+    SignIn: 'Sign In',
     Skip: 'Skip !',
 
     // general
     Home: 'Home',
     Profile: 'Profile',
     Settings: 'Settings',
-    Account:'Account',
-    About:'About',
+    Account: 'Account',
+    About: 'About',
     HTTPS: 'HTTPS',
-    Port:'Port',
-    ServerAddress:'Server Address',
+    Port: 'Port',
+    ServerAddress: 'Server Address',
     On: 'On',
     Off: 'Off',
     EmailAddress: 'Email Address',
@@ -44,28 +44,34 @@ export default {
     Address: 'Address',
     Description: 'Description',
     Log: 'Log',
-    
+
     // domain
     Documents: 'My Documents',
-    SearchResults:'Search Results',
+    SearchResults: 'Search Results',
     More: 'More',
-    Downloads:'Downloads',
-    CheckForUpdate:'Check for Update ...',
+    Downloads: 'Downloads',
+    CheckForUpdate: 'Check for Update ...',
     ManageAccount: 'Manage Account',
-    OpenIn:'Open in ...',
-    EmailAsAttachment:'Email as Attachment',
+    OpenIn: 'Open in ...',
+    EmailAsAttachment: 'Email as Attachment',
 
-    // printng
+    // printing & scanning
     Printer: 'Printer',
-    Copy:'Copy',
-    Copies:'Copies',
-    SelectPrinter:'Select Printer',
-    PrinterOptions:'Printer Options',
+    Copy: 'Copy',
+    Copies: 'Copies',
+    SelectPrinter: 'Select Printer',
+    PrinterOptions: 'Printer Options',
+    PrintColor: 'Color',
+    PrintServiceStatus: 'Print Service Status',
+    FilePath: 'File Path',
+    Uploading: 'Uploading...',
+    Ready: 'Ready',
+    Empty: 'Empty',
 
     // add doc & folder action sheet
-    TakePhoto:'Take Photo...',
-    ChooseFromLibrary:'Choose from Library...',
-    CreateFolder:'Create Folder',
+    TakePhoto: 'Take Photo...',
+    ChooseFromLibrary: 'Choose from Library...',
+    CreateFolder: 'Create Folder',
 
     PleaseWait: 'Please wait...',
 
@@ -81,7 +87,7 @@ export default {
     Tags: 'Tags',
     VersionComment: 'Version Comment',
 
-    ScanQRCode:'Scan QR Code',
+    ScanQRCode: 'Scan QR Code',
 
     // messages
     PleaseLoginTheSopOr: 'Please login the SOP or',
