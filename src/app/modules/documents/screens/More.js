@@ -104,12 +104,12 @@ class More extends Component {
 
     getEmptyCount(size) {
         let rowCount = Math.ceil((this.state.screen.height - 20) / size);
-        return rowCount * 2 - MainRoutes.length;
+        return rowCount * 3 - MainRoutes.length;
     }
 
     renderRoute(route, index) {
 
-        const size = this.state.screen.width / 2;
+        const size = this.state.screen.width / 3;
         // const height = width;
         return (
             <TouchableHighlight
@@ -145,7 +145,7 @@ class More extends Component {
 
     renderGrid() {
         let items = <View />;
-        let size = this.state.screen.width / 2;
+        let size = this.state.screen.width / 3;
         let emptyCount = this.getEmptyCount(size);
 
         items = MainRoutes.map((route, index) => {

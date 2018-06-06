@@ -6,7 +6,7 @@ import {
   addNavigationHelpers
 } from 'react-navigation';
 
-import Splash from '../screens/AuthLoading';
+import Splash from '../screens/Splash';
 import Login from '../screens/Login';
 import Profile from '../screens/Profile';
 import Signup from '../screens/Signup';
@@ -15,6 +15,9 @@ import Log from '../screens/Log';
 
 
 export const SignedOut = StackNavigator({
+  Splash: {
+    screen: Splash,
+  },
   Login: {
     screen: Login,
   },

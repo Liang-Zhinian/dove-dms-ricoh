@@ -12,13 +12,13 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+
 import { login } from '../actions/auth';
 import Toast from '../components/ToastModule';
 import TextBox from '../components/TextBox';
 import CommonStyles from '../styles/CommonStyles';
 import ComponentStyles from '../styles/ComponentStyles';
 import StyleConfig from '../styles/StyleConfig';
-// import AuthButton from '../components/AuthButton';
 import DoveButton from '../components/DoveButton';
 import {translate} from '../i18n/i18n';
 
@@ -132,7 +132,7 @@ class LoginScreen extends Component {
                 CommonStyles.flexItemsMiddle,
             ]}>
                 <Image
-                    style={[styles.image, { width: this.state.layout.width - 20, }]}
+                    style={[styles.image, { width: this.state.layout.width - 10, }]}
                     resizeMode={Image.resizeMode.contain}
                     source={require("../assets/logo.png")}
                 />

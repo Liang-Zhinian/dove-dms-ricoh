@@ -231,7 +231,7 @@ class Explorer extends Component {
       chooseFromLibraryButtonTitle: translate('ChooseFromLibrary'),
       customButtons: [
         { name: 'create-folder', title: translate('CreateFolder') },
-        { name: 'scan', title: 'Scan' },
+        { name: 'scan', title: translate('Scan') },
       ],
       storageOptions: {
         skipBackup: true,

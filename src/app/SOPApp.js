@@ -118,7 +118,7 @@ class SOPApp extends Component {
         var that = this;
 
         that.setState({ isLoading: true });
-        // that.props.checkingUser();
+        that.props.checkingUser();
 
         if (that.sopEnabled && RicohAuthAndroid) {
             await RicohAuthAndroid.getAuthState()
@@ -152,12 +152,14 @@ class SOPApp extends Component {
 
     onAuthStateReceived = (authState) => {
         this.setState({ sopAuthState: authState }, () => {
+            alert('authState.userId: '+authState.userId);
             if (this.isSOPLoggedIn()) {
-                this.props.setQueryUserName(this.state.sopAuthState.userId);
+                this.props.setQueryUserName(authState.userId);
             } else {
                 // SOP logged out
                 this.props.isLoggedIn && this.props.logout();
             }
+            this.props.doneCheckingUser();
             this._isMounted && this.setState({ isLoading: false });
         });
         console.log('SOP login status: ' + authState.loginStatus);

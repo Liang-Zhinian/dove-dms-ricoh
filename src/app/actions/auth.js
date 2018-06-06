@@ -39,6 +39,10 @@ export const login = (username: string, password: string): ActionAsync => {
                         }
                     };
 
+                    const state = getState();
+                    
+                    state.storage.queryUserName && AsyncStorage.setItem(state.storage.queryUserName, JSON.stringify(user));
+
                     dispatch({
                         type: 'Login',
                         payload: user

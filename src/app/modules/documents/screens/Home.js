@@ -276,11 +276,11 @@ class Home extends Component {
 
 	getEmptyCount(size) {
 		let rowCount = Math.ceil((this.state.layout.height - 20) / size);
-		return rowCount * 2 - MainRoutes.length;
+		return rowCount * 3 - MainRoutes.length;
 	}
 
 	renderRoute(route, index) {
-		const size = this.state.layout.width / 2;
+		const size = this.state.layout.width / 3;
 		let { icon, title, color } = route;
 		let ic = icon;
 		if (typeof icon === 'string')
@@ -324,7 +324,7 @@ class Home extends Component {
 
 	renderGrid() {
 		let items = <View />;
-		let size = this.state.layout.width / 2;
+		let size = this.state.layout.width / 3;
 		let emptyCount = this.getEmptyCount(size);
 
 		items = MainRoutes.map((route, index) => {

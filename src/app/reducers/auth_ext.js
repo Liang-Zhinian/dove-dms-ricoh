@@ -1,6 +1,8 @@
 import Toast from '../components/ToastModule';
 
-const initialAuthState = {};
+const initialAuthState = {
+    userChecking: false
+};
 
 export default function auth_ext(state = initialAuthState, action) {
     switch (action.type) {
