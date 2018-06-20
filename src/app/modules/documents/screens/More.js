@@ -50,6 +50,12 @@ const MainRoutes = [
         icon: 'ios-settings-outline',
         id: 'Update',
     },*/
+    {
+        title: translate('About'),
+        color: StyleConfig.color_white,
+        icon: 'ios-person-outline',
+        id: 'Profile',
+    },
 ];
 
 class More extends Component {

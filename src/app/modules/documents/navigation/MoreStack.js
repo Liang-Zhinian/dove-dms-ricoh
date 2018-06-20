@@ -10,6 +10,7 @@ import Routes from '../config/routes';
 import { defaultHeader } from './styles';
 import { stackNavigationOptions } from './util';
 import UpdateScreen from '../../../components/UpdateScreen';
+import AboutScreen from '../../../screens/About';
 
 const {
     Downloads,
@@ -26,6 +27,9 @@ export default MoreStack = StackNavigator({
     Settings,
     Update:{
         screen: UpdateScreen,
+    },
+    About: {
+        screen: AboutScreen,
     },
     Profile
 }, {

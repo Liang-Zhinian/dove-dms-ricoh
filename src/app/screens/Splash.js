@@ -45,23 +45,23 @@ class Splash extends Component {
 
     componentDidMount() {
         console.log('componentDidMount');
-        // var that = this;
-        // const { isLoggedIn, queryUserName } = that.props;
-        // var username = "";
-        // if (typeof queryUserName !== 'undefined') username = queryUserName;
+        var that = this;
+        const { isLoggedIn, queryUserName } = that.props;
+        var username = "";
+        if (typeof queryUserName !== 'undefined') username = queryUserName;
 
         // alert('queryUserName: '+username);
 
-        // if (!isLoggedIn) {
-        //     that.getSavedUser(username)
-        //         .then(savedUser => {
-        //             that.setState({ savedUser, isLoading: false }, () => {
-        //                 !savedUser && that.props.navigation.navigate('Login');
-        //             });
-        //         })
-        // } else {
-        //     that.setState({ isLoading: false });
-        // }
+        if (!isLoggedIn) {
+            that.getSavedUser(username)
+                .then(savedUser => {
+                    that.setState({ savedUser, isLoading: false }, () => {
+                        !savedUser && that.props.navigation.navigate('Login');
+                    });
+                })
+        } else {
+            that.setState({ isLoading: false });
+        }
 
         this._isMounted = true;
     }
@@ -71,32 +71,35 @@ class Splash extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.userChecking && nextProps.queryUserName && nextProps.queryUserName != this.props.queryUserName) {
-            const { isLoggedIn, queryUserName } = nextProps.props;
-            var username = "";
-            if (typeof queryUserName !== 'undefined') username = queryUserName;
+        // if (nextProps.userChecking && nextProps.queryUserName && nextProps.queryUserName != this.props.queryUserName) {
+            // const { isLoggedIn, queryUserName } = nextProps.props;
+            // var username = "";
+            // if (typeof queryUserName !== 'undefined') username = queryUserName;
 
-            alert('queryUserName: ' + username);
+            // // alert('queryUserName: ' + username);
 
-            if (!isLoggedIn) {
-                this.getSavedUser(username)
-                    .then(savedUser => {
-                        this.setState({ savedUser, isLoading: false }, () => {
-                            !savedUser && this.props.navigation.navigate('Login');
-                        });
-                    })
-            } else {
-                this.setState({ isLoading: false });
-            }
-        }
+            // if (!isLoggedIn) {
+            //     this.getSavedUser(username)
+            //         .then(savedUser => {
+            //             this.setState({ savedUser, isLoading: false }, () => {
+            //                 !savedUser && this.props.navigation.navigate('Login');
+            //             });
+            //         })
+            // } else {
+            //     this.setState({ isLoading: false });
+            // }
+        // }
     }
 
     render() {
         const { container, image, text, title } = styles;
 
+        alert((this.state.isLoading?'loading':'not loading')+ ' and ' + (this.state.userChecking?'checking':'not checking'));
+
         if (this.state.isLoading || this.props.userChecking) {
             return (
                 <View style={container}>
+                <Text>Splash</Text>
                     <Spinner
                         style={[styles.gray, { height: 80 }]}
                         color='red'

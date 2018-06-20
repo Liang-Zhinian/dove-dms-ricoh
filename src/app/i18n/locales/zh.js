@@ -47,6 +47,7 @@ export default {
     FolderName: '文件夹名',
     Description: '描述',
     Log: '日志',
+    AboutUs: 'ATPATH Technologies Limited (络基数码科技广州有限公司) 成立于1998年，在中国香港和广州分别建立了软件研发和销售地点。络基科技追随云端理念，致力于专业优质的软件开发，APP开发服务，保护企业营销和管理生命力企业软件开发，是企业管理信息化建设的忠实合作伙伴。',
 
 
     Documents: '文档',

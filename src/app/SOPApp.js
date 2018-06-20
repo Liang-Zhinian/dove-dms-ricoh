@@ -85,6 +85,7 @@ class SOPApp extends Component {
         if (this.state.isLoading) {
             return (
                 <View style={styles.container}>
+                <Text>SOPApp</Text>
                     <Spinner
                         style={[styles.gray, { height: 80 }]}
                         color='red'
@@ -152,15 +153,17 @@ class SOPApp extends Component {
 
     onAuthStateReceived = (authState) => {
         this.setState({ sopAuthState: authState }, () => {
-            alert('authState.userId: '+authState.userId);
+            // alert('authState.userId: '+authState.userId);
             if (this.isSOPLoggedIn()) {
+                this.props.doneCheckingUser();
                 this.props.setQueryUserName(authState.userId);
             } else {
+                this.props.doneCheckingUser();
                 // SOP logged out
                 this.props.isLoggedIn && this.props.logout();
             }
-            this.props.doneCheckingUser();
-            this._isMounted && this.setState({ isLoading: false });
+            // this.props.doneCheckingUser();
+            this.setState({ isLoading: false });
         });
         console.log('SOP login status: ' + authState.loginStatus);
 
@@ -213,8 +216,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        checkingUser: () => { dispatch({ type: 'CHECKING_USER' }); },
-        doneCheckingUser: () => { dispatch({ type: 'DONE_CHECKING_USER' }); },
+        checkingUser: () => { alert('checkingUser'); dispatch({ type: 'CHECKING_USER' }); },
+        doneCheckingUser: () => { alert('doneCheckingUser'); dispatch({ type: 'DONE_CHECKING_USER' }); },
         setQueryUserName: (username) => { dispatch({ type: 'QUERY_USER', payload: username }); },
         logout: () => dispatch(logout()),
     }

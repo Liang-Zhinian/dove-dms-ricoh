@@ -156,11 +156,11 @@ class Scan extends Component<{}> {
                         </View>
                         {this.renderSpacer()}
 
-                        <Text style={styles.title}>Scanner: {this.isReady() ? translate('Ready') : translate('PleaseWait')}</Text>
+                        <Text style={styles.title}>{translate('Scanner')}: {this.isReady() ? translate('Ready') : translate('PleaseWait')}</Text>
                         {/* <Text style={styles.title}>Connection State: {this.state.connectState}</Text> */}
                         {/* <Text style={styles.title}>Scan Job State: {this.state.scanJobState}</Text> */}
                         {/* <Text style={styles.title}>Scan Service Attribute State: {this.state.scanServiceAttributeState}</Text> */}
-                        <Text style={styles.title}>Scanned Image: {this.state.scannedImage ? translate('Ready') : translate('Empty')}</Text>
+                        <Text style={styles.title}>{translate('ScannedImage')}: {this.state.scannedImage ? translate('Ready') : translate('Empty')}</Text>
 
                     </View>
                     {this.renderSpinner()}

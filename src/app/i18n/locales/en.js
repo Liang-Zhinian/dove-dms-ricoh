@@ -44,6 +44,7 @@ export default {
     Address: 'Address',
     Description: 'Description',
     Log: 'Log',
+    AboutUs: 'To maintain a competitive edge we continue to develop and evolve to make our enterrpise solutions better and better which are not only user friendly but also easy to manage, stable and robust. Software consultancy is also provided, which enables you to choose the right track and help to solve problems related to your existing software systems infrastructure.',
 
     // domain
     Documents: 'My Documents',
