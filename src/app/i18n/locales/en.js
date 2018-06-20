@@ -57,6 +57,7 @@ export default {
     EmailAsAttachment: 'Email as Attachment',
 
     // printing & scanning
+    Scanner: 'Scanner',
     Printer: 'Printer',
     Copy: 'Copy',
     Copies: 'Copies',
@@ -68,6 +69,8 @@ export default {
     Uploading: 'Uploading...',
     Ready: 'Ready',
     Empty: 'Empty',
+    ScannedImage: 'Scanned Image',
+    ScanSucceed:'Scan succeed, please enter the name of the file and upload it to the server.',
 
     // add doc & folder action sheet
     TakePhoto: 'Take Photo...',

@@ -99,6 +99,7 @@ class Scan extends Component<{}> {
             console.log(e.label);
             if (e.label != null && e.label !== '') {
                 that.setState({ isEditMode: true/*, isLoading: false*/ });
+                alert(translate('ScanSucceed'));
             } else {
                 that.setState({ isEditMode: false });
             }

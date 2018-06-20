@@ -53,8 +53,8 @@ const MainRoutes = [
     {
         title: translate('About'),
         color: StyleConfig.color_white,
-        icon: 'ios-person-outline',
-        id: 'Profile',
+        icon: 'ios-contacts-outline',
+        id: 'About',
     },
 ];
 

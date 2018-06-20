@@ -26,7 +26,7 @@ export default {
     Profile: '个人简介',
     Settings: '设置',
     Account:'账号',
-    About:'关于',
+    About:'关于我们',
     CheckForUpdate:'检查更新……',
     Downloads:'下载内容',
     HTTPS: 'HTTPS',
@@ -69,6 +69,9 @@ export default {
     Uploading: '上传中……',
     Ready: '就绪',
     Empty: '空白',
+    Scanner: '扫描服务',
+    ScannedImage: '扫描结果',
+    ScanSucceed:'扫描成功，请输入文件名并上传至服务器',
 
     // add doc & folder action sheet
     TakePhoto:'拍照',
