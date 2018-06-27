@@ -64,12 +64,18 @@ class Explorer extends Component {
         <HeaderButton
           icon='add'
           visible={!params.isEditMode}
-          onPress={params.onAddButtonPressed ? params.onAddButtonPressed : () => null}
+          onPress={() => {
+            if (params.onAddButtonPressed) {
+              let sender = {};
+              sender.id = "headerbutton";
+              params.onAddButtonPressed(sender);
+            }
+          }}
         />
-        <HeaderButton
+        {/* <HeaderButton
           onPress={params.toggleEdit ? params.toggleEdit : () => null}
           text={translate(!params.isEditMode ? 'Edit' : 'Done')}
-        />
+        /> */}
       </View>
     );
 
@@ -219,20 +225,32 @@ class Explorer extends Component {
     })
   }
 
-  showImagePicker = () => {
+  showImagePicker = (sender) => {
     let _that = this;
     _that.setFetchingState(true);
+
+    var customButtons = [];
+    if (sender.id == 'action') {
+      customButtons = [
+        { name: 'print', title: translate('Print') },
+        { name: 'delete', title: translate('Delete') },
+      ];
+    }else {
+      customButtons = [
+        { name: 'create-folder', title: translate('CreateFolder') },
+        { name: 'scan', title: translate('Scan') },
+      ];
+    }
 
     // More info on all the options is below in the README...just some common use cases shown here
     var options = {
       title: null,
       cancelButtonTitle: translate('Cancel'),
-      takePhotoButtonTitle: translate('TakePhoto'),
-      chooseFromLibraryButtonTitle: translate('ChooseFromLibrary'),
-      customButtons: [
-        { name: 'create-folder', title: translate('CreateFolder') },
-        { name: 'scan', title: translate('Scan') },
-      ],
+      // takePhotoButtonTitle: translate('TakePhoto'),
+      // chooseFromLibraryButtonTitle: translate('ChooseFromLibrary'),
+      takePhotoButtonTitle: null,
+      chooseFromLibraryButtonTitle: null,
+      customButtons: customButtons,
       storageOptions: {
         skipBackup: true,
         path: 'images'
@@ -261,6 +279,16 @@ class Explorer extends Component {
           case 'scan':
             //this.setState({ folderCreationModalVisible: true, isLoading: false })
             this.props.navigation.navigate('Scan', { folderId: this.state.folderId })
+            break;
+          case 'delete':
+            const { username, password } = _that.props;
+            DocumentService.removeDocuments(username, password, [sender.data])
+              .then(resp => {
+                _that.fetchData();
+              })
+            break;
+          case 'print':
+            _that._downloadAndNavigateToPrintScreen(sender.data);
             break;
 
           default:
@@ -457,6 +485,7 @@ class Explorer extends Component {
         onPress={() => this._onPressItem(item)}
         onPressInfo={() => this._onPressItemInfo(item)}
         onPressCross={() => { this._onPressItemCross() }}
+        onPressAction={() => this._onPressItemAction(item)}
       />
     );
   }
@@ -546,7 +575,16 @@ class Explorer extends Component {
     }
   }
 
+  _onPressItemAction = (item: any) => {
+    debugger;
+    let sender = {};
+    sender.data = item;
+    sender.id = "action";
+    this.showImagePicker(sender);
+  }
+
   _onPressItemInfo = (item: any) => {
+    debugger;
     const { navigate } = this.props.navigation;
     navigate('DocumentDetails', { node: item });
   }
@@ -598,7 +636,13 @@ class Explorer extends Component {
 
   _onPrintButtonPressed = () => {
     const that = this;
+    that.toggleEdit();
     const doc = that.state.selectedList[0];
+    that._downloadAndNavigateToPrintScreen(doc);
+  }
+
+  _downloadAndNavigateToPrintScreen = (doc)=> {
+    const that = this;
     that.props.updateDownloadStatus(true);
     that.setState({
       //progressBarVisible: true,
@@ -623,13 +667,13 @@ class Explorer extends Component {
         console.log('The file saved to ', path);
 
         that.resetDownloadTask();
-        that.toggleEdit();
+        // that.toggleEdit();
 
         navigate('Print', { filePath: path, fileType: type, fileName });
       })
       .catch((err) => {
         that.resetDownloadTask();
-        that.toggleEdit();
+        // that.toggleEdit();
         if (err.message === 'cancelled') return;
         console.log(err);
         // Toast.show(err.message, Toast.SHORT);
@@ -707,6 +751,7 @@ class Explorer extends Component {
           onPressItemInfo={this._onPressItemInfo}
           onPressCross={this._onPressItemCross}
           downloadManger={this.downloadManger}
+          onPressAction={this._onPressItemAction}
           style={{
             flex: 1,
             display: this.state.mainListVisible ? 'flex' : 'none'
@@ -758,7 +803,7 @@ class Explorer extends Component {
           >
             <Text style={{ color: this.selectionContainsFolders() ? 'grey' : colors.primary, fontSize: 20 }}>{`${translate('Print')}${this.state.selectedList.length > 0 ? '(' + this.state.selectedList.length + ')' : ''}`}</Text>
           </TouchableOpacity>
-        
+
         </View>
         <FolderCreationDialog
           onCancel={() => {

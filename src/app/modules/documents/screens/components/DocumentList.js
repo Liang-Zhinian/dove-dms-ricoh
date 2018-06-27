@@ -65,6 +65,7 @@ export class DocumentList extends Component {
                 onPress={() => this.props.onPressItem(item)}
                 onPressInfo={() => this.props.onPressItemInfo(item)}
                 onPressCross={this.props.onPressItemCross}
+                onPressAction={() => this.props.onPressAction(item)}
             />
         );
     }

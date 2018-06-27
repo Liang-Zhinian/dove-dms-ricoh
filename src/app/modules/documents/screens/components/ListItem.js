@@ -25,15 +25,15 @@ import { CommonStyles } from '../../styles';
 import * as actions from '../../actions';
 import { NAME } from '../../constants';
 
-type Props = {
-    id: number,
-    title: string,
-    description: string,
-    type: string,
-    onPress: () => void,
-    onPressInfo: () => void,
-    // progress: number
-}
+// type Props = {
+//     id: number,
+//     title: string,
+//     description: string,
+//     type: string,
+//     onPress: () => void,
+//     onPressInfo: () => void,
+//     onPressAction: () => void
+// }
 
 class ListItem extends React.Component {
     constructor(props) {
@@ -72,7 +72,8 @@ class ListItem extends React.Component {
             onPressCheckbox,
             onPressCross,
             isDownloading,
-            infoIconVisible = true
+            infoIconVisible = true,
+            onPressAction,
         } = this.props;
 
         const {
@@ -148,6 +149,7 @@ class ListItem extends React.Component {
                         CommonStyles.m_r_2,
                         styles.center, {
                         }]}>
+                    <InfoIcon onPress={onPressAction} />
                     <InfoIcon style={{ display: touched && isDownloading || !infoIconVisible ? 'none' : 'flex' }}
                         onPress={isDownloading ? null : onPressInfo} />
                     <CrossIcon style={{ display: touched && (false || isDownloading) ? 'flex' : 'none' }}
